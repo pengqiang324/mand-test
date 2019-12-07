@@ -14,6 +14,9 @@
     </md-swiper>
     </div>
     <md-action-bar :actions="data"/>
+    <div class="bottom">
+      123
+    </div>
   </div>
 </template>
 
@@ -71,6 +74,12 @@ export default {
       justify-content: center;
       text-decoration-line: none;
     }
+  }
+  .bottom {
+    width: 750px;
+    background: #f00;
+    line-height: 50px;
+    font-size: 28px;
   }
 }
 </style>
