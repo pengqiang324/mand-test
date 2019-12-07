@@ -20,16 +20,15 @@
     <van-button type="primary">主要按钮</van-button>
     <van-button plain type="primary">朴素按钮</van-button>
     <van-button plain hairline type="primary">细边框按钮</van-button>
+    <p>图标展示</p>
+    <md-icon name="success-color" size="lg" svg></md-icon>
   </div>
 </template>
 
 <script>
-import vue from 'vue'
-import {ActionBar, Toast, Swiper, SwiperItem} from 'mand-mobile'
+import {ActionBar, Toast, Swiper, SwiperItem, Icon} from 'mand-mobile'
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
-
 import { Button } from 'vant'
-vue.use(Button)
 
 export default {
   name: "home",
@@ -38,6 +37,8 @@ export default {
     [Swiper.name]: Swiper,
     [SwiperItem.name]: SwiperItem,
     [ActionBar.name]: ActionBar,
+    [Icon.name]: Icon,
+    [Button.name]: Button
   },
 
   data() {

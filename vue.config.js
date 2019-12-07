@@ -41,5 +41,24 @@ module.exports = {
   },
   transpileDependencies: [
     'mand-mobile'
-  ]
+  ],
+  chainWebpack: config => {
+    config.resolve.alias
+      // key,value自行定义，比如.set('@assets', resolve('src/assets'))
+      .set('svg', resolve('src/icons/svg'))  
+      .set('components', resolve('src/components'))    
+      config.plugins.delete('prefetch') // 为了首页加速，来源关网
+      
+     config.module.rules.delete("svg");
+     config.module
+      .rule("svg-smart")
+      .test(/\.svg$/)
+      .include.add(resolve("src/icons/svg")) //svg目录 
+      .end()
+      .use("svg-sprite-loader")
+      .loader("svg-sprite-loader")
+      .options({
+        symbolId: "[name]"
+      });
+  },
 }
