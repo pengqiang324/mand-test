@@ -24,8 +24,8 @@ module.exports = {
       postcss: {
         plugins: [
           require('postcss-pxtorem')({
-            rootValue: 100,
-            propWhiteList: [],
+            rootValue: 37.5,
+            propList: [],
             minPixelValue: 2
           }),
           require('autoprefixer')()
