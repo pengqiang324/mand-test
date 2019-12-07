@@ -7,8 +7,10 @@ import './libs/rem'
 // 全局样式
 import './assets/styles/index.less'
 
-import "mand-mobile/components/_style/global.styl";
-import "normalize.css";
+import "mand-mobile/components/_style/global.styl"
+import "normalize.css"
+
+import "vant/es/index.less"
 Vue.config.productionTip = false
 
 new Vue({
