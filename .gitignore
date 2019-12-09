@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-/dist
+/rongyi
 
 # local env files
 .env.local
