@@ -1,0 +1,22 @@
+<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no"><link rel=icon href=favicon.ico><title>Mand Mobile</title><script>(function(window, document) {
+        function resize() {
+          var ww = window.innerWidth
+          if (ww > window.screen.width) {
+            window.requestAnimationFrame(resize)
+          } else {
+            if (ww > 750) {
+              ww = 750
+            }
+            document.documentElement.style.fontSize = ww * 100 / 750 + 'px'
+          }
+        }
+
+        resize();
+
+        window.addEventListener('resize', resize);
+        window.addEventListener('pageshow', function (e) {
+          if (e.persisted) {
+            resize();
+          }
+        });
+      })(window, document);</script><link href=css/app.9079a4d1.css rel=preload as=style><link href=css/npm.mand-mobile.ebfdb6fc.css rel=preload as=style><link href=css/npm.vant.9e276c89.css rel=preload as=style><link href=js/app.a4dd74c13fe093793413.0_1_0.js rel=preload as=script><link href=js/npm.core-js.003e595f02d9cb5408d3.0_1_0.js rel=preload as=script><link href=js/npm.mand-mobile.f1cce89e0376442ca783.0_1_0.js rel=preload as=script><link href=js/npm.vant.37c517d39bd3bfd9e94d.0_1_0.js rel=preload as=script><link href=js/npm.vue-router.0ea80fd9a95203dbb211.0_1_0.js rel=preload as=script><link href=js/npm.vue.e0bf16e37b778b510f05.0_1_0.js rel=preload as=script><link href=js/npm.vuex.6ff1602396753417a481.0_1_0.js rel=preload as=script><link href=js/runtime.c83b6cfb93d7d7b0e15d.0_1_0.js rel=preload as=script><link href=css/npm.mand-mobile.ebfdb6fc.css rel=stylesheet><link href=css/npm.vant.9e276c89.css rel=stylesheet><link href=css/app.9079a4d1.css rel=stylesheet></head><body><div id=app></div><script src=js/runtime.c83b6cfb93d7d7b0e15d.0_1_0.js></script><script src=js/npm.core-js.003e595f02d9cb5408d3.0_1_0.js></script><script src=js/npm.mand-mobile.f1cce89e0376442ca783.0_1_0.js></script><script src=js/npm.vant.37c517d39bd3bfd9e94d.0_1_0.js></script><script src=js/npm.vue.e0bf16e37b778b510f05.0_1_0.js></script><script src=js/npm.vue-router.0ea80fd9a95203dbb211.0_1_0.js></script><script src=js/npm.vuex.6ff1602396753417a481.0_1_0.js></script><script src=js/app.a4dd74c13fe093793413.0_1_0.js></script></body></html>
