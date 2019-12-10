@@ -31,9 +31,8 @@ module.exports = {
       postcss: {
         plugins: [
           require('postcss-pxtorem')({
-            rootValue: 37.5,
-            propList: [],
-            minPixelValue: 2
+            rootValue: 50,
+            propList: ['*'],
           }),
           require('autoprefixer')()
         ]
@@ -143,7 +142,7 @@ module.exports = {
   },
   productionSourceMap: false,
   devServer: {
-    open: true,
+    open: false,
     // 跨域
     proxy: {
      '/api': {
