@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import VuePageStack from 'vue-page-stack'
 import VueTouch from 'vue-touch'
+import VueComponent from './libs/globalComponent'
 
 // 全局样式
 import './assets/styles/index.styl'
@@ -13,8 +14,8 @@ import "vant/es/index.less"
 
 Vue.use(VuePageStack, { router })
 Vue.use(VueTouch, {name: 'v-touch'})
+Vue.use(VueComponent)
 Vue.config.productionTip = false
-
 VueTouch.config.swipe = {
   threshold: 80 //手机左右滑动距离
 }

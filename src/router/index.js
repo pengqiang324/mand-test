@@ -12,7 +12,8 @@ const routes = [
     meta: {
       index: 1,
       hasFooter: true,
-      navIndex: 0
+      navIndex: 0,
+      keepAlive: true
     }
   },
   {
@@ -22,7 +23,8 @@ const routes = [
     meta: {
       index: 1,
       hasFooter: true,
-      navIndex: 1
+      navIndex: 1,
+      keepAlive: true
     }
   },
   {
@@ -32,7 +34,8 @@ const routes = [
     meta: {
       index: 1,
       hasFooter: true,
-      navIndex: 3
+      navIndex: 3,
+      keepAlive: true
     }
   },
   {
@@ -42,7 +45,8 @@ const routes = [
     meta: {
       index: 1,
       hasFooter: true,
-      navIndex: 2
+      navIndex: 2,
+      keepAlive: true
     }
   },
   {
@@ -51,7 +55,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "child" */ '../views/Child.vue'),
     meta: {
       index: 2,
-      hasFooter: false
+      hasFooter: false,
+      keepAlive: false
     }
   },
   {
@@ -61,7 +66,20 @@ const routes = [
     meta: {
       index: 2,
       hasFooter: false,
+      keepAlive: true
     }
+  },
+  {
+    path: '/404',
+    name: 'ry-unfound',
+    component: () => import('../components/ResultPage/404.vue'),
+    meta: {
+      index: 1
+    }
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 

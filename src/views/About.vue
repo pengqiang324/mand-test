@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about wrapper">
     <h1>This is an about page</h1>
   </div>
 </template>
@@ -9,6 +9,7 @@ export default {
   name: 'ry-about',
 
   created(){
+    console.log('about触发了')
   }
 }
 </script>
@@ -16,7 +17,7 @@ export default {
 <style lang="stylus">
 .about {
   h1 {
-    font-size: 20Px;
+    font-size 20px
   }
 }
 </style>

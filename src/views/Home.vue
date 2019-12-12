@@ -1,37 +1,51 @@
 <template>
   <div class="home">
-    <div id="nav">
-      <router-link to="/child">子页</router-link> |
-      <router-link to="/setting">设置</router-link>
-    </div>
-    <div class="md-example-child-swiper-0">
-      <md-swiper
-      ref="swiper"
-      :is-prevent="false"
-      :useNative-driver="false"
+    <ry-scroll-view
+      :showRefresh="true"
+      @onRefresh="$_onRefresh"
     >
-      <md-swiper-item :key="$index" v-for="(item, $index) in simple">
-        <div
-          class="banner-item"
-          :style="{'background': `${item.color}`}">{{item.text}}</div>
-      </md-swiper-item>
-    </md-swiper>
-    </div>
-    <div class="bottom">
-      123
-    </div>
-    <van-button type="primary">主要按钮</van-button>
-    <van-button plain type="primary">朴素按钮</van-button>
-    <van-button plain hairline type="primary">细边框按钮</van-button>
-    <p>图标展示</p>
-    <md-icon name="success-color" size="lg" svg></md-icon>
-    
+      <div id="nav">
+        <router-link to="/child">子页</router-link> |
+        <router-link to="/setting">设置</router-link>
+      </div>
+      <div class="md-example-child-swiper-0">
+        <md-swiper
+        ref="swiper"
+        :is-prevent="false"
+        :useNative-driver="false"
+      >
+        <md-swiper-item :key="$index" v-for="(item, $index) in simple">
+          <div
+            class="banner-item"
+            :style="{'background': `${item.color}`}">{{item.text}}</div>
+        </md-swiper-item>
+      </md-swiper>
+      </div>
+      <div class="bottom">
+        123
+      </div>
+      <van-button type="primary" @click="$_showToast">主要按钮</van-button>
+      <van-button plain type="primary">朴素按钮</van-button>
+      <van-button plain hairline type="primary">细边框按钮</van-button>
+      <p>图标展示</p>
+      <md-icon name="success-color" size="lg" svg></md-icon>
+    </ry-scroll-view>
   </div>
 </template>
 
 <script>
-import {ActionBar, Toast, Swiper, SwiperItem, Icon} from 'mand-mobile'
-import { Button } from 'vant'
+import {
+  Icon,
+  Swiper, 
+  ActionBar, 
+  SwiperItem, 
+} from 'mand-mobile'
+
+import { 
+  Button,
+  Notify
+} from 'vant'
+
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
 
 export default {
@@ -48,20 +62,46 @@ export default {
   data() {
     return {
       simple,
-      active: 0
+      active: 0,
+      quantity: 25,
+      isFinished: false
     }
   },
 
-  methods: {
-    handleClick() {
-      Toast.succeed('Click')
-    },
+  created() {
   },
 
-  created() {
-  }
+  mounted() {
+    // this.$refs.scrollView.triggerRefresh()  //初始化下拉刷新数据
+  },
+
+  beforeRouteLeave(to, from, next) {
+    this.$notify.clear() //清除消息通知
+    next()
+  },
+
+  methods: {
+    $_onRefresh({finishRefresh}) {
+      // async data
+      setTimeout(() => {
+        console.log('数据加载完成')
+        finishRefresh()
+        Notify({ background: 'rgba(255,131,36,0.8)', message: '刷新成功' })
+      }, 2000)
+    },
+
+    $_showToast() {
+      this.$toast({
+        message: '请求超时',
+        position: 'bottom',
+        transition: 'fadeIn',
+        forbidClick: true,
+      })
+    }
+  },
 };
 </script>
+
 <style lang="stylus">
 .home {
   font-size: 28px;
@@ -114,4 +154,5 @@ export default {
     color: #fc9153;
   }
 }
+
 </style>

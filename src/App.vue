@@ -3,15 +3,23 @@
     <transition
       :name="transitionName" 
     > 
-      <vue-page-stack>
-        <router-view class="router-view"/>
-      </vue-page-stack>
+        <vue-page-stack v-if="!$route.meta.keepAlive">
+          <!-- <ry-loading v-if="showLoading"/> -->
+          <component :is="componentName" v-if="showResult"></component>
+          <router-view class="router-view" v-else/>
+        </vue-page-stack>
+        <keep-alive v-if="$route.meta.keepAlive">
+          <!-- <ry-loading v-if="showLoading"/> -->
+          <component :is="componentName" v-if="showResult"></component>
+          <router-view class="router-view" v-else/>
+        </keep-alive>
     </transition>
     <ry-tabbar v-show="$route.meta.hasFooter"/>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Tabbar from './components/Tabbar'
 
 export default {
@@ -24,9 +32,16 @@ export default {
   data(){
     return {
       active: 0,
+      mode: 'out-in',
       transitionName: '',
-      mode: 'out-in'
     }
+  },
+
+  computed: {
+    ...mapState([
+      'showResult',
+      'componentName'
+    ])
   },
 
   watch: {
@@ -56,6 +71,9 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
+    display flex
+    align-items center
+    justify-content center
   }
   .push-enter-active,.push-leave-active
   , .pop-enter-active,.pop-leave-active{

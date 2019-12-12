@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["mine"],{"0a4e":function(e,n,t){"use strict";t.r(n);var a={name:"ry-mine",created:function(){}},i=t("2877"),c=Object(i.a)(a,function(){var e=this,n=e.$createElement;return(e._self._c||n)("div",{staticClass:"mine-box"},[e._v(" 我的页面 ")])},[],!1,null,null,null);n.default=c.exports}}]);

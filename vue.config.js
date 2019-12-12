@@ -145,13 +145,12 @@ module.exports = {
     open: false,
     // 跨域
     proxy: {
-     '/api': {
-      target: 'http://192.168.3.215:8888',
+     [process.env.RY_APP_BASE_API]: {
+      target: process.env.RY_APP_BASE_URL,
       changeOrigin: true,
       ws: true,
       pathRewrite: {
-        // 替换target中的请求地址，也就是说以后你在请求http://api.jisuapi.com/XXXXX这个地址的时候直接写成/api即可
-        '^/api': '/',
+        ['^' + process.env.RY_APP_BASE_API]: '',
       },
      }
     }

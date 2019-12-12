@@ -1,3 +1,6 @@
+/*
+* 底部导航组件
+*/
 <template>
   <div class="tabbar-box">
       <van-tabbar

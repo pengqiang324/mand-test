@@ -11,6 +11,7 @@ export default {
     name: 'ry-mine',
 
     created(){
+      console.log('mine触发了')
     },
 
     methods: {

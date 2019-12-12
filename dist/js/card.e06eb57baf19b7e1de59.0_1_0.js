@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([["card"],{"7cd5":function(n,c,e){"use strict";e.r(c);var t={name:"ry-card",created:function(){}},a=e("2877"),r=Object(a.a)(t,function(){var n=this,c=n.$createElement;return(n._self._c||c)("div",{staticClass:"card-box"},[n._v(" 信用卡页面 ")])},[],!1,null,null,null);c.default=r.exports}}]);
