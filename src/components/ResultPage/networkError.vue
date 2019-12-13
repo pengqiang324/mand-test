@@ -24,9 +24,12 @@ export default {
     [ResultPage.name]: ResultPage,
   },
 
+  inject: [ 'reload' ],
+
   mounted() {
     this.$refs.RyNetwork.addEventListener('click', this.$ry_onrefresh)
   },
+
 
   beforeDestroy() {
     this.$refs.RyNetwork.removeEventListener('click', this.$ry_onrefresh)
@@ -34,7 +37,9 @@ export default {
 
   methods: {
     $ry_onrefresh() {
-      this.$router.go(0)
+      // this.$router.go(0) //ios中无效果
+      // location.reload()
+      this.reload()
     }
   }
 }

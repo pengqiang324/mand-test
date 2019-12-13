@@ -1,8 +1,3 @@
-// import {
-//     ScrollView, 
-//     ScrollViewRefresh, 
-//     ScrollViewMore
-// } from 'mand-mobile'
 
 import {
     Toast,
@@ -19,9 +14,6 @@ export default {
     install(Vue) {
         Vue.component(Toast.name, Toast)
         Vue.component(Notify.name, Notify)
-        // Vue.component(ScrollView.name, ScrollView)
-        // Vue.component(ScrollViewRefresh.name, ScrollViewRefresh)
-        // Vue.component(ScrollViewMore.name, ScrollViewMore)
         Vue.component(RyLoading.name, RyLoading)
         Vue.component(RyResultPage.name, RyResultPage)
         Vue.component(RyResultNetwork.name, RyResultNetwork)

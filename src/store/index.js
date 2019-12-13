@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     showResult: false,
-    componentName: 'ry-loading'
+    showNetwork: false,
   },
 
   mutations: {
@@ -16,6 +16,10 @@ export default new Vuex.Store({
 
     updateComponent(state, componentName) {
       state.componentName = componentName
+    },
+
+    updateNetwork(state, showNetwork) {
+      state.showNetwork = showNetwork
     }
   },
 

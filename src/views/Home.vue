@@ -1,6 +1,8 @@
 <template>
   <div class="home">
+    <ry-result-network v-if="showNetwork"/>
     <ry-scroll-view
+      v-else
       :showRefresh="true"
       @onRefresh="$_onRefresh"
     >
@@ -27,7 +29,7 @@
       <van-button type="primary" @click="$_showToast">主要按钮</van-button>
       <van-button plain type="primary">朴素按钮</van-button>
       <van-button plain hairline type="primary">细边框按钮</van-button>
-      <p>图标展示</p>
+      <p>图标展示123</p>
       <md-icon name="success-color" size="lg" svg></md-icon>
     </ry-scroll-view>
   </div>
@@ -47,6 +49,8 @@ import {
 } from 'vant'
 
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
+import { mapState } from 'vuex'
+import { login } from '@/api/user'
 
 export default {
   name: "ry-home",
@@ -59,6 +63,10 @@ export default {
     [Button.name]: Button,
   },
 
+  computed: {
+    ...mapState(['showNetwork'])
+  },
+
   data() {
     return {
       simple,
@@ -69,6 +77,13 @@ export default {
   },
 
   created() {
+    login({
+      name: 'pengqiang',
+      password: '123456'
+    })
+    .then((data) => {
+      console.log(data)
+    })
   },
 
   mounted() {
@@ -104,6 +119,7 @@ export default {
 
 <style lang="stylus">
 .home {
+  width: 100%;
   font-size: 28px;
   height: 100%;
   background: #fff;

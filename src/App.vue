@@ -4,14 +4,12 @@
       :name="transitionName" 
     > 
         <vue-page-stack v-if="!$route.meta.keepAlive">
-          <!-- <ry-loading v-if="showLoading"/> -->
-          <component :is="componentName" v-if="showResult"></component>
-          <router-view class="router-view" v-else/>
+          <ry-loading v-if="showResult"/>
+          <router-view class="router-view"/>
         </vue-page-stack>
-        <keep-alive v-if="$route.meta.keepAlive">
-          <!-- <ry-loading v-if="showLoading"/> -->
-          <component :is="componentName" v-if="showResult"></component>
-          <router-view class="router-view" v-else/>
+        <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
+          <ry-loading v-if="showResult"/>
+          <router-view class="router-view"/>
         </keep-alive>
     </transition>
     <ry-tabbar v-show="$route.meta.hasFooter"/>
@@ -29,18 +27,23 @@ export default {
     [Tabbar.name]: Tabbar
   },
 
+  provide () {
+    return {
+      reload: this.reload
+    }
+  },
+
   data(){
     return {
       active: 0,
-      mode: 'out-in',
+      isRouterAlive: true,
       transitionName: '',
     }
   },
 
   computed: {
     ...mapState([
-      'showResult',
-      'componentName'
+      'showResult'
     ])
   },
 
@@ -58,12 +61,23 @@ export default {
         this.transitionName = 'pop'
       }
     }
+  },
+
+  methods: {
+    reload () {
+      this.isRouterAlive = false
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
   }
 }
 </script>
 
 <style lang="stylus">
-  html,body,#app {
+  html,
+  body,
+  #app {
     height: 100%;
   }
   #app {
@@ -75,15 +89,19 @@ export default {
     align-items center
     justify-content center
   }
-  .push-enter-active,.push-leave-active
-  , .pop-enter-active,.pop-leave-active{
-    transition: all 0.4s;
+  .push-enter-active,
+  .push-leave-active, 
+  .pop-enter-active,
+  .pop-leave-active {
+    transition: transform 0.4s;
+    backface-visibility: hidden;
+    perspective: 1000;
   }
   .push-leave-to{
-    transform: translate(-20%,0);
+    transform: translate3d(-20%,0,0);
   }
   .push-enter {
-    transform: translate(100%, 0);
+    transform: translate3d(100%, 0,0);
   }
   .push-enter-active {
     z-index: 10;
@@ -91,15 +109,24 @@ export default {
   .push-leave-active {
     z-index: 0;
   }
+  .pop-leave {
+    z-index: 10;
+  }
   .pop-leave-active {
-    transform: translate(100%, 0);
+    transform: translate3d(100%, 0,0);
     z-index: 11;
   }
   .pop-enter{
-    transform: translate(-20%,0);
+    transform: translate3d(-20%,0,0);
   }
+ 
   .router-view {
     width: 100%;
+    height: 100%;
     position: absolute;
+    -webkit-transform-style preserve-3d
+    -webkit-backface-visibility: hidden;
+    --webkit-overflow-scrolling: touch;
   }
+ 
 </style>

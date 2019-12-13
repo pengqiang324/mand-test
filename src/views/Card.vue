@@ -14,6 +14,7 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="stylus">
+.wrapper {
+}
 </style>

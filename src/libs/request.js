@@ -10,7 +10,6 @@ const service = axios.create({
 
 service.interceptors.request.use((config) => {
     store.commit('updateResult', true)
-    store.commit('updateComponent', 'ry-loading')
     return config
 }, (err) => {
     return Promise.reject(err)
@@ -45,7 +44,7 @@ service.interceptors.response.use((response) => {
             case 400: err.message = '请求错误(400)' ; break;
             case 401: err.message = '未授权，请重新登录(401)'; break; // 重新登陆 token失效
             case 403: err.message = '拒绝访问(403)'; break; //重新登陆 token失效
-            case 404: err.message = '请求出错(404)'; break;  // 页面找不到
+            case 404: err.message = '请求出错(404)'; break;  // 接口404
             case 408: err.message = '请求超时(408)'; break;
             case 500: err.message = '服务器错误(500)'; break;
             case 501: err.message = '服务未实现(501)'; break;
@@ -58,6 +57,10 @@ service.interceptors.response.use((response) => {
     }else{
         err.message = '连接服务器失败!'
     }
+
+    store.commit('updateNetwork', true)
+    store.commit('updateResult', false)
+
     Toast({
         message: err.message,
         position: 'bottom',

@@ -15,6 +15,7 @@ export default {
 
 <style lang="stylus">
   .child-box {
+    width: 100%;
     height: 100%;
     background: #fff;
   }

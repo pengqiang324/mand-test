@@ -1,6 +1,6 @@
 <template>
   <div class="setting-box">
-    <v-touch v-on:swipeleft="swiperLeft" v-on:swiperight="swiperRight"  class="wrapper">
+    <v-touch v-on:swipeleft="swiperLeft" v-on:swiperight="swiperRight"  :swipe-options="{direction: 'horizontal'}" class="wrapper">
         设置页面, 内容内容内容33333
     </v-touch>
   </div>
@@ -26,6 +26,7 @@ export default {
 
 <style lang="stylus">
   .setting-box {
+    width: 100%;
     height: 100%;
     background: #fff;
     font-size: 28px;

@@ -43,5 +43,8 @@
     "uglifyjs-webpack-plugin": "^2.2.0",
     "vue-cli-plugin-mand": "^0.4.1",
     "vue-template-compiler": "^2.6.10"
+  },
+  "rules": {
+    "no-unused-vars": "off"
   }
 }
