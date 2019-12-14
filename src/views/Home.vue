@@ -2,7 +2,7 @@
   <div class="home">
     <ry-result-network v-if="showNetwork"/>
     <ry-scroll-view
-      v-else
+      v-if="!showNetwork"
       :showRefresh="true"
       @onRefresh="$_onRefresh"
     >
@@ -50,7 +50,7 @@ import {
 
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
 import { mapState } from 'vuex'
-import { login } from '@/api/user'
+// import { login } from '@/api/user'
 
 export default {
   name: "ry-home",
@@ -64,7 +64,10 @@ export default {
   },
 
   computed: {
-    ...mapState(['showNetwork'])
+    ...mapState([
+      'showNetwork',
+      // 'isShowError'
+    ])
   },
 
   data() {
@@ -72,18 +75,23 @@ export default {
       simple,
       active: 0,
       quantity: 25,
-      isFinished: false
+      isFinished: false,
+      timer: null,
+      finishedFunc: null
     }
   },
 
   created() {
-    login({
-      name: 'pengqiang',
-      password: '123456'
-    })
-    .then((data) => {
-      console.log(data)
-    })
+    // login({
+    //   name: 'pengqiang',
+    //   password: '123456'
+    // })
+    // .then((data) => {
+    //   console.log(data)
+    // })
+    // .catch((err) => {
+    //   console.log(err)
+    // })
   },
 
   mounted() {
@@ -95,14 +103,35 @@ export default {
     next()
   },
 
+  // deactivated() {
+  //   clearTimeout(this.timer)
+  //   this.finishedFunc()
+  //   this.timer = null
+  //   this.finishedFunc = null
+  // },
+
   methods: {
     $_onRefresh({finishRefresh}) {
+      this.finishedFunc = finishRefresh
       // async data
-      setTimeout(() => {
-        console.log('数据加载完成')
+      // this.timer = setTimeout(() => {
+      //   console.log('数据加载完成')
+      //   this.finishedFunc()
+      //   Notify({ background: 'rgba(255,131,36,0.8)', message: '刷新成功' })
+      // }, 2000)
+
+      let timer = setTimeout(() => {
         finishRefresh()
         Notify({ background: 'rgba(255,131,36,0.8)', message: '刷新成功' })
       }, 2000)
+
+      // 清除定时器
+      this.$once('hook:deactivated', () => {
+        console.log('成功清除定时器')
+        clearTimeout(timer)
+        finishRefresh()
+        timer = null
+      })
     },
 
     $_showToast() {
@@ -118,7 +147,10 @@ export default {
 </script>
 
 <style lang="stylus">
+@import '../assets/styles/setting.styl'
+
 .home {
+  setPadding()
   width: 100%;
   font-size: 28px;
   height: 100%;

@@ -3,12 +3,12 @@
     <transition
       :name="transitionName" 
     > 
-        <vue-page-stack v-if="!$route.meta.keepAlive">
-          <ry-loading v-if="showResult"/>
+        <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
+          <ry-loading v-if="showLoading"/>
           <router-view class="router-view"/>
         </vue-page-stack>
         <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
-          <ry-loading v-if="showResult"/>
+          <ry-loading v-if="showLoading"/>
           <router-view class="router-view"/>
         </keep-alive>
     </transition>
@@ -43,7 +43,7 @@ export default {
 
   computed: {
     ...mapState([
-      'showResult'
+      'showLoading'
     ])
   },
 
@@ -64,7 +64,7 @@ export default {
   },
 
   methods: {
-    reload () {
+    reload () { // 刷新页面
       this.isRouterAlive = false
       this.$nextTick(() => {
         this.isRouterAlive = true

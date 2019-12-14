@@ -1,3 +1,6 @@
+/*
+** 404组件
+*/
 <template>
   <div class="ry-result-page-0">
     <md-result-page

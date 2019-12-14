@@ -9,7 +9,7 @@ const service = axios.create({
 })
 
 service.interceptors.request.use((config) => {
-    store.commit('updateResult', true)
+    store.commit('updateLoading', true)
     return config
 }, (err) => {
     return Promise.reject(err)
@@ -18,7 +18,15 @@ service.interceptors.request.use((config) => {
 service.interceptors.response.use((response) => {
     const data = response.data
 
-    store.commit('updateResult', false)
+    // 是否显示加载图标
+    store.commit('updateLoading', false)
+
+    // 网络请求出错反馈
+    store.commit('updateNetwork', {
+        showNetwork: false,
+        isShowError: false
+    })
+
     switch(data.success) {  
         case true:
             // exp: 修复iPhone 6+ 微信点击返回出现页面空白的问题
@@ -58,8 +66,11 @@ service.interceptors.response.use((response) => {
         err.message = '连接服务器失败!'
     }
 
-    store.commit('updateNetwork', true)
-    store.commit('updateResult', false)
+    store.commit('updateNetwork', {
+        showNetwork: true,
+        isShowError: true
+    })
+    store.commit('updateLoading', false)
 
     Toast({
         message: err.message,

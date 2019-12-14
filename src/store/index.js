@@ -5,22 +5,21 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    showResult: false,
+    showLoading: false,
     showNetwork: false,
+    isShowError: true,
+    
   },
 
   mutations: {
-    updateResult(state, showResult) {
-      state.showResult = showResult
+    updateLoading(state, showLoading) {
+      state.showLoading = showLoading
     },
 
-    updateComponent(state, componentName) {
-      state.componentName = componentName
-    },
-
-    updateNetwork(state, showNetwork) {
+    updateNetwork(state, {isShowError, showNetwork}) {
+      state.isShowError = isShowError
       state.showNetwork = showNetwork
-    }
+    },
   },
 
   actions: {

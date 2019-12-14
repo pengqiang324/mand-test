@@ -11,9 +11,10 @@ const routes = [
     component: Home,
     meta: {
       index: 1,
-      hasFooter: true,
       navIndex: 0,
-      keepAlive: true
+      keepAlive: true,
+      hasFooter: true,
+      title: '融溢首页'
     }
   },
   {
@@ -22,9 +23,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
     meta: {
       index: 1,
-      hasFooter: true,
       navIndex: 1,
-      keepAlive: true
+      keepAlive: true,
+      hasFooter: true,
+      title: '关于'
     }
   },
   {
@@ -33,9 +35,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "mine" */ '../views/Mine.vue'),
     meta: {
       index: 1,
-      hasFooter: true,
       navIndex: 3,
-      keepAlive: true
+      keepAlive: true,
+      hasFooter: true,
+      title: '我的'
     }
   },
   {
@@ -44,9 +47,10 @@ const routes = [
     component: () => import(/* webpackChunkName: "card" */ '../views/Card.vue'),
     meta: {
       index: 1,
-      hasFooter: true,
       navIndex: 2,
-      keepAlive: true
+      keepAlive: true,
+      hasFooter: true,
+      title: '信用卡'
     }
   },
   {
@@ -56,7 +60,8 @@ const routes = [
     meta: {
       index: 2,
       hasFooter: false,
-      keepAlive: false
+      keepAlive: false,
+      title: '子页'
     }
   },
   {
@@ -66,7 +71,8 @@ const routes = [
     meta: {
       index: 2,
       hasFooter: false,
-      keepAlive: true
+      keepAlive: true,
+      title: '设置'
     }
   },
   {

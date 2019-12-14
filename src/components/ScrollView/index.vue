@@ -28,7 +28,7 @@
         v-if="showMore"
         slot="more"
         :is-finished="isFinished"
-        loading-text="正在加载中..."
+        loading-text="更多加载中..."
         finished-text="没有更多了"
       >
       </md-scroll-view-more>
@@ -90,6 +90,7 @@ export default {
         },
 
         $_onFinishLoadMore() {
+            this.$refs.scrollView.reflowScroller() // 重置滚动内容
             this.$refs.scrollView.finishLoadMore()
         }
     }
