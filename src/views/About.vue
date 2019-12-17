@@ -1,6 +1,6 @@
 <template>
   <div class="about wrapper">
-    <h1>This is an about page</h1>
+    <h1 class="van-hairline--bottom">This is an about page</h1>
     <ry-result-empty class="about-empty" v-if="isEmpty"/>
     <ry-scroll-view
       class="scroll-view"

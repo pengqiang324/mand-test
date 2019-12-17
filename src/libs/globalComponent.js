@@ -14,8 +14,9 @@ import {
 
 import RyLoading from '../components/Loading'
 import RyResultPage from '../components/ResultPage/404'
-import RyResultNetwork from '../components/ResultPage/networkError'
-import RyResultEmpty from '../components/ResultPage/emptyInfo'
+import RyResultNetwork from '../components/ResultPage/RyNetworkError'
+import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
+import RyErrorPrompt from '../components/ResultPage/RyErrorPrompt'
 import RyScrollView from '../components/ScrollView'
 
 export default {
@@ -27,5 +28,6 @@ export default {
         Vue.component(RyResultNetwork.name, RyResultNetwork)
         Vue.component(RyResultEmpty.name, RyResultEmpty)
         Vue.component(RyScrollView.name, RyScrollView)
+        Vue.component(RyErrorPrompt.name, RyErrorPrompt)
     }
 }

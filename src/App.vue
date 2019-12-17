@@ -3,19 +3,19 @@
     <transition
       :name="transitionName" 
     > 
-        <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
-          <ry-loading v-if="showLoading"/>
-          <router-view class="router-view"/>
-        </vue-page-stack>
-        <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
-          <ry-loading v-if="showLoading"/>
-          <router-view class="router-view"/>
-        </keep-alive>
+      <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
+        <ry-loading v-if="showLoading"/>
+        <router-view class="router-view"/>
+      </vue-page-stack>
+      <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
+        <ry-loading v-if="showLoading"/>
+        <router-view class="router-view"/>
+      </keep-alive>
     </transition>
     <ry-tabbar v-show="$route.meta.hasFooter"/>
+    <ry-error-prompt :visible="showErrorInfo"/>
   </div>
 </template>
-
 <script>
 import { mapState } from 'vuex'
 import Tabbar from './components/Tabbar'
@@ -43,7 +43,8 @@ export default {
 
   computed: {
     ...mapState([
-      'showLoading'
+      'showLoading',
+      'showErrorInfo'
     ])
   },
 
@@ -69,7 +70,7 @@ export default {
       this.$nextTick(() => {
         this.isRouterAlive = true
       })
-    }
+    },
   }
 }
 </script>
@@ -128,5 +129,5 @@ export default {
     -webkit-backface-visibility: hidden;
     --webkit-overflow-scrolling: touch;
   }
- 
+
 </style>

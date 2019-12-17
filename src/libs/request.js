@@ -12,20 +12,17 @@ service.interceptors.request.use((config) => {
     store.commit('updateLoading', true)
     return config
 }, (err) => {
-    return Promise.reject(err)
+    return Promise.resolve(err)
 })
 
 service.interceptors.response.use((response) => {
-    const data = response.data
-
+    const { data } = response.data
+    
     // 是否显示加载图标
     store.commit('updateLoading', false)
 
     // 网络请求出错反馈
-    store.commit('updateNetwork', {
-        showNetwork: false,
-        isShowError: false
-    })
+    store.commit('updateNetwork', false)
 
     switch(data.success) {  
         case true:
@@ -44,7 +41,7 @@ service.interceptors.response.use((response) => {
                 message: data.message,  // 后端抛出的错误
                 position: 'bottom',
             })
-            return Promise.reject(data)
+            return Promise.resolve(data)
     }
 }, (err) => {
     if (err && err.response) {
@@ -66,17 +63,22 @@ service.interceptors.response.use((response) => {
         err.message = '连接服务器失败!'
     }
 
-    store.commit('updateNetwork', {
-        showNetwork: true,
-        isShowError: true
-    })
     store.commit('updateLoading', false)
 
-    Toast({
-        message: err.message,
-        position: 'bottom',
+    store.commit('updateNetwork', true)
+
+    store.commit('updateErrorInfo', { 
+        showErrorInfo: true,
+        errorMessage: err.message
     })
-    return Promise.reject(err)
+
+    // 统一返回resolve 错误反馈
+    const errData = {
+        code: -404,
+        message: err.message,
+        data: '',
+    }
+    return Promise.resolve(errData)
 })
 
 export default service

@@ -5,10 +5,10 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    showLoading: false,
-    showNetwork: false,
-    isShowError: true,
-    
+    showLoading: false,  // 是否显示加载组件
+    showNetwork: false,  // 是否显示网络连接出错组件
+    showErrorInfo: false, // 是否显示错误反馈信息组件
+    errorMessage: ''      // 错误反馈信息描述
   },
 
   mutations: {
@@ -16,10 +16,14 @@ export default new Vuex.Store({
       state.showLoading = showLoading
     },
 
-    updateNetwork(state, {isShowError, showNetwork}) {
-      state.isShowError = isShowError
+    updateNetwork(state, showNetwork) {
       state.showNetwork = showNetwork
     },
+
+    updateErrorInfo(state, { showErrorInfo, errorMessage }) {
+      state.showErrorInfo = showErrorInfo
+      if (errorMessage) state.errorMessage = errorMessage
+    }
   },
 
   actions: {
