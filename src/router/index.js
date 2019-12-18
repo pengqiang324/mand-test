@@ -76,6 +76,16 @@ const routes = [
     }
   },
   {
+    path: '/register',
+    name: 'ry-register',
+    component: () => import(/* webpackChunkName: "register" */ '../views/Register.vue'),
+    meta: {
+      index: 1,
+      keepAlive: true,
+      title: '注册融溢'
+    }
+  },
+  {
     path: '/404',
     name: 'ry-unfound',
     component: () => import('../components/ResultPage/404.vue'),

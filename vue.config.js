@@ -25,7 +25,8 @@ module.exports = {
           ])
         ],
         import: [
-          resolve('./src/assets/theme.custom')
+          resolve('./src/assets/theme.custom'),
+          resolve('./src/assets/styles/setting')  //引入stylus全局变量
         ]
       },
       postcss: {

@@ -4,6 +4,8 @@ import {
     Notify,
 } from 'vant'
 
+import { Button } from 'mand-mobile'
+
 /*
 ** @ComponentName RyLoading 加载组件
 ** @ComponentName RyResultPage 404页组件
@@ -15,19 +17,20 @@ import {
 import RyLoading from '../components/Loading'
 import RyResultPage from '../components/ResultPage/404'
 import RyResultNetwork from '../components/ResultPage/RyNetworkError'
-import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
 import RyErrorPrompt from '../components/ResultPage/RyErrorPrompt'
+import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
 import RyScrollView from '../components/ScrollView'
 
 export default {
     install(Vue) {
         Vue.component(Toast.name, Toast)
         Vue.component(Notify.name, Notify)
+        Vue.component(Button.name, Button)
         Vue.component(RyLoading.name, RyLoading)
         Vue.component(RyResultPage.name, RyResultPage)
         Vue.component(RyResultNetwork.name, RyResultNetwork)
-        Vue.component(RyResultEmpty.name, RyResultEmpty)
         Vue.component(RyScrollView.name, RyScrollView)
         Vue.component(RyErrorPrompt.name, RyErrorPrompt)
+        Vue.component(RyResultEmpty.name, RyResultEmpty)
     }
 }

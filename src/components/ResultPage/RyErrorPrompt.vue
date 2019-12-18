@@ -36,13 +36,9 @@ export default {
               this.$store.commit('updateErrorInfo', {
                 showErrorInfo: false
               })
+              clearTimeout(timer)
+              timer = null
           }, 3000)
-
-          this.$once('hook:deactivated', () => {
-            console.log(1)
-            clearTimeout(timer)
-            timer = null
-          })
         }
       }
     },
@@ -51,9 +47,12 @@ export default {
 
 <style lang="stylus">
 .error-box {
-  display flex
-  justify-content center
+  position absolute
+  bottom 110px
+  z-index 1000
+  text-align center
   .error-info {
+    display inline-block
     padding 8px 40px
     border-radius 12px
     background rgba(50, 50, 51, 0.88)
@@ -62,15 +61,12 @@ export default {
     font-size 24px
     text-align center
     line-height 40px
-    position absolute
-    bottom 110px
-    z-index 1000
   }
 }
 
 .ry-slide-up-enter,
 .ry-slide-up-leave-to {
-  transform translateY(200px) 
+  transform translate3d(0, 200px, 0) 
 }
 
 .ry-slide-up-enter-active,

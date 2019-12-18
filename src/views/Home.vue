@@ -28,7 +28,7 @@
         <div class="bottom">
           123
         </div>
-        <van-button type="primary" @click="$_showToast">主要按钮</van-button>
+        <van-button type="primary">主要按钮</van-button>
         <van-button plain type="primary">朴素按钮</van-button>
         <van-button plain hairline type="primary">细边框按钮</van-button>
         <p>图标展示123</p>
@@ -53,7 +53,7 @@ import {
 
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
 import { mapState } from 'vuex'
-import { login } from '@/api/user'
+// import { login } from '@/api/user'
 
 export default {
   name: "ry-home",
@@ -73,8 +73,7 @@ export default {
       quantity: 25,
       isFinished: false,
       visible: false,
-      timer: null,
-      finishedFunc: null
+      timer: null
     }
   },
 
@@ -85,13 +84,13 @@ export default {
   },
 
   created() {
-    login({
-      name: 'pengqiang',
-      password: '123456'
-    })
-    .then((data) => {
-      console.log(data)
-    })
+    // login({
+    //   name: 'pengqiang',
+    //   password: '123456'
+    // })
+    // .then((data) => {
+    //   console.log(data)
+    // })
   },
 
   mounted() {
@@ -109,42 +108,25 @@ export default {
 
   methods: {
     $_onRefresh({finishRefresh}) {
-      this.finishedFunc = finishRefresh
 
       let timer = setTimeout(() => {
-        finishRefresh()
         Notify({ background: 'rgba(255,131,36,0.8)', message: '刷新成功' })
+        finishRefresh()
       }, 2000)
 
       // 清除定时器
       this.$once('hook:deactivated', () => {
+        console.log(1)
         clearTimeout(timer)
         finishRefresh()
         timer = null
       })
     },
-
-    $_showToast() {
-      this.visible = true;
-
-      // setTimeout(() => {
-      //   this.visible = false
-      // }, 5000)
-      // this.$toast({
-      //   message: '请求超时',
-      //   position: 'bottom',
-      //   transition: 'fadeIn',
-      //   forbidClick: true,
-      //   duration: 0
-      // })
-    }
   },
 };
 </script>
 
 <style lang="stylus">
-@import '../assets/styles/setting.styl'
-
 .home {
   setPadding()
   width: 100%;

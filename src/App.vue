@@ -5,11 +5,17 @@
     > 
       <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
         <ry-loading v-if="showLoading"/>
-        <router-view class="router-view"/>
+        <router-view 
+          class="router-view" 
+          v-wechat-title='$route.meta.title'
+        />
       </vue-page-stack>
       <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
         <ry-loading v-if="showLoading"/>
-        <router-view class="router-view"/>
+        <router-view 
+          class="router-view"
+          v-wechat-title='$route.meta.title'
+        />
       </keep-alive>
     </transition>
     <ry-tabbar v-show="$route.meta.hasFooter"/>

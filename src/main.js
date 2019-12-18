@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueWechatTitle from 'vue-wechat-title'
 import VuePageStack from 'vue-page-stack'
 import VueTouch from 'vue-touch'
 import VueComponent from './libs/globalComponent'
@@ -12,6 +13,7 @@ import "mand-mobile/components/_style/global.styl"
 import "normalize.css"
 import "vant/es/index.less"
 
+Vue.use(VueWechatTitle)
 Vue.use(VuePageStack, { router })
 Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(VueComponent)
