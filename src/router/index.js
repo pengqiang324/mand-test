@@ -78,11 +78,28 @@ const routes = [
   {
     path: '/register',
     name: 'ry-register',
-    component: () => import(/* webpackChunkName: "register" */ '../views/Register.vue'),
+    component: () => import(/* webpackChunkName: "register" */ '../views/Register/Register.vue'),
     meta: {
       index: 1,
-      keepAlive: true,
       title: '注册融溢'
+    }
+  },
+  {
+    path: '/reagree',
+    name: 'ry-reagree',
+    component: () => import(/* webpackChunkName: "reagree" */ '../views/ReAgreement/ReAgree.vue'),
+    meta: {
+      index: 2,
+      title: '店主注册协议'
+    }
+  },
+  {
+    path: '/reprotocol',
+    name: 'ry-reprotocol',
+    component: () => import(/* webpackChunkName: "reagree" */ '../views/ReAgreement/ReProtocol.vue'),
+    meta: {
+      index: 2,
+      title: '用户隐私保护政策'
     }
   },
   {

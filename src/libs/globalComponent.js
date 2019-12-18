@@ -4,7 +4,10 @@ import {
     Notify,
 } from 'vant'
 
-import { Button } from 'mand-mobile'
+import { 
+    Button,
+    NumberKeyboard
+} from 'mand-mobile'
 
 /*
 ** @ComponentName RyLoading 加载组件
@@ -26,6 +29,7 @@ export default {
         Vue.component(Toast.name, Toast)
         Vue.component(Notify.name, Notify)
         Vue.component(Button.name, Button)
+        Vue.component(NumberKeyboard.name, NumberKeyboard)
         Vue.component(RyLoading.name, RyLoading)
         Vue.component(RyResultPage.name, RyResultPage)
         Vue.component(RyResultNetwork.name, RyResultNetwork)

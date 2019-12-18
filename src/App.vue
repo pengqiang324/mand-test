@@ -126,14 +126,15 @@ export default {
   .pop-enter{
     transform: translate3d(-20%,0,0);
   }
- 
+
   .router-view {
     width: 100%;
     height: 100%;
     position: absolute;
+    overflow-x hidden
     -webkit-transform-style preserve-3d
     -webkit-backface-visibility: hidden;
-    --webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
   }
 
 </style>
