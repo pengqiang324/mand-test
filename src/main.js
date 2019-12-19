@@ -24,8 +24,17 @@ VueTouch.config.swipe = {
 
 // 全局路由拦截
 router.beforeEach((to, from, next) => {
+  const flag = window.localStorage.getItem('loginState') === 'isLogin'
   const PAGE_TITLE = to.meta.title ? to.meta.title : '融溢'
   document.title = PAGE_TITLE
+
+  if (to.path === '/') {
+    return next()
+  }
+
+  if (!flag && to.path !== '/register') {
+    return next('/register') //初次登录注册重定向注册登录页面
+  }
 
   next()
 })

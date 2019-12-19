@@ -53,7 +53,9 @@ import {
 
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
 import { mapState } from 'vuex'
-// import { login } from '@/api/user'
+import qs from 'qs'
+// import { login } from '@/api/user/user'
+import { USER_LOGIN, USER_USERWXINFO, USER_REFRESHUSERINFO } from '@/actions/user'
 
 export default {
   name: "ry-home",
@@ -91,6 +93,8 @@ export default {
     // .then((data) => {
     //   console.log(data)
     // })
+
+    // this.login() // 登录注册
   },
 
   mounted() {
@@ -122,6 +126,42 @@ export default {
         timer = null
       })
     },
+
+    async login() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        this.hasCode()
+      }
+    },
+
+    async hasCode() {
+      const search = qs.parse(location.search.split('?')[1])
+      const URL = encodeURIComponent(location.href.split('#')[0])
+
+      if (!search.code) {
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx555dc44294e96e5d&redirect_uri=${URL}&response_type=code&scope=snsapi_userinfo#wechat_redirect`;
+      } else {
+        const response = await this.$store.dispatch(USER_USERWXINFO({
+          code: search.code
+        }))
+
+        if (response.data && response.data.success) {
+          const { data } = response.data;
+          const res = await this.$store.dispatch(USER_LOGIN({
+            username: data.openId
+          }))
+
+          if (res.data) {
+            localStorage.setItem('loginState', 'isLogin')
+            await this.$store.dispatch(USER_REFRESHUSERINFO());  //更新最新用户信息
+            this.$router.push('/home') // 用beforeRouterEnter next()可能更适合
+          }else {
+            this.$router.push('/registe')
+          }
+        }
+      }
+    }
   },
 };
 </script>

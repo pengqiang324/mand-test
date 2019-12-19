@@ -48,7 +48,12 @@
         </div>
       </div>
       <div class="register-login">
-           <span class="login-button" @click="onLogin">登录</span>
+           <ry-button
+                btn-title="登录"
+                :btn-show="btnShow"
+                @touchbefore="touchbefore"
+                @touchafter="onLogin"
+            />
       </div>
       <!-- 数字键盘start -->
       <div class="keyboard">
@@ -92,7 +97,7 @@
                     />
                     <span class="tips" v-show="tips_idCard">{{idcardMessage}}</span>
                 </p>
-                <p class="perfect-input">
+                <p class="perfect-input" style="margin-bottom: 0">
                     <input 
                         type="number" 
                         placeholder="请输入邀请码" 
@@ -100,10 +105,12 @@
                         @blur="onBlur"
                     />
                 </p>
-                <div class="perfect-btn">
-                    <p class="perfect-confirm" @touchstart="onComfirm" @touchend="onTouchend">确认</p>
-                    <p class="btn-smark" v-show="btnShow"></p>
-                </div>
+                <ry-button
+                    class="ry-button"
+                    :btn-show="btnShow"
+                    @touchbefore="touchbefore"
+                    @touchafter="touchafter"
+                />
             </div>
         </div>
       </van-overlay>
@@ -129,7 +136,7 @@ export default {
         return {
             checked: false,
             disabled: false,
-            show: true,
+            show: false,
             btnShow: false,
             tips_show: false,
             tips_idCard: false,
@@ -252,7 +259,9 @@ export default {
         },
 
         onLogin() {
+           this.btnShow = false
            const { isClick, message } = this.isClick
+
            if (!isClick) {
                this.$toast({
                    message,
@@ -282,18 +291,17 @@ export default {
             this.validateIdCard()
         },
 
-        onComfirm() {
+        touchbefore() {
             this.btnShow = true
+        },
+
+        touchafter() {
+            this.btnShow = false
 
             const nameSuccess = this.validateName() // 校验姓名是否为空
             const idCardSuccess = this.validateIdCard() //校验身份证是否为空、是否身份证符合规范
 
             if (!nameSuccess || !idCardSuccess) return
-            
-        },
-
-        onTouchend() {
-            this.btnShow = false
         },
 
         validateName() {
@@ -396,6 +404,7 @@ export default {
     }
     }
     .register-login {
+        margin 0 76px
         padding-top 60*2px
         text-align center
         .login-button {
@@ -478,28 +487,8 @@ export default {
           line-height 24px
       }
   }
-  .perfect-btn {
-      position relative
-      margin 46px 0 60px
-      .perfect-confirm {
-        width 510px
-        height 84px
-        line-height 84px
-        text-align center
-        font-size 36px
-        color #fff
-        border-radius 50px
-        background linear-gradient(left, #FF6F00, #FF3D00)
-    }
-    .btn-smark {
-        position absolute
-        top 0
-        left 0
-        width 510px
-        height 84px
-        background rgba(0,0,0,.2)
-        border-radius 50px
-    }
-  }
+}
+.ry-button {
+    margin 86px 0 60px
 }
 </style>

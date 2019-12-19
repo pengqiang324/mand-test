@@ -16,7 +16,7 @@ service.interceptors.request.use((config) => {
 })
 
 service.interceptors.response.use((response) => {
-    const { data } = response.data
+    const { success, message } = response.data
     
     // 是否显示加载图标
     store.commit('updateLoading', false)
@@ -24,7 +24,7 @@ service.interceptors.response.use((response) => {
     // 网络请求出错反馈
     store.commit('updateNetwork', false)
 
-    switch(data.success) {  
+    switch(success) {  
         case true:
             // exp: 修复iPhone 6+ 微信点击返回出现页面空白的问题
             if (IsIOS()) {
@@ -35,13 +35,13 @@ service.interceptors.response.use((response) => {
                 }, 0)
             }
             // 这一步保证数据返回，如果没有return则会走接下来的代码，不是未登录就是报错
-            return data
+            return response
         default:
             Toast({
-                message: data.message,  // 后端抛出的错误
+                message: message,  // 后端抛出的错误
                 position: 'bottom',
             })
-            return Promise.resolve(data)
+            return Promise.resolve(response)
     }
 }, (err) => {
     if (err && err.response) {

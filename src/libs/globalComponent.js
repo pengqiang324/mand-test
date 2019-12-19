@@ -16,6 +16,7 @@ import {
 ** @ComponentName RyResultNetwork 网络连接出错组件
 ** @ComponentName RyResultEmpty 空信息，暂无信息组件
 ** @ComponentName RyScrollView 上拉加载下拉刷新组件
+** @ComponentName RyButton 通用按钮组件
 */
 
 import RyLoading from '../components/Loading'
@@ -24,6 +25,7 @@ import RyResultNetwork from '../components/ResultPage/RyNetworkError'
 import RyErrorPrompt from '../components/ResultPage/RyErrorPrompt'
 import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
 import RyScrollView from '../components/ScrollView'
+import RyButton from '../components/Button'
 
 export default {
     install(Vue) {
@@ -38,5 +40,6 @@ export default {
         Vue.component(RyScrollView.name, RyScrollView)
         Vue.component(RyErrorPrompt.name, RyErrorPrompt)
         Vue.component(RyResultEmpty.name, RyResultEmpty)
+        Vue.component(RyButton.name, RyButton)
     }
 }

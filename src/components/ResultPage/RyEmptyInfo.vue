@@ -1,3 +1,6 @@
+/*
+** 暂无数据组件
+*/
 <template>
   <div class="empty-box">
         <md-result-page
