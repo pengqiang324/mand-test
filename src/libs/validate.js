@@ -1,5 +1,5 @@
 /* 是否手机号码*/
-export function validatePhone(value) {
+export const validatePhone = function(value) {
     const reg =/^[1][3,4,5,7,8][0-9]{9}$/;
     let result = {}
     if(value==''||value==undefined||value==null){
@@ -23,4 +23,23 @@ export function validatePhone(value) {
         return result
       }
     }
+}
+
+
+
+// 校验身份证号
+export const idCard = function(value) {
+  if (!value) return
+  const id = value.trim()
+  if (id && (!(/\d{17}[\d|x]|\d{15}/).test(id) || (id.length !== 15 && id.length !== 18))) {
+    return {
+      success: false,
+      message: '身份证号码不符合规范'
+    }
+  }
+
+  return {
+    success: true,
+    message: ''
+  }
 }

@@ -2,6 +2,7 @@
 import {
     Toast,
     Notify,
+    Overlay
 } from 'vant'
 
 import { 
@@ -29,6 +30,7 @@ export default {
         Vue.component(Toast.name, Toast)
         Vue.component(Notify.name, Notify)
         Vue.component(Button.name, Button)
+        Vue.component(Overlay.name, Overlay)
         Vue.component(NumberKeyboard.name, NumberKeyboard)
         Vue.component(RyLoading.name, RyLoading)
         Vue.component(RyResultPage.name, RyResultPage)

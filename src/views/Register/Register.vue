@@ -50,6 +50,7 @@
       <div class="register-login">
            <span class="login-button" @click="onLogin">登录</span>
       </div>
+      <!-- 数字键盘start -->
       <div class="keyboard">
           <md-number-keyboard
             v-model="isKeyBoardShow[0]"
@@ -64,15 +65,61 @@
             @delete="onNumberDelete"
             ></md-number-keyboard>
       </div>
+      <!-- 数字键盘end -->
+      <!-- 完善信息窗口start -->
+      <van-overlay :show="show" @click="show = false">
+        <div class="perfect" @click.stop>
+            <div class="perfect-info">
+                <h1>完善申请人信息</h1>
+                <p class="perfect-ms">本平台需实名认证，请<span>完善以下本人信息</span></p>
+                <p class="perfect-input">
+                    <span>*</span>
+                    <input 
+                        type="text" 
+                        placeholder="请输入本人姓名" 
+                        v-model="userName"
+                        @blur="onInput1"
+                    />
+                    <span class="tips" v-show="tips_show">姓名不能为空</span>
+                </p>
+                <p class="perfect-input">
+                    <span>*</span>
+                    <input 
+                        type="text" 
+                        placeholder="请输入身份证号码"
+                        v-model="idCard" 
+                        @blur="onInput2"
+                    />
+                    <span class="tips" v-show="tips_idCard">{{idcardMessage}}</span>
+                </p>
+                <p class="perfect-input">
+                    <input 
+                        type="number" 
+                        placeholder="请输入邀请码" 
+                        v-model="invidCode"
+                        @blur="onBlur"
+                    />
+                </p>
+                <div class="perfect-btn">
+                    <p class="perfect-confirm" @touchstart="onComfirm" @touchend="onTouchend">确认</p>
+                    <p class="btn-smark" v-show="btnShow"></p>
+                </div>
+            </div>
+        </div>
+      </van-overlay>
+      <!-- 完善信息窗口end -->
   </div>
 </template>
 
 <script>
 import { Checkbox } from 'vant'
-import { validatePhone } from '@/libs/validate'
+import { validatePhone, idCard } from '@/libs/validate'
+import mixins from '@/libs/mixins'
 
 export default {
     name: 'ry-register',
+
+    mixins: [mixins],
 
     components: {
         [Checkbox.name]: Checkbox
@@ -80,11 +127,20 @@ export default {
 
     data() {
         return {
-            checked: true,
+            checked: false,
             disabled: false,
+            show: true,
+            btnShow: false,
+            tips_show: false,
+            tips_idCard: false,
+            changeColor: false,
             isKeyBoardShow: [],
+            userName: '',
+            idCard: '',
+            invidCode: '',  // 邀请码
             phoneNumber: '',
-            indtyCode: '',
+            indtyCode: '', // 验证码
+            idcardMessage: '',
             btnTitle: '获取验证码',
             index: 0
         }
@@ -214,6 +270,56 @@ export default {
 
         onReProtocol() {
             this.$router.push('/reprotocol')
+        },
+
+        onInput1() {
+            this.onBlur()
+            this.validateName()
+        },
+
+        onInput2() {
+            this.onBlur() // 解决ios系统键盘回弹遮罩层样式出现空白
+            this.validateIdCard()
+        },
+
+        onComfirm() {
+            this.btnShow = true
+
+            const nameSuccess = this.validateName() // 校验姓名是否为空
+            const idCardSuccess = this.validateIdCard() //校验身份证是否为空、是否身份证符合规范
+
+            if (!nameSuccess || !idCardSuccess) return
+            
+        },
+
+        onTouchend() {
+            this.btnShow = false
+        },
+
+        validateName() {
+            if (this.userName == '') {
+                this.tips_show = true
+                return false
+            }
+            this.tips_show = false
+            return true
+        },
+
+        validateIdCard() {
+            if (this.idCard == '') {
+                this.idcardMessage = '身份证号码不能为空'
+                this.tips_idCard = true
+                return false
+            } else {
+                const { success, message } = idCard(this.idCard)
+                if (!success) {
+                    this.idcardMessage = message
+                    this.tips_idCard = true
+                    return false
+                }
+                this.tips_idCard = false
+            }
+            return true
         }
     }
 }
@@ -303,5 +409,97 @@ export default {
             border-radius 42*2px
         }
     }
+}
+.perfect {
+  display flex
+  align-items center
+  justify-content center
+  height 100%
+}
+
+.perfect-info {
+  padding 0 80px
+  width 670px
+  background-color #fff
+  border-radius 20px
+  box-sizing border-box
+  user-select none
+  h1 {
+      padding 80px 0 40px
+      line-height 28px
+      text-align center
+      font-size 44px
+      color #000
+      letter-spacing 5px
+  }
+  .perfect-ms {
+      padding-bottom 32px
+      line-height 40px
+      letter-spacing 2px
+      font-size 28px
+      font-weight 600
+      color #000
+      span {
+          color #f00
+      }
+  }
+  .perfect-input {
+      position relative
+      margin-bottom 40px
+      border-bottom 2px solid #dcdcdc
+      input {
+            display block
+            width 100%
+            padding 12px 0 12px 50px
+            font-size 28px
+            line-height 28px
+            color #666
+            background none
+            &::-webkit-input-placeholder {
+                color #b4b4b4
+                letter-spacing 2px
+                font-size 24px
+            }
+      }
+      span {
+          position absolute
+          top 10px
+          left 0px
+          color #f00
+          font-size 34px
+      }
+      .tips {
+          position absolute
+          left 50px
+          top 70px
+          color #f00
+          font-size 24px
+          height 24px
+          line-height 24px
+      }
+  }
+  .perfect-btn {
+      position relative
+      margin 46px 0 60px
+      .perfect-confirm {
+        width 510px
+        height 84px
+        line-height 84px
+        text-align center
+        font-size 36px
+        color #fff
+        border-radius 50px
+        background linear-gradient(left, #FF6F00, #FF3D00)
+    }
+    .btn-smark {
+        position absolute
+        top 0
+        left 0
+        width 510px
+        height 84px
+        background rgba(0,0,0,.2)
+        border-radius 50px
+    }
+  }
 }
 </style>
