@@ -20,11 +20,15 @@ const actions = {
     // 用户登录信息
     async login({ commit }, { payload }) {
         const response = await login(payload);
-        commit('SAVEUSERINFO', response.data);
-        commit('ISLOGIN', true);
-        localStorage.setItem('token', response ? response.data.data.token : '');
-        localStorage.setItem('userInfo', response ? JSON.stringify(response.data.data) : '');
-        localStorage.setItem('loginState', 'isLogin');
+        
+        if (response.data) {
+            commit('SAVEUSERINFO', response.data)
+            commit('ISLOGIN', true)
+            localStorage.setItem('token', response.data ? response.data.data.token : '')
+            localStorage.setItem('userInfo', response.data ? JSON.stringify(response.data.data) : '')
+            localStorage.setItem('loginState', 'isLogin')
+        }
+        
         return response
     },
     

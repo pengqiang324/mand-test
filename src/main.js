@@ -27,8 +27,9 @@ router.beforeEach((to, from, next) => {
   const flag = window.localStorage.getItem('loginState') === 'isLogin'
   const PAGE_TITLE = to.meta.title ? to.meta.title : '融溢'
   document.title = PAGE_TITLE
-
-  if (to.path === '/') {
+  
+  
+  if (to.path === '/' || to.path == '/reagree' || to.path == '/reprotocol') {
     return next()
   }
 

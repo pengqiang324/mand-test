@@ -4,7 +4,7 @@ import { Toast } from 'vant'
 import { IsIOS } from './lib'
 
 const service = axios.create({
-    baseURL: process.env.RY_APP_BASE_API,
+    baseURL: process.env.NODE_ENV === 'development' ? process.env.RY_APP_BASE_API : 'http://test-app.tunyukeji.com',
     timeout: 5000
 })
 
@@ -47,7 +47,7 @@ service.interceptors.response.use((response) => {
     if (err && err.response) {
         switch (err.response.status) {  // 由网络或者服务器抛出的错误
             case 400: err.message = '请求错误(400)' ; break;
-            case 401: err.message = '未授权，请重新登录(401)'; break; // 重新登陆 token失效
+            case 401: err.message = '未授权，请重新登录(401)';break;
             case 403: err.message = '拒绝访问(403)'; break; //重新登陆 token失效
             case 404: err.message = '请求出错(404)'; break;  // 接口404
             case 408: err.message = '请求超时(408)'; break;
@@ -64,8 +64,10 @@ service.interceptors.response.use((response) => {
     }
 
     store.commit('updateLoading', false)
-
-    store.commit('updateNetwork', true)
+    
+    if (err.response.status !== 401) {
+        store.commit('updateNetwork', true)
+    }
 
     store.commit('updateErrorInfo', { 
         showErrorInfo: true,

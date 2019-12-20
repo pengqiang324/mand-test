@@ -9,7 +9,7 @@ version = version.replace(/\./g, '_')
 
 module.exports = {
   publicPath: process.env.NODE_ENV === 'production' ? './' : '/',
-  outputDir: 'rongyi',
+  outputDir: 'rongyi-test-v2.0',
   css: {
     extract: true,   // 样式抽离
     loaderOptions: {
@@ -105,16 +105,16 @@ module.exports = {
             }
           }
         },
-        minimizer: [new UglifyPlugin({
-          uglifyOptions: {
-              warnings: false,
-              compress: {
-                drop_console: true, // console
-                drop_debugger: false,
-                pure_funcs: ['console.log'] // 移除console
-              }
-          }
-        })]
+        // minimizer: [new UglifyPlugin({
+        //   uglifyOptions: {
+        //       warnings: false,
+        //       compress: {
+        //         drop_console: true, // console
+        //         drop_debugger: false,
+        //         pure_funcs: ['console.log'] // 移除console
+        //       }
+        //   }
+        // })]
       }
       Object.assign(config, {
         optimization,

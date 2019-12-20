@@ -270,7 +270,7 @@ export default {
                })
                return
            }
-           console.log('登录成功')
+        //    console.log('登录成功')
         },
 
         onReAgree() {

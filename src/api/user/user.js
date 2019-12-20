@@ -13,8 +13,11 @@ const api = '/api'
 // 登录注册
 export function login(data) {
     return request({ 
-        url: `${api}/authentication/login`,
+        url: `/authentication/login`,
         method: 'post',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        } ,
         data: qs.stringify(data) 
     })
 }

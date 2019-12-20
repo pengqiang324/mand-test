@@ -59,7 +59,7 @@ import { USER_LOGIN, USER_USERWXINFO, USER_REFRESHUSERINFO } from '@/actions/use
 
 export default {
   name: "ry-home",
-  
+
   components: {
     [Swiper.name]: Swiper,
     [SwiperItem.name]: SwiperItem,
@@ -86,20 +86,13 @@ export default {
   },
 
   created() {
-    // login({
-    //   name: 'pengqiang',
-    //   password: '123456'
-    // })
-    // .then((data) => {
-    //   console.log(data)
-    // })
-
-    // this.login() // 登录注册
+    this.login() // 登录注册
   },
 
   mounted() {
     // this.$refs.scrollView.triggerRefresh()  //初始化下拉刷新数据
   },
+
 
   beforeRouteLeave(to, from, next) {
     this.$notify.clear() //清除消息通知
@@ -120,7 +113,6 @@ export default {
 
       // 清除定时器
       this.$once('hook:deactivated', () => {
-        console.log(1)
         clearTimeout(timer)
         finishRefresh()
         timer = null
@@ -131,16 +123,16 @@ export default {
       const token = localStorage.getItem('token');
 
       if (!token) {
-        this.hasCode()
+        return await this.hasCode()
       }
     },
 
     async hasCode() {
       const search = qs.parse(location.search.split('?')[1])
       const URL = encodeURIComponent(location.href.split('#')[0])
-
+  
       if (!search.code) {
-        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx555dc44294e96e5d&redirect_uri=${URL}&response_type=code&scope=snsapi_userinfo#wechat_redirect`;
+        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0a71240195bf0c4d&redirect_uri=${URL}&response_type=code&scope=snsapi_userinfo#wechat_redirect`
       } else {
         const response = await this.$store.dispatch(USER_USERWXINFO({
           code: search.code
@@ -151,15 +143,15 @@ export default {
           const res = await this.$store.dispatch(USER_LOGIN({
             username: data.openId
           }))
-
+          
           if (res.data) {
             localStorage.setItem('loginState', 'isLogin')
             await this.$store.dispatch(USER_REFRESHUSERINFO());  //更新最新用户信息
-            this.$router.push('/home') // 用beforeRouterEnter next()可能更适合
+            this.$router.push('/home') 
           }else {
-            this.$router.push('/registe')
+            this.$router.push('/register')
           }
-        }
+        } 
       }
     }
   },
