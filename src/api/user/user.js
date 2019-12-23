@@ -66,7 +66,6 @@ export function registe(data) {
         data
     })
 }
-
 // 完善用户信息
 export function perfectUserInfo(data) {
     return request({
