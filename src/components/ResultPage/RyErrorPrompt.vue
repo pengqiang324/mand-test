@@ -31,7 +31,6 @@ export default {
     watch: {
       visible(newVal) {
         if (newVal) {
-          console.log(1234)
           let timer = setTimeout(() => {
               this.$store.commit('updateErrorInfo', {
                 showErrorInfo: false

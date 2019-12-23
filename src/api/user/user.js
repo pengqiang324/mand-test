@@ -2,14 +2,6 @@ import request from '@/libs/request'
 import qs from 'qs'
 const api = '/api'
 
-// export function login(data) {
-//     return request({
-//         url: '/user/login',
-//         method: 'post',
-//         data
-//     })
-// }
-
 // 登录注册
 export function login(data) {
     return request({ 
@@ -17,7 +9,7 @@ export function login(data) {
         method: 'post',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
-        } ,
+        },
         data: qs.stringify(data) 
     })
 }
@@ -45,5 +37,32 @@ export function refreshUserInfo(params) {
         url: `${api}/users/getInfo`,
         method: 'get',
         params 
+    })
+}
+
+// 获取短信验证码
+export function validCodeSendUrl(data){
+    return request({
+        url: `${api}/sms/validCodeSend`,
+        method: 'post',
+        data
+    })
+}
+
+// 校验验证码
+export function validateSmsCode(data) {
+    return request({
+        url: `${api}/sms/validCode`,
+        method: 'post',
+        data
+    })
+}
+
+// 用户注册
+export function registe(data) {
+    return request({
+        url: `${api}/users/register`,
+        method: 'post',
+        data
     })
 }

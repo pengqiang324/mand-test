@@ -4,7 +4,7 @@ import { Toast } from 'vant'
 import { IsIOS } from './lib'
 
 const service = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? process.env.RY_APP_BASE_API : 'http://test-app.tunyukeji.com',
+    baseURL: process.env.NODE_ENV === 'development' ? 'http://test-app.tunyukeji.com' : 'http://test-app.tunyukeji.com',
     timeout: 5000
 })
 

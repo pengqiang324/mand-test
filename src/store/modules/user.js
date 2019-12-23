@@ -1,4 +1,11 @@
-import { getUserWxInfo, login, refreshUserInfo } from '@/api/user/user'
+import { 
+    getUserWxInfo, 
+    login, 
+    refreshUserInfo,
+    validCodeSendUrl,
+    validateSmsCode,
+    registe
+} from '@/api/user/user'
 
 const state = {
     userInfo: {},
@@ -42,10 +49,27 @@ const actions = {
 
     // 刷新用户信息
     async refreshUserInfo({ commit }) {
-        const response = await refreshUserInfo();
-        commit('SAVEUSERINFO', response.data);
-        localStorage.setItem('userInfo', response.data ? JSON.stringify(response.data.data) : '');
+        const response = await refreshUserInfo()
+        if (response.data) {
+            commit('SAVEUSERINFO', response.data)
+            localStorage.setItem('userInfo', response.data ? JSON.stringify(response.data.data) : '')
+        }
         return response;
+    },
+
+    // 获取验证码
+    async validCodeSend(_, { payload }) {
+        return validCodeSendUrl(payload)
+    },
+
+    // 校验验证码
+    async validateSmsCode(_, { payload }) {
+        return validateSmsCode(payload)
+    },
+
+    // 用户注册
+    async registe(_, { payload }) {
+        return registe(payload)
     },
 }
 

@@ -53,9 +53,6 @@ import {
 
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
 import { mapState } from 'vuex'
-import qs from 'qs'
-// import { login } from '@/api/user/user'
-import { USER_LOGIN, USER_USERWXINFO, USER_REFRESHUSERINFO } from '@/actions/user'
 
 export default {
   name: "ry-home",
@@ -85,15 +82,6 @@ export default {
     ])
   },
 
-  created() {
-    this.login() // 登录注册
-  },
-
-  mounted() {
-    // this.$refs.scrollView.triggerRefresh()  //初始化下拉刷新数据
-  },
-
-
   beforeRouteLeave(to, from, next) {
     this.$notify.clear() //清除消息通知
     next()
@@ -117,42 +105,6 @@ export default {
         finishRefresh()
         timer = null
       })
-    },
-
-    async login() {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        return await this.hasCode()
-      }
-    },
-
-    async hasCode() {
-      const search = qs.parse(location.search.split('?')[1])
-      const URL = encodeURIComponent(location.href.split('#')[0])
-  
-      if (!search.code) {
-        location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0a71240195bf0c4d&redirect_uri=${URL}&response_type=code&scope=snsapi_userinfo#wechat_redirect`
-      } else {
-        const response = await this.$store.dispatch(USER_USERWXINFO({
-          code: search.code
-        }))
-
-        if (response.data && response.data.success) {
-          const { data } = response.data;
-          const res = await this.$store.dispatch(USER_LOGIN({
-            username: data.openId
-          }))
-          
-          if (res.data) {
-            localStorage.setItem('loginState', 'isLogin')
-            await this.$store.dispatch(USER_REFRESHUSERINFO());  //更新最新用户信息
-            this.$router.push('/home') 
-          }else {
-            this.$router.push('/register')
-          }
-        } 
-      }
     }
   },
 };
