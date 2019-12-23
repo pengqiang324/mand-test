@@ -144,6 +144,7 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     open: false,
+    disableHostCheck: true,  // 关闭主机检测
     // 跨域
     proxy: {
      [process.env.RY_APP_BASE_API]: {

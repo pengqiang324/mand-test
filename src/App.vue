@@ -4,14 +4,12 @@
       :name="transitionName" 
     > 
       <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
-        <ry-loading v-if="showLoading"/>
         <router-view 
           class="router-view" 
           v-wechat-title='$route.meta.title'
         />
       </vue-page-stack>
       <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
-        <ry-loading v-if="showLoading"/>
         <router-view 
           class="router-view"
           v-wechat-title='$route.meta.title'
@@ -49,7 +47,6 @@ export default {
 
   computed: {
     ...mapState([
-      'showLoading',
       'showErrorInfo'
     ])
   },
@@ -60,6 +57,10 @@ export default {
       if(!from.meta.index) return
       //如果to索引大于from索引,判断为前进状态,反之则为后退状态
       if (to.meta.index == from.meta.index) {
+        if (from.path === '/register') {
+          this.transitionName = 'slidedown'
+          return
+        }
         this.transitionName = ''
       } else if (to.meta.index > from.meta.index) {
         //设置动画名称
@@ -99,7 +100,9 @@ export default {
   .push-enter-active,
   .push-leave-active, 
   .pop-enter-active,
-  .pop-leave-active {
+  .pop-leave-active,
+  .slidedown-enter-active,
+  .slidedown-leave-active {
     transition: transform 0.4s;
     backface-visibility: hidden;
     perspective: 1000;
@@ -126,7 +129,17 @@ export default {
   .pop-enter{
     transform: translate3d(-20%,0,0);
   }
-
+  .slidedown-enter {
+    opacity 0
+    z-index 0
+  }
+  .slidedown-leave {
+    z-index 11
+  }
+  .slidedown-leave-active {
+    transform translate3d(0, 100%, 0)
+    z-index 11
+  }
   .router-view {
     width: 100%;
     height: 100%;

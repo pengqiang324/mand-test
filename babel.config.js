@@ -19,5 +19,10 @@ module.exports = {
       },
       'vant'
     ]
-  ]
+  ],
+  env: {
+    development: {
+      plugins: ['dynamic-import-node']  // 开发环境热更新慢解决插件
+    }
+  }
 }

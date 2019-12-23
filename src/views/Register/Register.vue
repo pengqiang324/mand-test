@@ -23,13 +23,13 @@
                 ref="input1"
                 @focus="toggleKeyboard(1)"
               />
-              <button 
+              <span
                 class="getcode" 
                 :disabled="disabled"
-                @click="getCode"
+                @click.stop="getCode"
               >
                 {{btnTitle}}
-              </button>
+              </span>
           </div>
           <p class="register-tips">若您未注册，验证后自动注册并登陆</p>
           <div class="register-agree">
@@ -122,6 +122,15 @@
 import { Checkbox } from 'vant'
 import { validatePhone, idCard } from '@/libs/validate'
 import mixins from '@/libs/mixins'
+import qs from 'qs'
+import { mapState } from 'vuex'
+import {
+  USER_GETVALIDATECODE,
+  USER_VALIDATESMSCODE,
+  USER_REGISTE,
+  USER_LOGIN,
+  USER_USERWXINFO
+} from '@/actions/user'
 
 export default {
     name: 'ry-register',
@@ -148,6 +157,7 @@ export default {
             phoneNumber: '',
             indtyCode: '', // 验证码
             idcardMessage: '',
+            smsCode: '',
             btnTitle: '获取验证码',
             index: 0
         }
@@ -175,7 +185,11 @@ export default {
                 }
                 return resultData
             }
-        }
+        },
+
+        ...mapState({
+            userWxInfo: state => state.user.userWxInfo
+        })
     },
 
     methods: {
@@ -220,7 +234,7 @@ export default {
             
         },
 
-        getCode() {
+        async getCode() {
             const { success, message } = validatePhone(this.phoneNumber)
             if (!success) {
                 this.$toast({
@@ -238,27 +252,33 @@ export default {
                 //打开数字键盘
                 this.isKeyBoardShow[1] = true
                 this.index = 1
-                this.validateBtn()
+                if (this.btnTitle == '获取验证码') {
+                    const response = await this.$store.dispatch(USER_GETVALIDATECODE({tel: this.phoneNumber}))
+                    this.smsCode = response.data.data.smsCode
+                    this.validateBtn()
+                } else {
+                    return
+                }
             }
         },
 
         validateBtn(){
             //倒计时
-            let time = 60;
+            let time = 60
             let timer = setInterval(() => {
                 if(time == 0) {
-                    clearInterval(timer);
-                    this.disabled = false;
-                    this.btnTitle = "获取验证码";
+                    clearInterval(timer)
+                    this.disabled = false
+                    this.btnTitle = "获取验证码"
                 } else {
-                    this.btnTitle =time + '秒后重试';
-                    this.disabled = true;
+                    this.btnTitle =time + '秒后重试'
+                    this.disabled = true
                     time--
                 }
             },1000)
         },
 
-        onLogin() {
+        async onLogin() {
            this.btnShow = false
            const { isClick, message } = this.isClick
 
@@ -270,7 +290,56 @@ export default {
                })
                return
            }
-        //    console.log('登录成功')
+
+            const response = await this.$store.dispatch(USER_VALIDATESMSCODE({
+                smsCode: this.smsCode, 
+                validCode: this.indtyCode
+            }))
+
+            if (response.data && response.data.success) {
+                this.submit()
+            }else {
+                this.$toast({
+                   message: response.data.message,
+                   duration: 3000,
+                   position: 'bottom'
+               })
+            }
+        },
+
+        // 提交
+        async submit() {
+            if (!this.userWxInfo.openId) return this.getUserInfo()
+            const response = await this.$store.dispatch(USER_REGISTE({
+                tel: this.phoneNumber,
+                nickName: this.userWxInfo.nickname,
+                wxOpen: this.userWxInfo.openId,
+                headImage: this.userWxInfo.headImgUrl
+            }));
+            if (response.data.success) {
+                this.login() // 登录
+            }
+        },
+
+        async login() {
+            const response = await this.$store.dispatch(USER_LOGIN({
+                username: this.phoneNumber
+            }));
+            if (response.data.success) {
+                const { isCert } = response.data.data
+                if (!isCert) {
+                    this.show = true // 显示完善信息
+                } else {
+                    this.show = false
+                    this.$router.push('/')
+                }
+            } 
+        },
+
+        // 获取微信code
+        async getUserInfo() {
+            const search = qs.parse(location.search.split('?')[1]);
+            if (search.code) this.$store.dispatch(USER_USERWXINFO({code: search.code}))
         },
 
         onReAgree() {
