@@ -77,7 +77,10 @@ export default {
             idCard: '',
             userName: '',
             invidCode: '',  // 邀请码
+            idcardMessage: '',
             btnShow: false,
+            tips_show: false,
+            tips_idCard: true,
             timer: null
         }
     },

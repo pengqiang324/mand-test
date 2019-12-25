@@ -103,13 +103,10 @@ export default {
             checked: false,
             disabled: false,
             btnShow: false,
-            tips_show: false,
-            tips_idCard: false,
             changeColor: false,
             isKeyBoardShow: [],
             phoneNumber: '',
             indtyCode: '', // 验证码
-            idcardMessage: '',
             smsCode: '',
             btnTitle: '获取验证码',
             index: 0

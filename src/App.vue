@@ -50,6 +50,7 @@ export default {
   computed: {
     ...mapState([
       'showDiaLog',
+      'showErrorInfo',
       'hideAppLoading'
     ])
   },
