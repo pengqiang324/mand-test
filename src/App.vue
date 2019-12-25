@@ -169,6 +169,7 @@ export default {
     overflow-x hidden
     -webkit-transform-style preserve-3d
     -webkit-backface-visibility: hidden;
+    -webkit-overflow-scrolling:touch
   }
 
 </style>
