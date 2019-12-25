@@ -1,27 +1,31 @@
 <template>
   <div class="mine-box">
-      <v-touch v-on:swipeleft="swiperLeft" v-on:swiperight="swiperRight"  class="wrapper">
-        我的页面, 内容内容内容2222
-      </v-touch>
+      <p class="mine-font">我的页面, 内容内容内容2222</p>
+      <div class="ry-logout" @click="loginOut">清除缓存</div>
   </div>
 </template>
 
 <script>
+import { logout } from '@/api/user/user'
+
 export default {
     name: 'ry-mine',
 
-    created(){
-      console.log('mine触发了')
-    },
-
     methods: {
-      swiperLeft() {
-        console.log('向左滑动了')
-      },
-
-      swiperRight() {
-        console.log('向右滑动了')
-      }
+      loginOut() {
+        logout()
+        .then((res) => {
+          if (res.status == 200) {
+            localStorage.removeItem('token'); // 清token
+            this.$router.push({
+              path: '/',
+              query: {
+                delCode: 1,
+              },
+            });
+          }
+        });
+    },
     }
 }
 </script>
@@ -31,5 +35,20 @@ export default {
     width: 100%;
     height: 100%;
     font-size: 28px;
+  }
+  .mine-font {
+    font-size 32px
+  }
+  .ry-logout {
+    margin: 60px auto 0;
+    width: 70%;
+    height: 90px;
+    line-height: 90px;
+    text-align: center;
+    border-radius: 45px;
+    font-size: 32px;
+    color: #fff;
+    font-weight: 400;
+    background: linear-gradient(to right, #ff6f00, #ff3d00);
   }
 </style>

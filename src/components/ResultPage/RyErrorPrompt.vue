@@ -52,12 +52,12 @@ export default {
   text-align center
   .error-info {
     display inline-block
-    padding 8px 40px
-    border-radius 12px
+    padding 16px 24px
+    border-radius 8px
     background rgba(50, 50, 51, 0.88)
     opcity 80
     color #fff
-    font-size 24px
+    font-size 28px
     text-align center
     line-height 40px
   }

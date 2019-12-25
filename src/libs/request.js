@@ -5,11 +5,14 @@ import { IsIOS } from './lib'
 
 const service = axios.create({
     baseURL: process.env.NODE_ENV === 'development' ? 'http://test-app.tunyukeji.com' : 'http://test-app.tunyukeji.com',
-    timeout: 5000
+    timeout: 5000,
 })
 
 service.interceptors.request.use((config) => {
     store.commit('updateLoading', true)
+
+    const TOKEN = localStorage.getItem('token')
+    if (TOKEN) config.headers.common['Authorization'] = TOKEN
     return config
 }, (err) => {
     return Promise.resolve(err)
