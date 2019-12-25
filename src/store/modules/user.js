@@ -21,6 +21,10 @@ const mutations = {
     SAVEUSERWXINFO: (state, { data }) => {
         state.userWxInfo = data;
     },
+
+    ISLOGIN: (state, isLogin) => {
+        state.isLogin = isLogin;
+    },
 }
 
 const actions = {

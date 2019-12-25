@@ -66,3 +66,21 @@ export function registe(data) {
         data
     })
 }
+
+// 完善用户信息
+export function perfectUserInfo(data) {
+    return request({
+        url: `${api}/user/identityAuthentication`,
+        method: 'post',
+        data
+    })
+}
+
+
+// 清除缓存
+export function logout() {
+    return request({
+        url: `/authentication/logout`,
+        method: 'post'
+    })
+}

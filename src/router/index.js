@@ -14,7 +14,7 @@ const routes = [
       navIndex: 0,
       keepAlive: true,
       hasFooter: true,
-      title: '融溢首页'
+      title: '融溢'
     }
   },
   {
@@ -71,7 +71,6 @@ const routes = [
     meta: {
       index: 2,
       hasFooter: false,
-      keepAlive: true,
       title: '设置'
     }
   },
@@ -81,7 +80,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "register" */ '../views/Register/Register.vue'),
     meta: {
       index: 1,
-      title: '注册融溢'
+      title: '融溢'
     }
   },
   {

@@ -17,6 +17,7 @@ import {
 ** @ComponentName RyResultEmpty 空信息，暂无信息组件
 ** @ComponentName RyScrollView 上拉加载下拉刷新组件
 ** @ComponentName RyButton 通用按钮组件
+** @ComponentName RyPerfectDiaLog 完善信息组件
 */
 
 import RyLoading from '../components/Loading'
@@ -26,6 +27,7 @@ import RyErrorPrompt from '../components/ResultPage/RyErrorPrompt'
 import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
 import RyScrollView from '../components/ScrollView'
 import RyButton from '../components/Button'
+import RyPerfectDiaLog from '../components/PerfectDiaLog'
 
 export default {
     install(Vue) {
@@ -41,5 +43,6 @@ export default {
         Vue.component(RyErrorPrompt.name, RyErrorPrompt)
         Vue.component(RyResultEmpty.name, RyResultEmpty)
         Vue.component(RyButton.name, RyButton)
+        Vue.component(RyPerfectDiaLog.name, RyPerfectDiaLog)
     }
 }

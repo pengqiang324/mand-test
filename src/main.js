@@ -29,14 +29,35 @@ router.beforeEach(async (to, from, next) => {
   const flag = localStorage.getItem('loginState') === 'isLogin'
   const PAGE_TITLE = to.meta.title ? to.meta.title : '融溢'
   document.title = PAGE_TITLE
-
+ 
   // 登录校验
   if (to.path === '/') {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-     return await isLogin(next)
+    const token = localStorage.getItem('token')
+    const NODE_ENV = process.env.NODE_ENV
+    
+    if (NODE_ENV === 'production') {
+      if (!token) {
+        return await hasCode(to, next)
+       }
+    } else {
+      // 开发环境、测试环境
+      const response = {
+        data: {
+          token: '7455d1ed-16ab-46bb-a4a5-6e1c29be54f8',
+          userId: 'b174db5ae2c941099acd95907105e57e',
+          wxOpen: 'oPlVK1Ad3HPa07JojQY6H4fIQ7PQ',
+          top: 0,
+          tel: 15211023567,
+          isCert: 1,
+        },
+      }
+      store.commit('user/SAVEUSERINFO', response)
+      store.commit('user/ISLOGIN', true)
+      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('userInfo', JSON.stringify(response.data))
+      localStorage.setItem('loginState', 'isLogin');
     }
+    
     return next()
   }
   
@@ -49,7 +70,18 @@ router.beforeEach(async (to, from, next) => {
   next()
 })
 
-async function isLogin(next) {
+async function hasCode(to, next) {
+  const { delCode } = to.query
+
+  // 清除缓存后强制code清除
+  if (delCode) {
+    let url = window.location.href // 判断是否存在参数
+    url = url.replace(/(\?|#)[^'"]*/, '') // 去除参数
+    window.history.pushState({}, 0, url)
+  } else {
+    store.dispatch('hideAppLoading', true)
+  }
+
   const search = qs.parse(location.search.split('?')[1])
   const URL = encodeURIComponent(location.href.split('#')[0])
 
@@ -65,10 +97,11 @@ async function isLogin(next) {
       const res = await store.dispatch(USER_LOGIN({
         username: data.openId
       }))
-      
+      store.dispatch('hideAppLoading', false) // 隐藏全局loading组件
+
       if (res.data) {
         localStorage.setItem('loginState', 'isLogin')
-        await store.dispatch(USER_REFRESHUSERINFO());  //更新最新用户信息
+        await store.dispatch(USER_REFRESHUSERINFO())  //更新最新用户信息
         return next('/') 
       }else {
         return next('/register')
