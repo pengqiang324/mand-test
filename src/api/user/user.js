@@ -65,9 +65,8 @@ export function registe(data) {
         method: 'post',
         data
     })
-<<<<<<< HEAD
-=======
 }
+
 // 完善用户信息
 export function perfectUserInfo(data) {
     return request({
@@ -84,5 +83,4 @@ export function logout() {
         url: `/authentication/logout`,
         method: 'post'
     })
->>>>>>> 993b5ad23bd2b49551ede51a9e6c5ef18b072e17
 }

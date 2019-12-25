@@ -145,6 +145,14 @@ export default {
     opacity 0
     z-index 0
   }
+  .slidedown-leave,
+  .slidedown-leave-active,
+  .slideup-enter-active {
+    z-index 1
+  }
+  .slidedown-leave-active {
+    transform translate3d(0, 100%, 0)
+  }
   .slideup-enter {
     transform translate3d(0, 100%, 0)
   }
