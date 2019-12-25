@@ -1,38 +1,39 @@
 <template>
   <div class="home" v-cloak>
+    
     <template v-if="showNetwork">
       <ry-result-network/>
     </template>
     <template v-if="!showNetwork">
       <ry-scroll-view
-      :showRefresh="true"
-      @onRefresh="$_onRefresh"
-    >
-      <div id="nav">
-        <router-link to="/child">子页</router-link> |
-        <router-link to="/setting">设置</router-link>
-      </div>
-      <div class="md-example-child-swiper-0">
-        <md-swiper
-        ref="swiper"
-        :is-prevent="false"
-        :useNative-driver="false"
+        :showRefresh="true"
+        @onRefresh="$_onRefresh"
       >
-        <md-swiper-item :key="$index" v-for="(item, $index) in simple">
-          <div
-            class="banner-item"
-            :style="{'background': `${item.color}`}">{{item.text}}</div>
-          </md-swiper-item>
-        </md-swiper>
+        <div id="nav">
+          <router-link to="/child">子页</router-link> |
+          <router-link to="/setting">设置</router-link>
         </div>
-        <div class="bottom">
-          123
-        </div>
-        <van-button type="primary">主要按钮</van-button>
-        <van-button plain type="primary">朴素按钮</van-button>
-        <van-button plain hairline type="primary">细边框按钮</van-button>
-        <p>图标展示123</p>
-        <md-icon name="success-color" size="lg" svg></md-icon>
+        <div class="md-example-child-swiper-0">
+          <md-swiper
+          ref="swiper"
+          :is-prevent="false"
+          :useNative-driver="false"
+        >
+          <md-swiper-item :key="$index" v-for="(item, $index) in simple">
+            <div
+              class="banner-item"
+              :style="{'background': `${item.color}`}">{{item.text}}</div>
+            </md-swiper-item>
+          </md-swiper>
+          </div>
+          <div class="bottom">
+            123
+          </div>
+          <van-button type="primary">主要按钮</van-button>
+          <van-button plain type="primary">朴素按钮</van-button>
+          <van-button plain hairline type="primary">细边框按钮</van-button>
+          <p>图标展示123</p>
+          <md-icon name="success-color" size="lg" svg></md-icon>
       </ry-scroll-view>
     </template>
   </div>
@@ -53,9 +54,12 @@ import {
 
 import simple from 'mand-mobile/components/swiper/demo/data/simple'
 import { mapState } from 'vuex'
+import mixins from '@/libs/mixins'
 
 export default {
   name: "ry-home",
+
+  mixins: [mixins],
 
   components: {
     [Swiper.name]: Swiper,
@@ -82,6 +86,10 @@ export default {
     ])
   },
 
+  created() {
+     this.showDiaLog() // 是否显示完善信息弹窗
+  },
+
   beforeRouteLeave(to, from, next) {
     this.$notify.clear() //清除消息通知
     next()
@@ -105,7 +113,7 @@ export default {
         finishRefresh()
         timer = null
       })
-    }
+    },
   },
 };
 </script>

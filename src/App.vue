@@ -16,8 +16,10 @@
         />
       </keep-alive>
     </transition>
+    <ry-loading v-if="hideAppLoading"></ry-loading>
     <ry-tabbar v-show="$route.meta.hasFooter"/>
     <ry-error-prompt :visible="showErrorInfo"/>
+    <ry-perfect-dialog :show="showDiaLog"/>
   </div>
 </template>
 <script>
@@ -47,20 +49,27 @@ export default {
 
   computed: {
     ...mapState([
-      'showErrorInfo'
+      'showDiaLog',
+      'hideAppLoading'
     ])
   },
 
   watch: {
     $route(to, from) {
-      // 刷新页面动画
-      if(!from.meta.index) return
-      //如果to索引大于from索引,判断为前进状态,反之则为后退状态
+      // 刷新页面动画、首次进入注册页面
+      if(!from.meta.index) {
+        if (to.path === '/register') {
+          this.transitionName = 'slideup'
+          return
+        }
+        return
+      }
+      // 如果to索引大于from索引,判断为前进状态,反之则为后退状态
       if (to.meta.index == from.meta.index) {
         if (from.path === '/register') {
           this.transitionName = 'slidedown'
           return
-        }
+        } 
         this.transitionName = ''
       } else if (to.meta.index > from.meta.index) {
         //设置动画名称
@@ -102,7 +111,9 @@ export default {
   .pop-enter-active,
   .pop-leave-active,
   .slidedown-enter-active,
-  .slidedown-leave-active {
+  .slidedown-leave-active,
+  .slideup-enter-active,
+  .slideup-leave-active {
     transition: transform 0.4s;
     backface-visibility: hidden;
     perspective: 1000;
@@ -133,12 +144,22 @@ export default {
     opacity 0
     z-index 0
   }
-  .slidedown-leave {
-    z-index 11
+  .slidedown-leave,
+  .slidedown-leave-active,
+  .slideup-enter-active {
+    z-index 1
   }
   .slidedown-leave-active {
     transform translate3d(0, 100%, 0)
-    z-index 11
+  }
+  .slideup-enter {
+    transform translate3d(0, 100%, 0)
+  }
+  .slideup-leave-active {
+    z-index 0
+  }
+  .slideup-leave-to {
+    opcity 0
   }
   .router-view {
     width: 100%;

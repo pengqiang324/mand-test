@@ -3,12 +3,9 @@
 */
 
 <template>
-  <md-activity-indicator
-      v-if="showLoading"
-      type="carousel"
-      color="#FF8324"
-      :size="14"
-    ></md-activity-indicator>
+    <div class="loading-box">
+        <img :src="imgLoading" alt="">
+    </div>
 </template>
 
 <script>
@@ -22,6 +19,12 @@ export default {
         [ActivityIndicator.name]: ActivityIndicator
     },
 
+    data() {
+        return {
+            imgLoading: require('@/assets/images/ry-loading.gif')
+        }
+    },
+
     computed: {
         ...mapState[
             'showLoading'
@@ -31,5 +34,14 @@ export default {
 </script>
 
 <style lang="stylus">
-
+.loading-box {
+    height 100%
+    display flex 
+    justify-content center
+    align-items center
+    img {
+        display block;
+        width 180px
+    }
+}
 </style>

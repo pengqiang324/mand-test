@@ -17,6 +17,15 @@ export default {
                 clearInterval(timer);
                 }, 100);
             }
+        },
+
+        // 是否显示完善信息弹窗
+        showDiaLog() {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+            const isCert = userInfo ? userInfo.isCert : null
+            if (isCert === 0) {
+                this.$store.dispatch('showDiaLog', true)
+            }
         }
     }
 }
