@@ -18,6 +18,8 @@ import {
 ** @ComponentName RyScrollView 上拉加载下拉刷新组件
 ** @ComponentName RyButton 通用按钮组件
 ** @ComponentName RyPerfectDiaLog 完善信息组件
+** @ComponentName RySrcoll better-scroll组件
+** @ComponentName RySlideScroll 轮播图组件
 */
 
 import RyLoading from '../components/Loading'
@@ -28,6 +30,8 @@ import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
 import RyScrollView from '../components/ScrollView'
 import RyButton from '../components/Button'
 import RyPerfectDiaLog from '../components/PerfectDiaLog'
+import RyScroll from '../components/BetterScroll'
+import RySliderScroll from '../components/SliderScroll'
 
 export default {
     install(Vue) {
@@ -44,5 +48,7 @@ export default {
         Vue.component(RyResultEmpty.name, RyResultEmpty)
         Vue.component(RyButton.name, RyButton)
         Vue.component(RyPerfectDiaLog.name, RyPerfectDiaLog)
+        Vue.component(RyScroll.name, RyScroll)
+        Vue.component(RySliderScroll.name, RySliderScroll)
     }
 }

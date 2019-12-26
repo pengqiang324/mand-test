@@ -1,6 +1,12 @@
 import { IsIOS } from '@/libs/lib'
 
 export default {
+    data() {
+        return {
+            scroll: null
+        }
+    },
+
     methods: {
         onBlur() {
             if (IsIOS()) { // IOS系统
@@ -26,6 +32,6 @@ export default {
             if (isCert === 0) {
                 this.$store.dispatch('showDiaLog', true)
             }
-        }
+        },
     }
 }

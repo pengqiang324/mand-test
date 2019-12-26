@@ -11,6 +11,7 @@
   <md-scroll-view
       ref="scrollView"
       :scrolling-x="false"
+      :auto-reflow="true"
       @refreshing="$_onRefresh"
       @end-reached="$_onEndReached"
     >
