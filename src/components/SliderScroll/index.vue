@@ -86,7 +86,11 @@ export default {
     },
 
     beforeDestroy() {
-        this.slider.destroy()
+        clearTimeout(this.timer1)
+        clearTimeout(this.timer2)
+        this.timer1 = null
+        this.timer2 = null
+        this.slider && this.slider.destroy()
     },
 
     methods: {

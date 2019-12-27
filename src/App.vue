@@ -16,7 +16,7 @@
         />
       </keep-alive>
     </transition>
-    <ry-loading v-if="hideAppLoading"></ry-loading>
+    <ry-loading v-if="hideAppLoading" class="ry-loading"></ry-loading>
     <ry-tabbar v-show="$route.meta.hasFooter"/>
     <ry-error-prompt :visible="showErrorInfo"/>
     <ry-perfect-dialog :show="showDiaLog"/>
@@ -80,6 +80,36 @@ export default {
       }
     }
   },
+
+  beforeCreate(){
+    let count = 0
+    this.$store.dispatch('hideAppLoading', true)
+    
+    let imgs = [
+    //用require的方式添加图片地址，直接添加图片地址的话，在build打包之后会查找不到图片，因为打包之后的图片名称会有一个加密的字符串
+        require('./assets/images/default_bg01.png'),
+        require('./assets/images/emptyInfo@2x.png'),
+        require('./assets/images/ry_logo@2x.png'),
+        require('./assets/images/tabbar/ry-icon01.png'),
+        require('./assets/images/tabbar/ry-icon02.png'),
+        require('./assets/images/tabbar/ry-icon03.png'),
+        require('./assets/images/tabbar/ry-icon04.png'),
+        require('./assets/images/tabbar/ry-icon01-active.png'),
+        require('./assets/images/tabbar/ry-icon02-active.png'),
+        require('./assets/images/tabbar/ry-icon03-active.png'),
+        require('./assets/images/tabbar/ry-icon04-active.png'),
+    ]
+    for (let img of imgs) {
+        let image = new Image();
+        image.src = img;
+        image.onload = () => {
+            count++;
+            if (count === 11) {
+              this.$store.dispatch('hideAppLoading', false)
+            }
+        }
+    }
+},
 
   methods: {
     reload () { // 刷新页面
@@ -170,6 +200,15 @@ export default {
     -webkit-transform-style preserve-3d
     -webkit-backface-visibility: hidden;
     -webkit-overflow-scrolling:touch
+  }
+
+  .ry-loading {
+    width 100%
+    position fixed
+    top 0
+    left 0
+    z-index 1111
+    background #fff
   }
 
 </style>

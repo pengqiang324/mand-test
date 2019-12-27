@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import qs from 'qs'
+import VueLazyload from 'vue-lazyload'
 import VueWechatTitle from 'vue-wechat-title'
 import VuePageStack from 'vue-page-stack'
 import VueTouch from 'vue-touch'
@@ -14,6 +15,19 @@ import './assets/styles/index.styl'
 import "mand-mobile/components/_style/global.styl"
 import "normalize.css"
 import "vant/es/index.less"
+
+Vue.use(VueLazyload, {
+  loading: require('./assets/images/default_bg01.png'),
+  filter: {
+    progressive (listener) {
+        const isCDN = /loading/
+        if (isCDN.test(listener.el.dataset.state)) {
+            // listener.el.setAttribute('lazy-progressive', 'true')
+            listener.loading = require('./assets/images/ry_logo@2x.png')
+        }
+    },
+  }
+})
 
 Vue.use(VueWechatTitle)
 Vue.use(VuePageStack, { router })
@@ -97,6 +111,7 @@ async function hasCode(to, next) {
       const res = await store.dispatch(USER_LOGIN({
         username: data.openId
       }))
+
       store.dispatch('hideAppLoading', false) // 隐藏全局loading组件
 
       if (res.data) {

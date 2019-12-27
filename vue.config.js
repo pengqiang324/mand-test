@@ -105,16 +105,16 @@ module.exports = {
             }
           }
         },
-        // minimizer: [new UglifyPlugin({
-        //   uglifyOptions: {
-        //       warnings: false,
-        //       compress: {
-        //         drop_console: true, // console
-        //         drop_debugger: false,
-        //         pure_funcs: ['console.log'] // 移除console
-        //       }
-        //   }
-        // })]
+        minimizer: [new UglifyPlugin({
+          uglifyOptions: {
+              warnings: false,
+              compress: {
+                drop_console: true, // console
+                drop_debugger: false,
+                pure_funcs: ['console.log'] // 移除console
+              }
+          }
+        })]
       }
       Object.assign(config, {
         optimization,

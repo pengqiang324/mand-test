@@ -4,6 +4,7 @@
       class="home-wrapper"
       :pulldown="true"
       :pullup="true"
+      :bounce="false"
       :listen-scroll="true"
       :pull-up-load="true"
       :pull-down-refresh="true"
@@ -34,18 +35,12 @@
           </ry-slider-scroll>
           <div class="card-box">
             <div class="swiper-icon">
-              <ry-slider-scroll
-                :loop="false"
-                :auto-play="false"
-                :is-show-doc="false"
-              >
-                <ul class="swiper-list" v-for="(item, index) in swiperIcon" :key="index">
-                  <li v-for="(key, i) in item.imgs" :key="i">
-                    <img :src="key.img" alt="">
+                <ul class="swiper-list">
+                  <li v-for="(key, i) in swiperIcon.imgs" :key="i">
+                    <h2><img v-lazy="key.img" alt=""></h2>
                     <p>{{key.title}}</p>
                   </li>
                 </ul>
-              </ry-slider-scroll>
             </div>
             <div class="ry-tt">
               <span>融溢头条:</span>
@@ -55,13 +50,13 @@
             </div>
           </div>
           <div class="ry-banner">
-            <img src="../../assets/images/home/ry-banner01.png" alt="">
+            <img :src="bannerImg" data-state="loading" alt="">
           </div>
           <div class="bank-list">
             <h1 class="tj-bank">推荐银行</h1>
             <ul>
               <li>
-                <h2><img src="../../assets/images/home/ry-bank01.png" alt=""></h2>
+                <h2><img src="../../assets/images/default_bg01.png" lazy="loading" key="1" alt=""></h2>
                 <h4>花旗银行</h4>
                 <div class="bank-lable">
                   <span class="bank-fro">自动结算</span>
@@ -75,7 +70,7 @@
                 </div>
               </li>
               <li>
-                <h2><img src="../../assets/images/home/ry-bank01.png" alt=""></h2>
+                <h2><img v-lazy="bankImg" key="2" alt=""></h2>
                 <h4>花旗银行</h4>
                 <div class="bank-lable">
                   <span class="bank-fro">自动结算</span>
@@ -89,7 +84,7 @@
                 </div>
               </li>
               <li>
-                <h2><img src="../../assets/images/home/ry-bank01.png" alt=""></h2>
+                <h2><img v-lazy="bankImg" key="3" alt=""></h2>
                 <h4>花旗银行</h4>
                 <div class="bank-lable">
                   <span class="bank-fro">自动结算</span>
@@ -103,7 +98,7 @@
                 </div>
               </li>
               <li>
-                <h2><img src="../../assets/images/home/ry-bank01.png" alt=""></h2>
+                <h2><img v-lazy="bankImg4" key="4" alt=""></h2>
                 <h4>花旗银行</h4>
                 <div class="bank-lable">
                   <span class="bank-fro">自动结算</span>
@@ -117,7 +112,7 @@
                 </div>
               </li>
               <li>
-                <h2><img src="../../assets/images/home/ry-bank01.png" alt=""></h2>
+                <h2><img v-lazy="bankImg3" key="5" alt=""></h2>
                 <h4>花旗银行</h4>
                 <div class="bank-lable">
                   <span class="bank-fro">自动结算</span>
@@ -131,7 +126,7 @@
                 </div>
               </li>
               <li>
-                <h2><img src="../../assets/images/home/ry-bank01.png" alt=""></h2>
+                <h2><img v-lazy="bankImg2" key="6" alt=""></h2>
                 <h4>花旗银行</h4>
                 <div class="bank-lable">
                   <span class="bank-fro">自动结算</span>
@@ -174,47 +169,32 @@ export default {
 
   data() {
     return {
+      count: 0,
+      bannerImg: require('@/assets/images/home/ry-banner01.png'),
       swiperImg: require('@/assets/images/home/swiper01.png'),
-      swiperIcon: [
-        {
-          imgs: [
-            {
-              img: require('@/assets/images/home/ry-icon01.png'),
-              bgColor: '#fff',
-              title: '3-50万信用卡'
-            },
-            {
-              img: require('@/assets/images/home/ry-icon02.png'),
-              bgColor: '#fff',
-              title: '积分兑换'
-            },
-            {
-              img: require('@/assets/images/home/ry-icon03.png'),
-              bgColor: '#fff',
-              title: '信用卡管家'
-            }
-          ]
-        },
-        {
-          imgs: [
-            {
-              img: require('@/assets/images/home/ry-icon01.png'),
-              bgColor: '#fff',
-              title: '3-50万信用卡'
-            },
-            {
-              img: require('@/assets/images/home/ry-icon02.png'),
-              bgColor: '#fff',
-              title: '积分兑换'
-            },
-            {
-              img: require('@/assets/images/home/ry-icon03.png'),
-              bgColor: '#fff',
-              title: '信用卡管家'
-            }
-          ]
-        },
-      ],
+      bankImg: require('@/assets/images/home/ry-bank01.png'),
+      bankImg2: require('@/assets/images/home/bank-gs.jpg'),
+      bankImg3: require('@/assets/images/home/bank-gf.jpg'),
+      bankImg4: require('@/assets/images/home/bank-js.jpg'),
+      swiperIcon: {
+        imgs: [
+          {
+            img: require('@/assets/images/home/ry-icon01.png'),
+            bgColor: '#fff',
+            title: '3-50万信用卡'
+          },
+          {
+            img: require('@/assets/images/home/ry-icon02.png'),
+            bgColor: '#fff',
+            title: '积分兑换'
+          },
+          {
+            img: require('@/assets/images/home/ry-icon03.png'),
+            bgColor: '#fff',
+            title: '信用卡管家'
+          }
+        ]
+      },
       data: [],
       pulldown: true,
       pulldownMsg: '下拉刷新',
@@ -233,6 +213,7 @@ export default {
   },
 
   mounted() {
+    
   },
 
 
@@ -315,7 +296,11 @@ export default {
   padding 0 40px
   .swiper-icon {
     .swiper-list {
-      float left
+      h2 {
+        width 120px
+        height 120px
+        margin auto
+      }
     }
     ul {
       display flex
@@ -325,8 +310,8 @@ export default {
         img {
           display block
           margin-bottom 10px
-          width 120px
-          margin auto
+          width 100%
+          height 100%
         }
         p {
           padding-top 10px
@@ -365,9 +350,10 @@ export default {
 
 .ry-banner {
   padding 0 16px 20px 18px
+  height 222px
   img {
     width 100%
-    height 222px
+    height 100%
   }
 }
 
@@ -407,6 +393,9 @@ export default {
         margin auto
         width 90px
         height 90px
+        &[lazy='loading'] {
+          transform scale(0.6)
+        }
       }
     }
     h4 {

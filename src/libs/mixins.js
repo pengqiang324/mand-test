@@ -3,7 +3,7 @@ import { IsIOS } from '@/libs/lib'
 export default {
     data() {
         return {
-            scroll: null
+            scroll: null,
         }
     },
 

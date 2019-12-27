@@ -10,7 +10,6 @@
 
 <script>
 import { ActivityIndicator } from 'mand-mobile'
-import { mapState } from 'vuex'
 
 export default {
     name: 'ry-loading',
@@ -23,12 +22,6 @@ export default {
         return {
             imgLoading: require('@/assets/images/ry-loading.gif')
         }
-    },
-
-    computed: {
-        ...mapState[
-            'showLoading'
-        ]
     }
 }
 </script>

@@ -120,7 +120,15 @@
      pullUpMsg: {
        type: String,
        defalut: '加载更多'
-     }
+     },
+
+    /*
+    * 是否回弹动画
+    */  
+    bounce: {
+      type: Boolean,
+      default: true
+    }
     },
 
     data() {
@@ -142,6 +150,8 @@
     },
 
     beforeDestroy() {
+      clearTimeout(this.timer)
+      this.timer = null
       this.scroll && this.scroll.destroy() 
     },
 
@@ -154,6 +164,7 @@
         this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click,
+          bounce: this.bounce,
           scrollX: this.scrollX,
           listenScroll: this.listenScroll,
           pullDownRefresh: this.pullDownRefresh,
