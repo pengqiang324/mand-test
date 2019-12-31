@@ -1,13 +1,7 @@
 <template>
   <div class="wrapper">
       <h1>信用卡页面</h1>
-      <ry-scroll-view
-        class="scroll-view"
-        :showRefresh="true"
-        @onRefresh="$_onRefresh"
-      >
         <ry-result-empty class="result-empty"/>
-      </ry-scroll-view>
   </div>
 </template>
 
@@ -20,11 +14,6 @@ export default {
   },
 
   methods: {
-    $_onRefresh({finishRefresh}) {
-      setTimeout(() => {
-        finishRefresh()
-      }, 2000)
-    }
   }
 }
 </script>

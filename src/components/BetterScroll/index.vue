@@ -1,5 +1,5 @@
 <template>
-  <div ref="wrapper">
+  <div class="wrapper-box" ref="wrapper">
     <div>
       <!-- 刷新提示信息 -->
       <div class="top-tip" v-if="pulldown">
@@ -15,7 +15,18 @@
 </template>
 
 <script>
-  import BScroll from 'better-scroll'
+  import BScroll from '@better-scroll/core'
+  import ScrollBar from '@better-scroll/scroll-bar'
+  import PullDown from '@better-scroll/pull-down'
+  import Pullup from '@better-scroll/pull-up'
+  import ObserveDom from '@better-scroll/observe-dom'
+  import NestedScroll from '@better-scroll/nested-scroll'
+
+  BScroll.use(NestedScroll)  // 解决 BetterScroll 双层嵌套的滚动行为
+  BScroll.use(ObserveDom)
+  BScroll.use(Pullup)
+  BScroll.use(PullDown)
+  BScroll.use(ScrollBar)
 
   export default {
     name: 'ry-scroll',
@@ -43,6 +54,13 @@
       scrollX: {
         type: Boolean,
         default: false
+      },
+      /**
+       * 是否开启纵向滚动
+       */
+      scrollY: {
+        type: Boolean,
+        default: true
       },
       /**
        * 是否派发滚动事件
@@ -76,6 +94,13 @@
        * 是否派发列表滚动开始的事件
        */
       beforeScroll: {
+        type: Boolean,
+        default: false
+      },
+      /**
+       * 是否横向与纵向滚动同时存在
+       */
+      freeScroll: {
         type: Boolean,
         default: false
       },
@@ -122,36 +147,47 @@
        defalut: '加载更多'
      },
 
-    /*
-    * 是否回弹动画
-    */  
-    bounce: {
-      type: Boolean,
-      default: true
-    }
+      /*
+      * 是否回弹动画
+      */  
+      bounce: {
+        type: Object,
+        default: () => {
+          return {
+            top: true,
+            left: true,
+            bottom: true,
+            right: true
+          }
+        }
+      },
+      /*
+      * 是否监测DOM变化 侦测refresh方法
+      */ 
+      observeDom: {
+        type: Boolean,
+        default: true
+      }
     },
 
     data() {
       return {
-        timer: null
+        scroll: null
       }
     },
 
     mounted() {
-      // 保证在DOM渲染完毕后初始化better-scroll
-      this.timer = setTimeout(() => {
-        this._initScroll()
-      }, 20)
+      this._initScroll()
+    },
+
+    updated() {
+      this.scroll.refresh()
     },
 
     deactivated() {
-      clearTimeout(this.timer)
-      this.timer = null
     },
 
     beforeDestroy() {
-      clearTimeout(this.timer)
-      this.timer = null
       this.scroll && this.scroll.destroy() 
     },
 
@@ -166,81 +202,21 @@
           click: this.click,
           bounce: this.bounce,
           scrollX: this.scrollX,
-          listenScroll: this.listenScroll,
           pullDownRefresh: this.pullDownRefresh,
           pullUpLoad: this.pullUpLoad,
-          scrollbar: this.scrollbar
+          scrollbar: this.scrollbar,
+          observeDom: this.observeDom
         })
-
-        // 是否派发滚动事件
-        if (this.listenScroll) {
-          this.scroll.on('scroll', (pos) => {
-            this.$emit('scroll', pos)
-          })
-        }
-
-        // 是否派发滚动到底部事件，用于上拉加载
-        if (this.pullup) {
-          this.scroll.on('scrollEnd', () => {
-            // 滚动到底部
-            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
-              this.$emit('scrollToEnd', this.scroll)
-            }
-          })
-        }
-
-        // 是否派发顶部下拉事件，用于下拉刷新
-        if (this.pulldown) {
-          this.scroll.on('touchEnd', (pos) => {
-            // 下拉动作
-            if (pos.y > 50) {
-              this.$emit('pulldown', this.scroll)
-            } 
-          })
-        }
-
-        // 是否派发列表滚动开始的事件
-        if (this.beforeScroll) {
-          this.scroll.on('beforeScrollStart', () => {
-            this.$emit('beforeScroll')
-          })
-        }
       },
-      disable() {
-        // 代理better-scroll的disable方法
-        this.scroll && this.scroll.disable()
-      },
-      enable() {
-        // 代理better-scroll的enable方法
-        this.scroll && this.scroll.enable()
-      },
-      refresh() {
-        // 代理better-scroll的refresh方法
-        this.scroll && this.scroll.refresh()
-      },
-      scrollTo() {
-        // 代理better-scroll的scrollTo方法
-        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
-      },
-      scrollToElement() {
-        // 代理better-scroll的scrollToElement方法
-        this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
-      }
     },
-
-    watch: {
-      // 监听数据的变化，延时refreshDelay时间后调用refresh方法重新计算，保证滚动效果正常
-      data() {
-        setTimeout(() => {
-          this.refresh()
-        }, this.refreshDelay)
-      }
-    }
   }
 </script>
 
 <style lang="stylus">
-
+.wrapper-box {
+  height 100%
+  overflow hidden
+}
 /* 下拉、上拉提示信息 */
 .top-tip{
     position: absolute;  

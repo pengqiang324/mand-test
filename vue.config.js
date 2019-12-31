@@ -144,15 +144,15 @@ module.exports = {
   productionSourceMap: false,
   devServer: {
     open: false,
-    disableHostCheck: true,  // 关闭主机检测
+    // disableHostCheck: true,  // 关闭主机检测
     // 跨域
     proxy: {
-     [process.env.RY_APP_BASE_API]: {
-      target: process.env.RY_APP_BASE_URL,
+     [process.env.VUE_APP_BASE_API]: {
+      target: process.env.VUE_APP_BASE_URL,
       changeOrigin: true,
       ws: true,
       pathRewrite: {
-        ['^' + process.env.RY_APP_BASE_API]: '',
+        ['^' + process.env.VUE_APP_BASE_API]: '',
       },
      }
     }

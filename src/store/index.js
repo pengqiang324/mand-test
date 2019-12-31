@@ -10,6 +10,7 @@ export default new Vuex.Store({
     showNetwork: false,  // 是否显示网络连接出错组件
     showErrorInfo: false, // 是否显示错误反馈信息组件
     showDiaLog: false,
+    showError: false,
     hideAppLoading: false,  // 隐藏app.vue中的全局loading
     errorMessage: ''      // 错误反馈信息描述
   },
@@ -34,6 +35,10 @@ export default new Vuex.Store({
 
     updateHideAppLoading(state, hideAppLoading) {
       state.hideAppLoading = hideAppLoading
+    },
+
+    updateShowError(state, showError) {
+      state.showError = showError
     }
   },
 

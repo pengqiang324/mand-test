@@ -4,7 +4,7 @@ import { Toast } from 'vant'
 import { IsIOS } from './lib'
 
 const service = axios.create({
-    baseURL: process.env.NODE_ENV === 'development' ? 'http://test-app.tunyukeji.com' : 'http://test-app.tunyukeji.com',
+    baseURL: process.env.NODE_ENV === 'development' ? process.env.VUE_APP_BASE_API : 'http://test-app.tunyukeji.com',
     timeout: 5000,
 })
 
@@ -20,7 +20,6 @@ service.interceptors.request.use((config) => {
 
 service.interceptors.response.use((response) => {
     const { success, message } = response.data
-    
     // 是否显示加载图标
     store.commit('updateLoading', false)
 
@@ -37,6 +36,7 @@ service.interceptors.response.use((response) => {
                     document.body.scrollTop += 1
                 }, 0)
             }
+            store.commit('updateShowError', false)
             // 这一步保证数据返回，如果没有return则会走接下来的代码，不是未登录就是报错
             return response
         default:
@@ -44,9 +44,11 @@ service.interceptors.response.use((response) => {
                 message: message,  // 后端抛出的错误
                 position: 'bottom',
             })
+            store.dispatch('updateShowError', true)
             return Promise.resolve(response)
     }
 }, (err) => {
+    console.log(err)
     if (err && err.response) {
         switch (err.response.status) {  // 由网络或者服务器抛出的错误
             case 400: err.message = '请求错误(400)' ; break;
@@ -68,9 +70,10 @@ service.interceptors.response.use((response) => {
 
     store.commit('updateLoading', false)
     
-    if (err.response.status !== 401) {
+    if (err.message.indexOf('timeout') !== -1 ||err.response.status !== 401) {
         store.commit('updateNetwork', true)
     }
+
 
     store.commit('updateErrorInfo', { 
         showErrorInfo: true,

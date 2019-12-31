@@ -46,7 +46,8 @@ export default {
 </script>
 
 <style lang="stylus">
-.ry-result-page-1
+.ry-result-page-1 
+  position fixed
   width 100%
   height 100%
   background #FFF

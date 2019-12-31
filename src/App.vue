@@ -127,15 +127,13 @@ export default {
   body,
   #app {
     height: 100%;
+    overflow hidden
   }
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;
-    display flex
-    align-items center
-    justify-content center
   }
   .push-enter-active,
   .push-leave-active, 
@@ -198,13 +196,13 @@ export default {
     position: absolute;
     overflow-x hidden
     -webkit-transform-style preserve-3d
-    -webkit-backface-visibility: hidden;
-    -webkit-overflow-scrolling:touch
+    -webkit-backface-visibility hidden
+    -webkit-overflow-scrolling touch
   }
 
   .ry-loading {
     width 100%
-    position fixed
+    position absolute
     top 0
     left 0
     z-index 1111

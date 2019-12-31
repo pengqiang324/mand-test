@@ -1,90 +1,87 @@
 <template>
-  <div class="about wrapper">
-    <h1 class="van-hairline--bottom">This is an about page</h1>
-    <ry-result-empty class="about-empty" v-if="isEmpty"/>
-    <ry-scroll-view
-      class="scroll-view"
-      v-if="!isEmpty"
-      :show-refresh="true"
-      :show-more="true"
-      :is-finished="isFinished"
-      @onRefresh="onRefresh"
-      @onEndReached="onEndReached"
-    >
-      <ul>
-        <li 
-          class="border-1px"
-          v-for="(item, index) in list" 
-          :key="index"
-        >{{item}}</li>
-      </ul>
-    </ry-scroll-view>
+  <div class="core-container">
+    <div class="scroll-wrapper" ref="scroll">
+      <div class="scroll-content">
+        <div class="scroll-item" v-for="(item, index) in emojis" :key="index">{{item}}</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'ry-about',
+  import BScroll from '@better-scroll/core'
 
-  data() {
-    return {
-      isEmpty: false,
-      isFinished: false,
-      list: [1, 2, 3, 4, 5]
-    }
-  },
-
-  created(){
-    console.log('about触发了')
-  },
-
-  methods: {
-    onRefresh({ finishRefresh }) {
-      setTimeout(() => {
-        this.list.unshift('新添加了一条数据')
-        finishRefresh()
-      }, 2000)
+  export default {
+    data () {
+      return {
+        emojis: [
+          '😀 😁 😂 🤣 😃',
+          '😄 😅 😆 😉 😊',
+          '😫 😴 😌 😛 😜',
+          '👆🏻 😒 😓 😔 👇🏻',
+          '😑 😶 🙄 😏 😣',
+          '😞 😟 😤 😢 😭',
+          '🤑 😲 ☹️ 🙁 😖',
+          '👍 👎 👊 ✊ 🤛',
+          '☝️ ✋ 🤚 🖐 🖖',
+          '👍🏼 👎🏼 👊🏼 ✊🏼 🤛🏼',
+          '☝🏽 ✋🏽 🤚🏽 🖐🏽 🖖🏽',
+          '🌖 🌗 🌘 🌑 🌒',
+          '💫 💥 💢 💦 💧',
+          '🐠 🐟 🐬 🐳 🐋',
+          '😬 😐 😕 😯 😶',
+          '😇 😏 😑 😓 😵',
+          '🐥 🐣 🐔 🐛 🐤',
+          '💪 ✨ 🔔 ✊ ✋',
+          '👇 👊 👍 👈 👆',
+          '💛 👐 👎 👌 💘'
+        ]
+      }
     },
-
-    onEndReached({ finishLoadMore }) {
-      const List = this.list
-      setTimeout(() => {
-        List.push('从后面添加了条数据')
-        if (List.length > 20) {
-          this.isFinished = true
-        }
-        finishLoadMore()
-      }, 2000)
+    mounted() {
+      this.init()
+    },
+    beforeDestroy() {
+      this.bs.destroy()
+    },
+    methods: {
+      init() {
+        this.bs = new BScroll(this.$refs.scroll, {
+          scrollY: true,
+          click: true,
+          probeType: 3 // listening scroll hook
+        })
+        this._registerHooks(['scroll', 'scrollEnd'], (pos) => {
+          console.log('done' + pos.y)
+        })
+      },
+      _registerHooks(hookNames, handler) {
+        hookNames.forEach((name) => {
+          this.bs.on(name, handler)
+        })
+      }
     }
   }
-}
 </script>
 
-<style lang="stylus">
-@import '../assets/styles/setting.styl'
+<style lang="stylus" rel="stylesheet/stylus" scoped>
 
-.about {
+.core-container
   setPadding()
-  h1 {
-    font-size 20px
-    height 100px
-    line-height 100px
-    text-align center
-  }
-  .about-empty {
-    setPadding()
-  }
-  .scroll-view {
-    .scroll-view-container {
-      setScrollPadding()
-    }
-  }
-  ul {
-    li {
+  padding-left 40px
+  padding-right 40px
+  .scroll-wrapper
+    height 100%
+    overflow hidden
+    .scroll-item
+      height 50*2px
+      line-height 50*2px
+      font-size 24*2px
+      font-weight bold
+      border-bottom 1px solid #eee
       text-align center
-      font-size 58px
-      line-height 120px
-    }
-  }
-}
+      &:nth-child(2n)
+        background-color #f3f5f7
+      &:nth-child(2n+1)
+        background-color #42b983
 </style>

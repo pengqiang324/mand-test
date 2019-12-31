@@ -1,12 +1,6 @@
 import { IsIOS } from '@/libs/lib'
 
 export default {
-    data() {
-        return {
-            scroll: null,
-        }
-    },
-
     methods: {
         onBlur() {
             if (IsIOS()) { // IOS系统

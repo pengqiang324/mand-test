@@ -1,160 +1,89 @@
 <template>
   <div class="home" v-cloak>
-    <ry-scroll 
-      class="home-wrapper"
-      :pulldown="true"
-      :pullup="true"
-      :bounce="false"
-      :listen-scroll="true"
-      :pull-up-load="true"
-      :pull-down-refresh="true"
-      :pull-up-msg="pullupMsg"
-      :pull-down-msg="pulldownMsg"
-      @pulldown="loadData"
-      @scroll="onscroll"
-      @scrollToEnd="onscrollend"
-    >
-      
         <template v-if="showNetwork">
-          <ry-result-network/>
+          <ry-result-network class="ry-network"/>
         </template>
         <template v-if="!showNetwork">
-          <div class="head">
-            <img src="../../assets/images/home/ry-bg01.png" alt="">
-          </div>
-          <ry-slider-scroll class="swiper-img">
-              <div class="swiper-box">
-                <img :src="swiperImg" alt="">
+          <ry-error-info v-show="showError"/>
+          <div v-show="!showError">
+            <div class="head">
+              <img src="../../assets/images/home/ry-bg01.png" alt="">
+            </div>
+            <ry-slider-scroll class="swiper-img">
+                <div class="swiper-box">
+                  <img :src="swiperImg" alt="">
+                </div>
+                <div class="swiper-box">
+                  <img :src="swiperImg" alt="">
+                </div>
+                <div class="swiper-box">
+                  <img :src="swiperImg" alt="">
+                </div>
+            </ry-slider-scroll>
+            <div class="card-box">
+              <div class="swiper-icon">
+                  <ul class="swiper-list">
+                    <li v-for="(key, i) in swiperIcon.imgs" :key="i">
+                      <h2><img v-lazy="key.img" alt=""></h2>
+                      <p>{{key.title}}</p>
+                    </li>
+                  </ul>
               </div>
-              <div class="swiper-box">
-                <img :src="swiperImg" alt="">
+              <div class="ry-tt">
+                <div class="ry-title">
+                  <span>融溢头条:</span>
+                </div>
+                <div class="ry-news">
+                  <swiper class="roll-ul" :options="swiperOption" ref="mySwiper" v-if="topMovieLists.length>0" >
+                      <swiper-slide v-for="(item,index) in topMovieLists" :key="index" >
+                        <span>{{item.content}}</span>
+                      </swiper-slide>
+                    </swiper>
+                </div>
               </div>
-              <div class="swiper-box">
-                <img :src="swiperImg" alt="">
-              </div>
-          </ry-slider-scroll>
-          <div class="card-box">
-            <div class="swiper-icon">
-                <ul class="swiper-list">
-                  <li v-for="(key, i) in swiperIcon.imgs" :key="i">
-                    <h2><img v-lazy="key.img" alt=""></h2>
-                    <p>{{key.title}}</p>
+            </div>
+            <div class="ry-banner" v-lazy:background-image="bannerImg">
+            </div>
+            <div class="bank-list">
+              <h1 class="tj-bank">推荐银行</h1>
+              <div class="bank-loading">
+                <ry-m-loading 
+                  class="loading" 
+                  size="20px"
+                  v-if="showLoading"
+                />
+                <ul v-else>
+                  <li v-for="(item, index) in bankList" :key="index">
+                    <h2 class="lazyload" v-lazy:background-image="item.picName" key="1"></h2>
+                    <h4>{{item.name}}</h4>
+                    <div class="bank-lable">
+                      <span :class="['bank-span', 'border', { 'bank-fro': !item.isonline }]">{{item.onlineClerk}}</span>
+                    </div>
+                    <div v-if="!item.isonline">
+                      <p class="bank-descri">{{item.oflineClerk}}</p>
+                      <p>{{item.oflineLowerclerk}}</p>
+                    </div>
+                    <div v-if="item.isonline">
+                      <p>{{item.onlineLowerclerk}}</p>
+                    </div>
+                    <div :class="['rj-sq', { 'rj-sq-on': !item.isonline }]">
+                      <span v-if="item.isonline">立即申请</span>
+                      <span v-else>待定</span>
+                    </div>
                   </li>
                 </ul>
+              </div>
             </div>
-            <div class="ry-tt">
-              <span>融溢头条:</span>
-              <ul>
-                <li>我是文案！~我是文案！~我是文案！~</li>
-              </ul>
-            </div>
-          </div>
-          <div class="ry-banner">
-            <img :src="bannerImg" data-state="loading" alt="">
-          </div>
-          <div class="bank-list">
-            <h1 class="tj-bank">推荐银行</h1>
-            <ul>
-              <li>
-                <h2><img src="../../assets/images/default_bg01.png" lazy="loading" key="1" alt=""></h2>
-                <h4>花旗银行</h4>
-                <div class="bank-lable">
-                  <span class="bank-fro">自动结算</span>
-                  <span>秒批</span>
-                </div>
-                <p class="bank-descri">消费即得36%返现</p>
-                <p>餐饮购物5折优惠</p>
-                <div class="rj-sq">
-                  <span>立即申请</span>
-                  <!-- <span>待定</span> -->
-                </div>
-              </li>
-              <li>
-                <h2><img v-lazy="bankImg" key="2" alt=""></h2>
-                <h4>花旗银行</h4>
-                <div class="bank-lable">
-                  <span class="bank-fro">自动结算</span>
-                  <span>秒批</span>
-                </div>
-                <p class="bank-descri">消费即得36%返现</p>
-                <p>餐饮购物5折优惠</p>
-                <div class="rj-sq rj-sq-on">
-                  <span>立即申请</span>
-                  <!-- <span>待定</span> -->
-                </div>
-              </li>
-              <li>
-                <h2><img v-lazy="bankImg" key="3" alt=""></h2>
-                <h4>花旗银行</h4>
-                <div class="bank-lable">
-                  <span class="bank-fro">自动结算</span>
-                  <span>秒批</span>
-                </div>
-                <p class="bank-descri">消费即得36%返现</p>
-                <p>餐饮购物5折优惠</p>
-                <div class="rj-sq rj-sq-on">
-                  <span>立即申请</span>
-                  <!-- <span>待定</span> -->
-                </div>
-              </li>
-              <li>
-                <h2><img v-lazy="bankImg4" key="4" alt=""></h2>
-                <h4>花旗银行</h4>
-                <div class="bank-lable">
-                  <span class="bank-fro">自动结算</span>
-                  <span>秒批</span>
-                </div>
-                <p class="bank-descri">消费即得36%返现</p>
-                <p>餐饮购物5折优惠</p>
-                <div class="rj-sq rj-sq-on">
-                  <span>立即申请</span>
-                  <!-- <span>待定</span> -->
-                </div>
-              </li>
-              <li>
-                <h2><img v-lazy="bankImg3" key="5" alt=""></h2>
-                <h4>花旗银行</h4>
-                <div class="bank-lable">
-                  <span class="bank-fro">自动结算</span>
-                  <span>秒批</span>
-                </div>
-                <p class="bank-descri">消费即得36%返现</p>
-                <p>餐饮购物5折优惠</p>
-                <div class="rj-sq rj-sq-on">
-                  <span>立即申请</span>
-                  <!-- <span>待定</span> -->
-                </div>
-              </li>
-              <li>
-                <h2><img v-lazy="bankImg2" key="6" alt=""></h2>
-                <h4>花旗银行</h4>
-                <div class="bank-lable">
-                  <span class="bank-fro">自动结算</span>
-                  <span>秒批</span>
-                </div>
-                <p class="bank-descri">消费即得36%返现</p>
-                <p>餐饮购物5折优惠</p>
-                <div class="rj-sq rj-sq-on">
-                  <span>立即申请</span>
-                  <!-- <span>待定</span> -->
-                </div>
-              </li>
-            </ul>
           </div>
         </template>
-    </ry-scroll>
   </div>
 </template>
 
 <script>
-import {
-  Swiper, 
-  ActionBar, 
-  SwiperItem, 
-} from 'mand-mobile'
-
 import { mapState } from 'vuex'
 import mixins from '@/libs/mixins'
+import { getBankList, getNewNews } from '@/api/home'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
 export default {
   name: "ry-home",
@@ -162,20 +91,17 @@ export default {
   mixins: [mixins],
 
   components: {
-    [Swiper.name]: Swiper,
-    [SwiperItem.name]: SwiperItem,
-    [ActionBar.name]: ActionBar,
+    swiper,
+    swiperSlide
   },
 
   data() {
     return {
       count: 0,
+      showLoading: false,
+      showError: false,
       bannerImg: require('@/assets/images/home/ry-banner01.png'),
       swiperImg: require('@/assets/images/home/swiper01.png'),
-      bankImg: require('@/assets/images/home/ry-bank01.png'),
-      bankImg2: require('@/assets/images/home/bank-gs.jpg'),
-      bankImg3: require('@/assets/images/home/bank-gf.jpg'),
-      bankImg4: require('@/assets/images/home/bank-js.jpg'),
       swiperIcon: {
         imgs: [
           {
@@ -195,71 +121,102 @@ export default {
           }
         ]
       },
-      data: [],
-      pulldown: true,
-      pulldownMsg: '下拉刷新',
-      pullupMsg: '上拉加载'
+      bankList: [],
+      topMovieLists: [],
+      bounce: {
+        top: false,
+        bottom: false,
+        right: false,
+        left: false
+      },
+      swiperOption: {
+          notNextTick: true,
+          direction: "vertical",   //控制滚动的方向
+          paginationClickable: true,
+          autoplay: {
+              delay:3000  //这里需要注意，如果想每2秒去自动切换，直接autoplay:2000是失效的，
+          },
+          loop: true,
+          
+      },
     }
   },
 
   computed: {
     ...mapState([
       'showNetwork',
+      'showError'
     ])
   },
 
   created() {
-     this.showDiaLog() // 是否显示完善信息弹窗
+      this.showLoading = true
+      this.showDiaLog() // 是否显示完善信息弹窗
+      this.getBankList()
   },
 
   mounted() {
-    
   },
 
 
   methods: {
-    loadData(scroll) {
-      this.pulldownMsg = "正在努力更新..."
-      setTimeout(() => {
-        this.pulldownMsg = '下拉刷新'
-        scroll.finishPullDown() //数据加载完毕
-      }, 3000)
+    getNews() {
+      getNewNews()
+      .then((res) => {
+        const { data, success } = res.data
+        if (success) {
+          this.showError = false
+          this.topMovieLists = data
+        } 
+      })
     },
 
-    onscroll(pos) {
-      if(pos.y > 50){
-          this.pulldownMsg = '释放立即刷新'
-      } else {
-        if (this.pulldownMsg !== '下拉刷新') {
-          this.pulldownMsg = '正在努力更新...'
-        }
+    getBankList() {
+      const data = {
+        city_name: '长沙',
       }
-    },
+      getBankList(data)
+      .then((res) => {
+        const { data, success } = res.data
+        if (success) {
+            this.getNews() // 获取新闻信息
+            this.showError = false
+            const arr1 = data.online.map((item) => {
+              item.isonline = 1
+              return item
+            })
 
-    onscrollend(scroll) {
-      this.pullupMsg='玩命加载中...'
-      setTimeout(() => {
-        this.pullupMsg = '加载更多'
-        scroll.finishPullUp()
-      }, 3000)
+            const arr2 = data.offline.map((item) => {
+              item.isonline = 0
+              return item
+            })
+            
+            this.bankList = this.bankList.concat(arr1, arr2)
+        }
+        this.showLoading = false
+      })
     }
   },
 };
 </script>
 
 <style lang="stylus">
+.ry-network {
+ setPadding()
+}
+
+
 .home {
-  overflow hidden
-  padding-bottom 180px
-  box-sizing border-box
-  position relative
+  setPadding()
   width 100%
+  position relative
   font-size 28px
   background #f2f2f2
 }
 
 .home-wrapper {
   height 100%
+  overflow hidden
 }
 
 .head {
@@ -284,6 +241,8 @@ export default {
     float left
     width 100%
     height 280px
+    transform: translate3d(0,0,0)
+    backface-visibility: hidden
   }
   img {
     display block
@@ -329,42 +288,84 @@ export default {
 .ry-tt {
   display flex
   margin 38px 0 8px
-  padding  14px 22px 14px 30px
+  padding  0 22px 0 30px
   height 56px
   line-height 28px
   border-radius 28px
   background #fff
   box-sizing border-box
   span {
+    display flex
+    padding 15px 0 14px
+    align-items center
+    display block
     margin-right 15px
-    line-height 28px
     color #f00
     font-weight bold
+    line-height 28px
     font-size 28px
   }
-  ul {
+  .ry-news {
+    display flex
     flex 1
     color #101010
+    overflow hidden
+    padding 15px 0
+    align-items center
+    .news-slider {
+      height 56px
+      line-height 56px
+      overflow hidden
+      box-sizing border-box
+    }
+    .swiper-container {
+      height 56px
+      line-height 56px
+      overflow hidden
+    }
+    span {
+      margin-right 0
+      color #000
+      font-weight 100
+      font-size 28px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis 
+      transform: translate3d(0,0,0)
+      backface-visibility: hidden
+      box-sizing border-box
+    }
   }
 }
 
 .ry-banner {
-  padding 0 16px 20px 18px
+  margin 0 auto 20px 
+  width 716px
   height 222px
-  img {
-    width 100%
-    height 100%
+  background-size 100% 100%
+  box-sizing border-box 
+  &[lazy='loading'] {
+    background-color #eee
   }
 }
 
 .bank-list {
-  padding 0 40px
+  padding 0 40px 228px
   .tj-bank {
     margin-bottom 10px
     font-size 32px
     font-family Noto Sans S Chinese
     line-height 32px
   }
+  .bank-loading {
+    .loading {
+      padding 50px 0 30px
+    }
+    img {
+      width 120px
+    }
+  }
+
   ul {
     &:after {
       display block
@@ -388,14 +389,14 @@ export default {
       margin-right 0
     }
     h2 {
-      img {
-        display block
-        margin auto
-        width 90px
-        height 90px
-        &[lazy='loading'] {
-          transform scale(0.6)
-        }
+      margin auto
+      width 90px
+      height 90px
+      background-repeat no-repeat
+      background-size 100% 100%
+      &[lazy='loading'] {
+        border-radius 50%
+        transform scale(.7)
       }
     }
     h4 {
@@ -407,22 +408,31 @@ export default {
       color #3a3a3a
     }
     .bank-lable {
-      display flex
-      justify-content space-evenly
-      margin-bottom 16px
-      line-height 26px
-      span {
-        display block
-        padding 3px 4px 0
-        line-height 20px
+      margin auto
+      display table
+      padding-bottom 16px
+      .bank-span {
+        display: table-cell
+        text-align center
+        vertical-align middle
+        background #fff
+        min-width 52px
+        padding 5px 4px
+        height 20px
         color #FF5E00
         font-size 20px
-        border 1px solid rgba(255,94,0,1)
-        border-radius 4px
-        box-sizing border-box
+        &:first-child {
+          margin-right 8px
+        }
+        &.border:before {
+          border-radius 8px
+          border-color rgba(255,94,0,1)
+        }
         &.bank-fro {
-          border-color #989898
           color #989898
+          &.border:before {
+            border-color #989898
+          }
         }
       }
     }
@@ -443,6 +453,7 @@ export default {
       line-height 48px
       text-align center
       background #FC2F20
+      border-radius 0 0 10px 10px
       &.rj-sq-on {
         background #989898
       }

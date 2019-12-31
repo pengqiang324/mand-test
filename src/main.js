@@ -8,6 +8,7 @@ import VueWechatTitle from 'vue-wechat-title'
 import VuePageStack from 'vue-page-stack'
 import VueTouch from 'vue-touch'
 import VueComponent from './libs/globalComponent'
+import  fastClick from 'fastclick'
 import { USER_LOGIN, USER_USERWXINFO, USER_REFRESHUSERINFO } from '@/actions/user'
 
 // 全局样式
@@ -16,24 +17,14 @@ import "mand-mobile/components/_style/global.styl"
 import "normalize.css"
 import "vant/es/index.less"
 
-Vue.use(VueLazyload, {
-  loading: require('./assets/images/default_bg01.png'),
-  filter: {
-    progressive (listener) {
-        const isCDN = /loading/
-        if (isCDN.test(listener.el.dataset.state)) {
-            // listener.el.setAttribute('lazy-progressive', 'true')
-            listener.loading = require('./assets/images/ry_logo@2x.png')
-        }
-    },
-  }
-})
-
+fastClick.attach(document.body)
+Vue.use(VueLazyload, {})
 Vue.use(VueWechatTitle)
 Vue.use(VuePageStack, { router })
 Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(VueComponent)
 Vue.config.productionTip = false
+
 VueTouch.config.swipe = {
   threshold: 80 //手机左右滑动距离
 }
@@ -57,7 +48,7 @@ router.beforeEach(async (to, from, next) => {
       // 开发环境、测试环境
       const response = {
         data: {
-          token: '7455d1ed-16ab-46bb-a4a5-6e1c29be54f8',
+          token: '84eea3a6-eeaa-482a-923c-1db9258b6a00',
           userId: 'b174db5ae2c941099acd95907105e57e',
           wxOpen: 'oPlVK1Ad3HPa07JojQY6H4fIQ7PQ',
           top: 0,

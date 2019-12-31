@@ -46,6 +46,7 @@ export default {
 
 <style lang="stylus">
 .error-box {
+  width 100%
   position absolute
   bottom 110px
   z-index 1000

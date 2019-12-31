@@ -14,46 +14,16 @@ a {
 .wrapper 
     height 100%
 
-border-1px($color)
-  position:relative
-  &:after
-    display:block
-    position:absolute
-    left:0
-    bottom:0
-    width:100%
-    border-bottom:1px solid $color
-    content:' '
-.border-1px
-   border-1px(#dedede)
-
-border-1px-all($color)
-  position:relative
-  &:after
-    display:block
-    position:absolute
-    left:0
-    bottom:0
-    width:100%
-    border:1px solid $color
-    content:' '
-
-@media (-webkit-min-device-pixel-ratio:1.5),(min-device-pixel-ratio:1.5)
-  .border-1px
-    &::after
-      -webkit-transform:scaleY(0.7)
-      transform:scaleY(0.7)
-
-@media (-webkit-min-device-pixel-ratio:2),(min-device-pixel-ratio:2)
-  .border-1px
-    &::after
-      -webkit-transform:scaleY(0.5)
-      transform:scaleY(0.5)
-
 setPadding()
     padding-bottom 100px
     box-sizing border-box
 
 img[lazy='loading'] {
- 
+  background-color #eee
+}
+
+.lazyload[lazy='loading'] {
+  background-color #eee
+  background-image url('../images/default_bg01.png') !important
+  background-size cover
 }
