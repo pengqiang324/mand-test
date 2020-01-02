@@ -3,6 +3,7 @@ const poststylus = require('poststylus')
 const pxtorem = require('postcss-pxtorem')
 const UglifyPlugin = require('uglifyjs-webpack-plugin')  // 去除打印信息（console）
 const CompressionPlugin = require("compression-webpack-plugin") // 开启gizp压缩
+const { SkeletonPlugin } = require('page-skeleton-webpack-plugin')
 const resolve = file => path.resolve(__dirname, file)
 let { version, openGzip } = require('./package.json')
 version = version.replace(/\./g, '_')
@@ -67,6 +68,14 @@ module.exports = {
       .options({
         symbolId: "[name]"
       });
+
+      // 解决vue-cli3脚手架创建的项目压缩html 干掉<!-- shell -->导致骨架屏不生效
+      if (process.env.NODE_ENV !== 'development') {
+        config.plugin('html').tap(opts => {
+          opts[0].minify.removeComments = false
+          return opts
+        })
+      }
   },
   configureWebpack: (config) => {
     if (process.env.NODE_ENV === 'production') {
@@ -122,7 +131,7 @@ module.exports = {
           ...config.output,
           filename: `js/[name].[chunkhash].${version}.js`,
           chunkFilename: `js/[name].[chunkhash].${version}.js`
-        }
+        },
       })
 
       // gizp压缩
@@ -140,6 +149,14 @@ module.exports = {
       // 为开发环境修改配置...
       config.mode = 'development'
     }
+
+    config.plugins.push(
+      new SkeletonPlugin({
+        pathname: path.resolve(__dirname, './shell'), // 用来存储 shell 文件的地址
+        staticDir: path.resolve(__dirname, './rongyi-test-v2.0'), // 最好和 `output.path` 相同
+        routes: ['/'], // 将需要生成骨架屏的路由添加到数组中
+      })
+    )
   },
   productionSourceMap: false,
   devServer: {

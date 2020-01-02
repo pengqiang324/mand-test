@@ -1,25 +1,27 @@
 <template>
-  <div class="home" v-cloak>
+  <div class="home needsclick" v-cloak>
         <template v-if="showNetwork">
           <ry-result-network class="ry-network"/>
         </template>
         <template v-if="!showNetwork">
           <ry-error-info v-show="showError"/>
           <div v-show="!showError">
-            <div class="head">
-              <img src="../../assets/images/home/ry-bg01.png" alt="">
+            <div>
+              <div class="head">
+                <img src="../../assets/images/home/ry-bg01.png" alt="">
+              </div>
+              <ry-slider-scroll class="swiper-img">
+                  <div class="swiper-box">
+                    <img :src="swiperImg" alt="">
+                  </div>
+                  <div class="swiper-box">
+                    <img :src="swiperImg" alt="">
+                  </div>
+                  <div class="swiper-box">
+                    <img :src="swiperImg" alt="">
+                  </div>
+              </ry-slider-scroll>
             </div>
-            <ry-slider-scroll class="swiper-img">
-                <div class="swiper-box">
-                  <img :src="swiperImg" alt="">
-                </div>
-                <div class="swiper-box">
-                  <img :src="swiperImg" alt="">
-                </div>
-                <div class="swiper-box">
-                  <img :src="swiperImg" alt="">
-                </div>
-            </ry-slider-scroll>
             <div class="card-box">
               <div class="swiper-icon">
                   <ul class="swiper-list">
@@ -99,7 +101,6 @@ export default {
     return {
       count: 0,
       showLoading: false,
-      showError: false,
       bannerImg: require('@/assets/images/home/ry-banner01.png'),
       swiperImg: require('@/assets/images/home/swiper01.png'),
       swiperIcon: {
@@ -165,7 +166,6 @@ export default {
       .then((res) => {
         const { data, success } = res.data
         if (success) {
-          this.showError = false
           this.topMovieLists = data
         } 
       })
@@ -180,7 +180,6 @@ export default {
         const { data, success } = res.data
         if (success) {
             this.getNews() // 获取新闻信息
-            this.showError = false
             const arr1 = data.online.map((item) => {
               item.isonline = 1
               return item
@@ -207,9 +206,13 @@ export default {
 
 
 .home {
-  setPadding()
   width 100%
-  position relative
+  height auto
+  position absolute
+  top 0
+  left 0
+  right 0
+  bottom 100px
   font-size 28px
   background #f2f2f2
 }
@@ -220,9 +223,11 @@ export default {
 }
 
 .head {
+  height 256px
   padding-bottom 124px
   img {
     display block
+    height 100%
     width 100%
   }
 }
@@ -230,7 +235,8 @@ export default {
 .swiper-img {
   position absolute
   top 60px
-  left 40px
+  left 50%
+  transform translateX(-50%)
   width 670px
   height 280px
   box-shadow 0px 6px 12px rgba(0,0,0,0.16)
@@ -252,8 +258,9 @@ export default {
 }
 
 .card-box {
-  padding 0 40px
+  padding 0 40px 8px
   .swiper-icon {
+    padding-bottom 38px
     .swiper-list {
       h2 {
         width 120px
@@ -287,7 +294,6 @@ export default {
 
 .ry-tt {
   display flex
-  margin 38px 0 8px
   padding  0 22px 0 30px
   height 56px
   line-height 28px
@@ -352,7 +358,7 @@ export default {
 .bank-list {
   padding 0 40px 228px
   .tj-bank {
-    margin-bottom 10px
+    padding-bottom 10px
     font-size 32px
     font-family Noto Sans S Chinese
     line-height 32px

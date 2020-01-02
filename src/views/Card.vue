@@ -10,7 +10,6 @@ export default {
   name: 'ry-card',
 
   created(){
-    console.log(this.img)
   },
 
   methods: {
