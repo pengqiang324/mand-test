@@ -12,10 +12,12 @@ export default {
 
   methods: {
     swiperLeft() {
+      console.log('向左滑动了')
       this.$router.forward()
     },
 
     swiperRight() {
+      console.log('向右滑动了')
       this.$router.back()
     }
   }

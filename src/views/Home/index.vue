@@ -1,27 +1,25 @@
 <template>
-  <div class="home needsclick" v-cloak>
+  <div class="home" v-cloak>
         <template v-if="showNetwork">
           <ry-result-network class="ry-network"/>
         </template>
         <template v-if="!showNetwork">
           <ry-error-info v-show="showError"/>
           <div v-show="!showError">
-            <div>
-              <div class="head">
-                <img src="../../assets/images/home/ry-bg01.png" alt="">
-              </div>
-              <ry-slider-scroll class="swiper-img">
-                  <div class="swiper-box">
-                    <img :src="swiperImg" alt="">
-                  </div>
-                  <div class="swiper-box">
-                    <img :src="swiperImg" alt="">
-                  </div>
-                  <div class="swiper-box">
-                    <img :src="swiperImg" alt="">
-                  </div>
-              </ry-slider-scroll>
+            <div class="head">
+              <img src="../../assets/images/home/ry-bg01.png" alt="">
             </div>
+            <ry-slider-scroll class="swiper-img">
+                <div class="swiper-box">
+                  <img :src="swiperImg" alt="">
+                </div>
+                <div class="swiper-box">
+                  <img :src="swiperImg" alt="">
+                </div>
+                <div class="swiper-box">
+                  <img :src="swiperImg" alt="">
+                </div>
+            </ry-slider-scroll>
             <div class="card-box">
               <div class="swiper-icon">
                   <ul class="swiper-list">
@@ -206,13 +204,9 @@ export default {
 
 
 .home {
+  setPadding()
   width 100%
-  height auto
-  position absolute
-  top 0
-  left 0
-  right 0
-  bottom 100px
+  position relative
   font-size 28px
   background #f2f2f2
 }
@@ -223,11 +217,9 @@ export default {
 }
 
 .head {
-  height 256px
   padding-bottom 124px
   img {
     display block
-    height 100%
     width 100%
   }
 }
@@ -235,8 +227,7 @@ export default {
 .swiper-img {
   position absolute
   top 60px
-  left 50%
-  transform translateX(-50%)
+  left 40px
   width 670px
   height 280px
   box-shadow 0px 6px 12px rgba(0,0,0,0.16)
@@ -258,9 +249,8 @@ export default {
 }
 
 .card-box {
-  padding 0 40px 8px
+  padding 0 40px
   .swiper-icon {
-    padding-bottom 38px
     .swiper-list {
       h2 {
         width 120px
@@ -294,6 +284,7 @@ export default {
 
 .ry-tt {
   display flex
+  margin 38px 0 8px
   padding  0 22px 0 30px
   height 56px
   line-height 28px
@@ -358,7 +349,7 @@ export default {
 .bank-list {
   padding 0 40px 228px
   .tj-bank {
-    padding-bottom 10px
+    margin-bottom 10px
     font-size 32px
     font-family Noto Sans S Chinese
     line-height 32px

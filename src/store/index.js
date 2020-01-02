@@ -38,6 +38,7 @@ export default new Vuex.Store({
     },
 
     updateShowError(state, showError) {
+      console.log(showError)
       state.showError = showError
     }
   },

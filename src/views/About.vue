@@ -67,7 +67,6 @@
 <style lang="stylus" rel="stylesheet/stylus" scoped>
 
 .core-container
-  background #000
   setPadding()
   padding-left 40px
   padding-right 40px

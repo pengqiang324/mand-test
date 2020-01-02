@@ -37,8 +37,6 @@ export default {
 
   methods: {
     $ry_onrefresh() {
-      // this.$router.go(0) //ios中无效果
-      // location.reload()
       this.reload()
     }
   }

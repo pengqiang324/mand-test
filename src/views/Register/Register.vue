@@ -13,7 +13,6 @@
                 v-model="phoneNumber"
                 ref="input0"
                 @focus="toggleKeyboard(0)"
-                class="needsclick"
               />
           </div>
           <div class="user-number border-1px">
@@ -24,7 +23,6 @@
                 v-model="indtyCode"
                 ref="input1"
                 @focus="toggleKeyboard(1)"
-                class="needsclick"
               />
               <span
                 class="getcode" 
@@ -306,10 +304,6 @@ export default {
         onReProtocol() {
             this.$router.push('/reprotocol')
         },
-
-        touchbefore() {
-            this.btnShow = true
-        }
     }
 }
 </script>
