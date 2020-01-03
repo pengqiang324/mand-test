@@ -12,6 +12,7 @@ export default new Vuex.Store({
     showDiaLog: false,
     showError: false,
     hideAppLoading: false,  // 隐藏app.vue中的全局loading
+    showErrorLogin: false,  //  初始进公众号时返回系统繁忙，错误异常显示
     errorMessage: ''      // 错误反馈信息描述
   },
 
@@ -38,8 +39,11 @@ export default new Vuex.Store({
     },
 
     updateShowError(state, showError) {
-      console.log(showError)
       state.showError = showError
+    },
+
+    updateShowErrorLogin(state, showErrorLogin) {
+      state.showErrorLogin = showErrorLogin
     }
   },
 
@@ -50,6 +54,10 @@ export default new Vuex.Store({
 
     hideAppLoading({ commit }, payload) {
       commit('updateHideAppLoading', payload)
+    },
+
+    showErrorLogin({ commit }, payload) {
+      commit('updateShowErrorLogin', payload)
     }
   },
 

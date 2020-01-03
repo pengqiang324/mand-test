@@ -18,15 +18,15 @@ const routes = [
     }
   },
   {
-    path: '/about',
-    name: 'ry-about',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    path: '/credit',
+    name: 'ry-credit',
+    component: () => import(/* webpackChunkName: "about" */ '../views/credit'),
     meta: {
       index: 1,
       navIndex: 1,
       keepAlive: true,
       hasFooter: true,
-      title: '关于'
+      title: '信贷',
     }
   },
   {
@@ -42,15 +42,15 @@ const routes = [
     }
   },
   {
-    path: '/card',
-    name: 'ry-card',
-    component: () => import(/* webpackChunkName: "card" */ '../views/Card.vue'),
+    path: '/personalTailor',
+    name: 'ry-personalTailor',
+    component: () => import(/* webpackChunkName: "personalTailor" */ '../views/personalTailor'),
     meta: {
       index: 1,
       navIndex: 2,
       keepAlive: true,
       hasFooter: true,
-      title: '信用卡'
+      title: '私人定制'
     }
   },
   {
@@ -108,6 +108,11 @@ const routes = [
     meta: {
       index: 1
     }
+  },
+  {
+    path: '/error',
+    name: 'ry-error',
+    component: () => import(/* webpackChunkName: "error" */ '../components/ResultPage/RyErrorInfo.vue'),
   },
   {
     path: '*',

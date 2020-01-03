@@ -89,7 +89,6 @@ export default {
 
     deactivated() {
         clearTimeout(this.playTimer)
-        console.log(this.slide)
         this.slide && this.slide.destroy()
     },
 

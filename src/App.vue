@@ -20,6 +20,7 @@
     <ry-tabbar v-show="$route.meta.hasFooter"/>
     <ry-error-prompt :visible="showErrorInfo"/>
     <ry-perfect-dialog :show="showDiaLog"/>
+    <ry-error-info v-if="showErrorLogin"></ry-error-info>
   </div>
 </template>
 <script>
@@ -51,7 +52,8 @@ export default {
     ...mapState([
       'showDiaLog',
       'showErrorInfo',
-      'hideAppLoading'
+      'hideAppLoading',
+      'showErrorLogin'
     ])
   },
 
@@ -65,6 +67,7 @@ export default {
         }
         return
       }
+
       // 如果to索引大于from索引,判断为前进状态,反之则为后退状态
       if (to.meta.index == from.meta.index) {
         if (from.path === '/register') {
@@ -90,6 +93,7 @@ export default {
         require('./assets/images/default_bg01.png'),
         require('./assets/images/emptyInfo@2x.png'),
         require('./assets/images/ry_logo@2x.png'),
+        require('./assets/images/banner/ry-bg01.png'),
         require('./assets/images/tabbar/ry-icon01.png'),
         require('./assets/images/tabbar/ry-icon02.png'),
         require('./assets/images/tabbar/ry-icon03.png'),
@@ -97,7 +101,7 @@ export default {
         require('./assets/images/tabbar/ry-icon01-active.png'),
         require('./assets/images/tabbar/ry-icon02-active.png'),
         require('./assets/images/tabbar/ry-icon03-active.png'),
-        require('./assets/images/tabbar/ry-icon04-active.png'),
+        require('./assets/images/tabbar/ry-icon04-active.png')
     ]
     for (let img of imgs) {
         let image = new Image();

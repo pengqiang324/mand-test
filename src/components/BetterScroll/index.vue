@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-box" ref="wrapper">
-    <div>
+    <div class="wrapper-li">
       <!-- 刷新提示信息 -->
       <div class="top-tip" v-if="pulldown">
           <span class="refresh-hook">{{pullDownMsg}}</span>

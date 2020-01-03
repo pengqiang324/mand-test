@@ -1,6 +1,35 @@
 import { IsIOS } from '@/libs/lib'
+import { mapState } from 'vuex'
 
 export default {
+    data() {
+        return {
+            scrollTop: 0,
+            showNetWork: false, // 显示网络连接出错组件
+            showErrorIn: false, // 显示不知出错在哪组件
+        }
+    },
+
+    computed: {
+        ...mapState([
+          'showNetwork',
+          'showError'
+        ])
+    },
+
+    mounted() {
+        this.bindScroll()
+    },
+
+    activated() {
+        this.bindScroll()
+        this.$refs.scroll && this.$refs.scroll.$_scrollTo(this.scrollTop)  // 滚动元素需绑定ref=scroll
+    },
+
+    deactivated() {
+        this.$off('scrolled')
+    },
+
     methods: {
         onBlur() {
             if (IsIOS()) { // IOS系统
@@ -27,5 +56,28 @@ export default {
                 this.$store.dispatch('showDiaLog', true)
             }
         },
+
+        scroll({ scrollTop }) {
+            this.$emit('scrolled', scrollTop)
+        },
+    
+        bindScroll() {
+            this.$on('scrolled', (top) => {
+                this.scrollTop = top
+            })
+        },
+        
+        hideErrorInTip() {
+            if (this.showNetWork) this.showNetWork = false
+            if (this.showErrorIn) this.showErrorIn = false
+        },
+
+        showErrorTip(res) {
+            if (res.code == -404 && res.message.indexOf('401') == -1) {
+                this.showNetWork = true
+              } else {
+                this.showErrorIn = true
+            }
+        }
     }
 }

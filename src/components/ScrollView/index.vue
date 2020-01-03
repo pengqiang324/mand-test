@@ -12,8 +12,10 @@
       ref="scrollView"
       :scrolling-x="false"
       :auto-reflow="true"
+      :bouncing="bounce"
       @refreshing="$_onRefresh"
       @end-reached="$_onEndReached"
+      @scroll="$_onScroll"
     >
       <md-scroll-view-refresh
         v-if="showRefresh"
@@ -42,6 +44,7 @@ import {
     ScrollViewRefresh, 
     ScrollViewMore
 } from 'mand-mobile'
+// import { store } from '@/libs/store'
 
 export default {
     name: 'ry-scroll-view',
@@ -66,6 +69,11 @@ export default {
         isFinished: {
             type: Boolean,
             default: false
+        },
+
+        bounce: {
+            type: Boolean,
+            default: true
         }
     },
 
@@ -93,6 +101,16 @@ export default {
         $_onFinishLoadMore() {
             this.$refs.scrollView.reflowScroller() // 重置滚动内容
             this.$refs.scrollView.finishLoadMore()
+        },
+
+        $_onScroll(payload) {
+            this.$emit('scroll', payload)
+        },
+        // 记录滚动条记录
+        $_scrollTo(top) {
+            setTimeout(() => {
+                this.$refs.scrollView.scrollTo(0, top, true)
+            }, 80)
         }
     }
 }

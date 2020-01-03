@@ -16,6 +16,7 @@ import './assets/styles/index.styl'
 import "mand-mobile/components/_style/global.styl"
 import "normalize.css"
 import "vant/es/index.less"
+import 'swiper/dist/css/swiper.css'
 
 fastClick.attach(document.body)
 Vue.use(VueLazyload, {})
@@ -67,7 +68,8 @@ router.beforeEach(async (to, from, next) => {
   }
   
   if (to.path === '/reagree' || to.path === '/reprotocol') return next()
-
+  if (to.path === '/error') return next()
+  
   if (!flag && to.path !== '/register') {
     return next('/register') //初次登录注册重定向注册登录页面
   }
@@ -98,7 +100,8 @@ async function hasCode(to, next) {
     }))
 
     if (response.data && response.data.success) {
-      const { data } = response.data;
+      store.dispatch('showErrorLogin', false)
+      const { data } = response.data
       const res = await store.dispatch(USER_LOGIN({
         username: data.openId
       }))
@@ -112,7 +115,9 @@ async function hasCode(to, next) {
       }else {
         return next('/register')
       }
-    } 
+    } else {
+      store.dispatch('showErrorLogin', true)  // 显示错误反馈
+    }
   }
 }
 

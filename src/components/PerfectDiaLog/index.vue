@@ -39,6 +39,7 @@
                         @blur="onBlur"
                     />
                 </p>
+                <p class="perfect-tips">*&nbsp;请正确填写邀请码，否则影响专属客服为您服务</p>
                 <ry-button
                     class="ry-button"
                     :btn-show="btnShow"
@@ -53,7 +54,7 @@
 </template>
 
 <script>
-import { perfectUserInfo } from '@/api/user/user'
+import { perfectUserInfo, synchroinfo } from '@/api/user/user'
 import { idCard } from '@/libs/validate'
 import mixins from '@/libs/mixins'
 import {
@@ -124,6 +125,11 @@ export default {
                             this.$router.push('/')
                         }, 300)
                     }
+                    // 同步用户注册信息
+                    synchroinfo()
+                    .then((res) => {
+                        console.log(res)
+                    })
                 }
             })
         },
@@ -227,6 +233,14 @@ export default {
       }
   }
 }
+
+.perfect-tips {
+    margin-top 10px
+    padding-left 50px
+    font-size 20px
+    color #f00
+}
+
 .ry-button {
     margin 86px 0 60px
 }

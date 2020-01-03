@@ -10,6 +10,8 @@ const service = axios.create({
 
 service.interceptors.request.use((config) => {
     store.commit('updateLoading', true)
+    store.commit('updateNetwork', false)
+    store.commit('updateShowError', false)
 
     const TOKEN = localStorage.getItem('token')
     if (TOKEN) config.headers.common['Authorization'] = TOKEN
@@ -51,7 +53,7 @@ service.interceptors.response.use((response) => {
     if (err && err.response) {
         switch (err.response.status) {  // 由网络或者服务器抛出的错误
             case 400: err.message = '请求错误(400)' ; break;
-            case 401: err.message = '未授权，请重新登录(401)';break;
+            case 401: err.message = '未授权，请重新登录(401)'; break;
             case 403: err.message = '拒绝访问(403)'; break; //重新登陆 token失效
             case 404: err.message = '请求出错(404)'; break;  // 接口404
             case 408: err.message = '请求超时(408)'; break;
@@ -64,16 +66,10 @@ service.interceptors.response.use((response) => {
             default: err.message = `连接出错(${err.response.status})!`;
         }
     }else{
-        err.message = '连接服务器失败!'
+        err.message = '连接服务器失败'
     }
 
-    if (err.code === 'ECONNABORTED' || err.message === 'Network Error') {
-        err.message = '请求超时，请在5秒后重试'
-    }
-
-    store.commit('updateLoading', false)
-    
-    if (err.message.indexOf('Network Error') !== -1 ||err.response.status !== 401) {
+    if (err.message.indexOf('连接服务器失败') !== -1 ||err.response && err.response.status !== 401) {
         store.commit('updateNetwork', true)
     }
 
@@ -82,7 +78,7 @@ service.interceptors.response.use((response) => {
         showErrorInfo: true,
         errorMessage: err.message
     })
-
+    
     // 统一返回resolve 错误反馈
     const errData = {
         code: -404,

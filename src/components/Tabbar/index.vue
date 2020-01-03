@@ -12,6 +12,7 @@
           :key="index" 
           :to="item.url"
           :info="item.info ? item.info: ''"
+          class="needsclick"
         >
           <span>{{item.title}}</span>
           <img
@@ -48,14 +49,14 @@ export default {
               {
                 title: '信贷',
                 info: 0,
-                url: '/about',
+                url: '/credit',
                 active: require('@/assets/images/tabbar/ry-icon02-active.png'),
                 inactive: require('@/assets/images/tabbar/ry-icon02.png')
               },
               {
                 title: '私人定制',
                 info: 0,
-                url: '/card',
+                url: '/personalTailor',
                 active: require('@/assets/images/tabbar/ry-icon03-active.png'),
                 inactive: require('@/assets/images/tabbar/ry-icon03.png')
               },

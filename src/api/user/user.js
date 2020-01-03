@@ -84,3 +84,11 @@ export function logout() {
         method: 'post'
     })
 }
+
+// 用户信息注册同步
+export function synchroinfo() {
+    return request({
+        url: `${api}/cardkeeper/synchroinfo`,
+        method: 'post'
+    })
+}

@@ -1,77 +1,86 @@
 <template>
   <div class="register-box">
-      <div class="logo-header">
-          <img src="../../assets/images/ry_logo@2x.png" alt="">
-          <h4 class="title">征信不良 融溢帮忙</h4>
-      </div>
-      <div class="user-info">
-          <div class="user-name border-1px">
-              <input 
-                type="text" 
-                placeholder="请输入手机号码" 
-                readonly="readonly"
-                v-model="phoneNumber"
-                ref="input0"
-                @focus="toggleKeyboard(0)"
-              />
-          </div>
-          <div class="user-number border-1px">
-              <input 
-                type="text" 
-                placeholder="请输入6位验证码"
-                readonly="readonly"
-                v-model="indtyCode"
-                ref="input1"
-                @focus="toggleKeyboard(1)"
-              />
-              <span
-                class="getcode" 
-                :disabled="disabled"
-                @click.stop="getCode"
-              >
-                {{btnTitle}}
-              </span>
-          </div>
-          <p class="register-tips">若您未注册，验证后自动注册并登陆</p>
-          <div class="register-agree">
-            <van-checkbox 
-            class="register-checkbox"
-            v-model="checked" 
-            checked-color="#ff4300"
-            shape="square"
-            icon-size="15px"
-            :label-disabled="true"
-            >
-                <span class="login-agree" @click="onCheck">登录即同意</span>
-                <span class="register-span" @click="onReAgree">《用户注册协议》</span>
-                <span class="register-span register-icon" @click="onReProtocol">《用户隐私保护协议》</span>
-            </van-checkbox>
+    <template v-if="showNetwork">
+        <ry-result-network/>
+    </template>
+    <template v-else>
+        <div>
+            <div class="logo-header">
+                <img src="../../assets/images/ry_logo@2x.png" alt="">
+                <h4 class="title">征信不良 融溢帮忙</h4>
+            </div>
+            <div class="user-info">
+                <div class="user-name border-1px">
+                    <input 
+                        type="text" 
+                        placeholder="请输入手机号码" 
+                        readonly="readonly"
+                        v-model="phoneNumber"
+                        ref="input0"
+                        @focus="toggleKeyboard(0)"
+                        class="needsclick"
+                    />
+                </div>
+                <div class="user-number border-1px">
+                    <input 
+                        type="text" 
+                        placeholder="请输入6位验证码"
+                        readonly="readonly"
+                        v-model="indtyCode"
+                        ref="input1"
+                        @focus="toggleKeyboard(1)"
+                        class="needsclick"
+                    />
+                    <span
+                        class="getcode" 
+                        :disabled="disabled"
+                        @click.stop="getCode"
+                    >
+                        {{btnTitle}}
+                    </span>
+                </div>
+                <p class="register-tips">若您未注册，验证后自动注册并登陆</p>
+                <div class="register-agree">
+                    <van-checkbox 
+                    class="register-checkbox"
+                    v-model="checked" 
+                    checked-color="#ff4300"
+                    shape="square"
+                    icon-size="15px"
+                    :label-disabled="true"
+                    >
+                        <span class="login-agree" @click="onCheck">登录即同意</span>
+                        <span class="register-span" @click="onReAgree">《用户注册协议》</span>
+                        <span class="register-span register-icon" @click="onReProtocol">《用户隐私保护协议》</span>
+                    </van-checkbox>
+                </div>
+            </div>
+            <div class="register-login">
+                <ry-button
+                        btn-title="登录"
+                        :btn-show="btnShow"
+                        @touchbefore="touchbefore"
+                        @touchafter="onLogin"
+                    />
+            </div>
+            <!-- 数字键盘start -->
+            <div class="keyboard">
+                <md-number-keyboard
+                    v-model="isKeyBoardShow[0]"
+                    hide-dot
+                    @enter="onNumberEnter"
+                    @delete="onNumberDelete"
+                    ></md-number-keyboard>
+                    <md-number-keyboard
+                    v-model="isKeyBoardShow[1]"
+                    hide-dot
+                    @enter="onNumberEnter"
+                    @delete="onNumberDelete"
+                    ></md-number-keyboard>
+            </div>
+            <!-- 数字键盘end -->
         </div>
-      </div>
-      <div class="register-login">
-           <ry-button
-                btn-title="登录"
-                :btn-show="btnShow"
-                @touchbefore="touchbefore"
-                @touchafter="onLogin"
-            />
-      </div>
-      <!-- 数字键盘start -->
-      <div class="keyboard">
-          <md-number-keyboard
-            v-model="isKeyBoardShow[0]"
-            hide-dot
-            @enter="onNumberEnter"
-            @delete="onNumberDelete"
-            ></md-number-keyboard>
-            <md-number-keyboard
-            v-model="isKeyBoardShow[1]"
-            hide-dot
-            @enter="onNumberEnter"
-            @delete="onNumberDelete"
-            ></md-number-keyboard>
-      </div>
-      <!-- 数字键盘end -->
+    </template>
   </div>
 </template>
 
@@ -138,7 +147,8 @@ export default {
         },
 
         ...mapState({
-            userWxInfo: state => state.user.userWxInfo
+            userWxInfo: state => state.user.userWxInfo,
+            showNetwork: 'showNetwork'
         })
     },
 
@@ -304,6 +314,10 @@ export default {
         onReProtocol() {
             this.$router.push('/reprotocol')
         },
+
+        touchbefore() {
+            this.btnShow = true
+        }
     }
 }
 </script>
@@ -339,6 +353,7 @@ export default {
             line-height 23*2px
             color #666
             background none
+            border-bottom 1px solid #ddd
             &::-webkit-input-placeholder {
                 color #b4b4b4
             }

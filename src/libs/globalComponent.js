@@ -3,12 +3,17 @@ import {
     Toast,
     Notify,
     Overlay,
-    Loading
+    Loading,
+    Tab, 
+    Tabs,
+    List,
+    Cell
 } from 'vant'
 
 import { 
     Button,
-    NumberKeyboard
+    NumberKeyboard,
+    Icon
 } from 'mand-mobile'
 
 /*
@@ -21,7 +26,9 @@ import {
 ** @ComponentName RyPerfectDiaLog 完善信息组件
 ** @ComponentName RySrcoll better-scroll组件
 ** @ComponentName RySlideScroll 轮播图组件
+** @ComponentName RyScrollView 滚动区域组件
 ** @ComponentName RyMLoading 载入组件
+** @ComponentName RyBannerHead banner头部轮播组件
 */
 
 import RyLoading from '../components/Loading'
@@ -33,8 +40,10 @@ import RyResultEmpty from '../components/ResultPage/RyEmptyInfo'
 import RyButton from '../components/Button'
 import RyPerfectDiaLog from '../components/PerfectDiaLog'
 import RyScroll from '../components/BetterScroll'
+import RyScrollView from '../components/ScrollView'
 import RySliderScroll from '../components/SliderScroll'
 import RyMLoading from '../components/Mloading'
+import RyBannerHead from '../components/BannerHead'
 
 export default {
     install(Vue) {
@@ -43,6 +52,11 @@ export default {
         Vue.component(Notify.name, Notify)
         Vue.component(Button.name, Button)
         Vue.component(Overlay.name, Overlay)
+        Vue.component(Tab.name, Tab)
+        Vue.component(Tabs.name, Tabs)
+        Vue.component(List.name, List)
+        Vue.component(Cell.name, Cell)
+        Vue.component(Icon.name, Icon)
         Vue.component(NumberKeyboard.name, NumberKeyboard)
         Vue.component(RyLoading.name, RyLoading)
         Vue.component(RyResultPage.name, RyResultPage)
@@ -55,5 +69,7 @@ export default {
         Vue.component(RySliderScroll.name, RySliderScroll)
         Vue.component(RyMLoading.name, RyMLoading)
         Vue.component(RyErrorInfo.name, RyErrorInfo)
+        Vue.component(RyScrollView.name, RyScrollView)
+        Vue.component(RyBannerHead.name, RyBannerHead)
     }
 }

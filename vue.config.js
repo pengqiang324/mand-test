@@ -109,9 +109,9 @@ module.exports = {
           uglifyOptions: {
               warnings: false,
               compress: {
-                drop_console: true, // console
-                drop_debugger: false,
-                pure_funcs: ['console.log'] // 移除console
+                // drop_console: true, // console
+                // drop_debugger: false,
+                // pure_funcs: ['console.log'] // 移除console
               }
           }
         })]
@@ -122,7 +122,7 @@ module.exports = {
           ...config.output,
           filename: `js/[name].[chunkhash].${version}.js`,
           chunkFilename: `js/[name].[chunkhash].${version}.js`
-        }
+        },
       })
 
       // gizp压缩
