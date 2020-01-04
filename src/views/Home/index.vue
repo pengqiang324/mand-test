@@ -154,6 +154,7 @@ export default {
       getBankList(data)
       .then((res) => {
         const { data, success } = res.data
+        this.showLoading = false
         if (success) {
             this.getNews() // 获取新闻信息
             const arr1 = data.online.map((item) => {
@@ -167,7 +168,6 @@ export default {
             })
             
             this.bankList = this.bankList.concat(arr1, arr2)
-            this.showLoading = false
             this.hideErrorTip()
         } else {
             this.showErrorTip(res)

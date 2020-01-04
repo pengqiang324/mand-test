@@ -13,6 +13,7 @@ export default {
 <style lang="stylus">
 .credit {
   display flex
+  height 100%
   align-items center
   justify-content center
   font-size 32px

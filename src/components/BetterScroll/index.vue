@@ -2,12 +2,12 @@
   <div class="wrapper-box" ref="wrapper">
     <div class="wrapper-li">
       <!-- 刷新提示信息 -->
-      <div class="top-tip" v-if="pulldown">
+      <div class="top-tip" v-if="pullDownRefresh">
           <span class="refresh-hook">{{pullDownMsg}}</span>
       </div>
       <slot></slot>
       <!-- 底部提示信息 -->
-      <div class="bottom-tip" v-if="pullup">
+      <div class="bottom-tip" v-if="pullUpLoad">
           <span class="loading-hook">{{pullUpMsg}}</span>
       </div>
     </div>
@@ -74,21 +74,9 @@
        */
       data: {
         type: Array,
-        default: null
-      },
-      /**
-       * 是否派发滚动到底部的事件，用于上拉加载
-       */
-      pullup: {
-        type: Boolean,
-        default: false
-      },
-      /**
-       * 是否派发顶部下拉的事件，用于下拉刷新
-       */
-      pulldown: {
-        type: Boolean,
-        default: false
+        default: () => {
+          return []
+        }
       },
       /**
        * 是否派发列表滚动开始的事件
@@ -132,20 +120,6 @@
        type: Boolean,
        default: false
      },
-     /*
-     * 下拉刷新文案
-     */  
-     pullDownMsg: {
-       type: String,
-       default: '下拉刷新'
-     },
-     /*
-     * 上拉加载文案
-     */  
-     pullUpMsg: {
-       type: String,
-       defalut: '加载更多'
-     },
 
       /*
       * 是否回弹动画
@@ -167,21 +141,61 @@
       observeDom: {
         type: Boolean,
         default: true
-      }
+      },
+      /*
+      * 数据总长度
+      */ 
+     total: {
+       type: Number
+     }
     },
 
     data() {
       return {
-        scroll: null
+        scroll: null,
+        pullUpMsg: '加载更多',
+        pullDownMsg: '下拉刷新',
+        isScrollUp: false,
+      }
+    },
+
+    watch: {
+      data() {
+        // if (this.isScrollUp) {
+        //   this.pullUpMsg = '加载更多'
+        //   if (this.data >= this.total) {
+        //     this.pullUpMsg = '没有更多了'
+        //     this.scroll.closePullUp() // 关闭上拉加载功能
+        //   }
+        // } else {
+        //   this.pullDownMsg = '下拉刷新'
+        //   console.log('刷新成功')
+        // }
+        this.pullUpMsg = '加载更多'
+          if (this.data.length >= this.total) {
+            this.pullUpMsg = '没有更多了'
+            this.scroll.closePullUp() // 关闭上拉加载功能
+        }
+        setTimeout(() => {
+          this.scroll.finishPullUp() // 完成一次下拉加载
+          // !this.isScrollUp && this.scroll.finishPullDown()
+          this.scroll.refresh()
+        }, 20)
       }
     },
 
     mounted() {
-      this._initScroll()
+      setTimeout(() => {
+        this._initScroll()
+      }, 20)
     },
 
     updated() {
-      this.scroll.refresh()
+      // this.scroll.refresh()
+    },
+
+    activated() {
+      this.scroll && this.scroll.refresh()
     },
 
     deactivated() {
@@ -207,6 +221,23 @@
           scrollbar: this.scrollbar,
           observeDom: this.observeDom
         })
+        // 上拉加载
+        if (this.pullUpLoad) {
+          this.scroll.on('pullingUp', () => {
+            // this.isScrollUp = true
+            this.pullUpMsg = '拼命加载中...'
+            this.$emit('pullingUp')  // 滚动到底部
+          })
+        }
+
+        // 下拉刷新
+        if (this.pullDownRefresh) {
+          this.scroll.on('pullingDown', () => {
+            // this.isScrollUp = false
+            this.pullDownMsg = '刷新数据中'
+            this.$emit('pullingDown')
+          })
+        }
       },
     },
   }
@@ -236,8 +267,6 @@
       line-height: 40px;
       text-align: center;
       color: #989898;
-      position: absolute;
-      bottom: -60px;
-      left: 0;
+      padding 15px 0
   }
 </style>

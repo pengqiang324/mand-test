@@ -67,7 +67,7 @@ export default {
             })
         },
         
-        hideErrorInTip() {
+        hideErrorTip() {
             if (this.showNetWork) this.showNetWork = false
             if (this.showErrorIn) this.showErrorIn = false
         },
@@ -75,7 +75,7 @@ export default {
         showErrorTip(res) {
             if (res.code == -404 && res.message.indexOf('401') == -1) {
                 this.showNetWork = true
-              } else {
+            } else {
                 this.showErrorIn = true
             }
         }

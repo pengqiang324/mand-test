@@ -341,7 +341,7 @@ export default {
         line-height 36px
         text-align center
         font-size 32px
-        color #000
+        color #b8b8b8
     }
     .user-info {
         padding 0 70px
