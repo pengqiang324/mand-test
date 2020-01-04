@@ -90,7 +90,7 @@ export default {
             },
             list: [],
             page: 1,   // 请求页数
-            size: 2,  // 显示多少条数据
+            size: 5,  // 显示多少条数据
             total: 20,
             showLoading: false
         }
