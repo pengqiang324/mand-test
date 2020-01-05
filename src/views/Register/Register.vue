@@ -1,86 +1,88 @@
 <template>
   <div class="register-box">
-    <template v-if="showNetwork">
-        <ry-result-network/>
-    </template>
-    <template v-else>
-        <div>
-            <div class="logo-header">
-                <img src="../../assets/images/ry_logo@2x.png" alt="">
-                <h4 class="title">征信不良 融溢帮忙</h4>
-            </div>
-            <div class="user-info">
-                <div class="user-name border-1px">
-                    <input 
-                        type="text" 
-                        placeholder="请输入手机号码" 
-                        readonly="readonly"
-                        v-model="phoneNumber"
-                        ref="input0"
-                        @focus="toggleKeyboard(0)"
-                        class="needsclick"
-                    />
-                </div>
-                <div class="user-number border-1px">
-                    <input 
-                        type="text" 
-                        placeholder="请输入6位验证码"
-                        readonly="readonly"
-                        v-model="indtyCode"
-                        ref="input1"
-                        @focus="toggleKeyboard(1)"
-                        class="needsclick"
-                    />
-                    <span
-                        class="getcode" 
-                        :disabled="disabled"
-                        @click.stop="getCode"
-                    >
-                        {{btnTitle}}
-                    </span>
-                </div>
-                <p class="register-tips">若您未注册，验证后自动注册并登陆</p>
-                <div class="register-agree">
-                    <van-checkbox 
-                    class="register-checkbox"
-                    v-model="checked" 
-                    checked-color="#ff4300"
-                    shape="square"
-                    icon-size="15px"
-                    :label-disabled="true"
-                    >
-                        <span class="login-agree" @click="onCheck">登录即同意</span>
-                        <span class="register-span" @click="onReAgree">《用户注册协议》</span>
-                        <span class="register-span register-icon" @click="onReProtocol">《用户隐私保护协议》</span>
-                    </van-checkbox>
-                </div>
-            </div>
-            <div class="register-login">
-                <ry-button
-                        btn-title="登录"
-                        :btn-show="btnShow"
-                        @touchbefore="touchbefore"
-                        @touchafter="onLogin"
-                    />
-            </div>
-            <!-- 数字键盘start -->
-            <div class="keyboard">
-                <md-number-keyboard
-                    v-model="isKeyBoardShow[0]"
-                    hide-dot
-                    @enter="onNumberEnter"
-                    @delete="onNumberDelete"
-                    ></md-number-keyboard>
-                    <md-number-keyboard
-                    v-model="isKeyBoardShow[1]"
-                    hide-dot
-                    @enter="onNumberEnter"
-                    @delete="onNumberDelete"
-                    ></md-number-keyboard>
-            </div>
-            <!-- 数字键盘end -->
+    <div>
+        <div class="logo-header">
+            <img src="../../assets/images/ry_logo@2x.png" alt="">
+            <h4 class="title">征信不良 融溢帮忙</h4>
         </div>
-    </template>
+        <div class="user-info">
+            <div class="user-name border-input">
+                <input 
+                    type="text" 
+                    placeholder="请输入手机号码" 
+                    readonly="readonly"
+                    v-model="phoneNumber"
+                    ref="input0"
+                    @focus="toggleKeyboard(0)"
+                    class="needsclick"
+                />
+            </div>
+            <div class="user-number border-input">
+                <input 
+                    type="text" 
+                    placeholder="请输入6位验证码"
+                    readonly="readonly"
+                    v-model="indtyCode"
+                    ref="input1"
+                    @focus="toggleKeyboard(1)"
+                    class="needsclick"
+                />
+                <span
+                    class="getcode" 
+                    :disabled="disabled"
+                    @click.stop="getCode"
+                >
+                    <van-loading
+                        v-show="codeLoad" 
+                        size="16px" 
+                        color="#ff6f00" 
+                        class="van-load"
+                    />
+                    {{btnTitle}}
+                </span>
+            </div>
+            <p class="register-tips">若您未注册，验证后自动注册并登陆</p>
+            <div class="register-agree">
+                <van-checkbox 
+                class="register-checkbox"
+                v-model="checked" 
+                checked-color="#ff4300"
+                shape="square"
+                icon-size="15px"
+                :label-disabled="true"
+                >
+                    <span class="login-agree" @click="onCheck">登录即同意</span>
+                    <span class="register-span" @click="onReAgree">《用户注册协议》</span>
+                    <span class="register-span register-icon" @click="onReProtocol">《用户隐私保护协议》</span>
+                </van-checkbox>
+            </div>
+        </div>
+        <div class="register-login">
+            <ry-button
+                    btn-title="登录"
+                    :btn-show="btnShow"
+                    :loading="loading"
+                    @touchbefore="touchbefore"
+                    @touchafter="onLogin"
+                />
+        </div>
+        <!-- 数字键盘start -->
+        <div class="keyboard">
+            <md-number-keyboard
+                v-model="isKeyBoardShow[0]"
+                hide-dot
+                @enter="onNumberEnter"
+                @delete="onNumberDelete"
+                ></md-number-keyboard>
+            <md-number-keyboard
+                v-model="isKeyBoardShow[1]"
+                hide-dot
+                @enter="onNumberEnter"
+                @delete="onNumberDelete"
+                ></md-number-keyboard>
+        </div>
+        <!-- 数字键盘end -->
+    </div>
   </div>
 </template>
 
@@ -113,6 +115,8 @@ export default {
             disabled: false,
             btnShow: false,
             changeColor: false,
+            codeLoad: false,
+            loading: false,
             isKeyBoardShow: [],
             phoneNumber: '',
             indtyCode: '', // 验证码
@@ -208,19 +212,24 @@ export default {
                 })
             } else {
                 if (this.btnTitle == '获取验证码') {
+                    this.codeLoad = true
                     const content = `验证码已发送至 ${this.phoneNumber.substr(0, 3)}****${this.phoneNumber.substr(7, 4)}`
                     const response = await this.$store.dispatch(USER_GETVALIDATECODE({tel: this.phoneNumber}))
-                    this.smsCode = response.data.data.smsCode
-                
-                    this.$notify({
-                        message: content,
-                        color: '#fff',
-                        background: 'rgba(0,0,0,.7)'
-                    })
-                    //打开数字键盘
-                    this.isKeyBoardShow[1] = true
-                    this.index = 1
-                    this.validateBtn()
+                    if (response.data.success) {
+                        this.smsCode = response.data.data.smsCode
+                        
+                        this.$notify({
+                            message: content,
+                            color: '#fff',
+                            background: 'rgba(0,0,0,.7)'
+                        })
+                        //打开数字键盘
+                        this.isKeyBoardShow[1] = true
+                        this.index = 1
+                        this.validateBtn()
+                    } else {
+                        this.codeLoad = false
+                    }
                 } else {
                     return
                 }
@@ -228,6 +237,7 @@ export default {
         },
 
         validateBtn(){
+            this.codeLoad = false
             //倒计时
             let time = 60
             let timer = setInterval(() => {
@@ -256,6 +266,7 @@ export default {
                return
            }
 
+            this.loading = true
             const response = await this.$store.dispatch(USER_VALIDATESMSCODE({
                 smsCode: this.smsCode, 
                 validCode: this.indtyCode
@@ -263,12 +274,8 @@ export default {
 
             if (response.data && response.data.success) {
                 this.submit()
-            }else {
-                this.$toast({
-                   message: response.data.message,
-                   duration: 3000,
-                   position: 'bottom'
-               })
+            } else {
+                this.loading = false
             }
         },
 
@@ -283,6 +290,8 @@ export default {
             }));
             if (response.data.success) {
                 this.login() // 登录
+            } else {
+                this.loading = false
             }
         },
 
@@ -290,6 +299,7 @@ export default {
             const response = await this.$store.dispatch(USER_LOGIN({
                 username: this.phoneNumber
             }));
+            
             if (response.data.success) {
                 const { isCert } = response.data.data
                 if (!isCert) {
@@ -299,6 +309,7 @@ export default {
                     this.$router.push('/')
                 }
             } 
+            this.loading = false
         },
 
         // 获取微信code
@@ -317,7 +328,7 @@ export default {
 
         touchbefore() {
             this.btnShow = true
-        }
+        },
     }
 }
 </script>
@@ -345,16 +356,19 @@ export default {
     }
     .user-info {
         padding 0 70px
+        .border-input {
+            border-bottom 2px solid #ddd
+        }
         input {
             display block
             width 100%
             padding 6*2px 0
-            font-size 14*2px
+            font-size 16*2px
             line-height 23*2px
             color #666
             background none
-            border-bottom 1px solid #ddd
             &::-webkit-input-placeholder {
+                font-size 28px
                 color #b4b4b4
             }
         }
@@ -362,6 +376,8 @@ export default {
             position: relative
             margin-top 37*2px
             .getcode {
+                display flex
+                align-items center
                 position absolute
                 right 0
                 bottom 6*2px
@@ -372,6 +388,9 @@ export default {
                 background none
                 border 1px solid #dcdcdc
                 border-radius 20*2px
+                .van-load {
+                    margin-right 6px
+                }
             }
         }
         .register-tips {

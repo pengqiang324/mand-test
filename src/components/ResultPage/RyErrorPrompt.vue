@@ -49,14 +49,14 @@ export default {
   width 100%
   position absolute
   bottom 110px
-  z-index 1000
+  z-index 3000
   text-align center
   .error-info {
     display inline-block
     padding 16px 24px
     border-radius 8px
     background rgba(50, 50, 51, 0.88)
-    opcity 80
+    opacity 80
     color #fff
     font-size 28px
     text-align center

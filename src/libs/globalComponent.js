@@ -13,7 +13,8 @@ import {
 import { 
     Button,
     NumberKeyboard,
-    Icon
+    Icon,
+    ActivityIndicator
 } from 'mand-mobile'
 
 /*
@@ -58,6 +59,7 @@ export default {
         Vue.component(Cell.name, Cell)
         Vue.component(Icon.name, Icon)
         Vue.component(NumberKeyboard.name, NumberKeyboard)
+        Vue.component(ActivityIndicator.name, ActivityIndicator)
         Vue.component(RyLoading.name, RyLoading)
         Vue.component(RyResultPage.name, RyResultPage)
         Vue.component(RyResultNetwork.name, RyResultNetwork)

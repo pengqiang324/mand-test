@@ -6,7 +6,19 @@
 */ 
 <template>
     <div class="perfect-btn">
-        <p class="perfect-confirm" @touchstart="onComfirm" @touchend="onTouchend">{{btnTitle}}</p>
+        <p 
+            @touchstart="onComfirm" 
+            @touchend="onTouchend"
+            class="perfect-confirm"
+        >
+            <md-activity-indicator
+                v-if="loading"
+                type="carousel"
+                color="#fff"
+                :size="10"
+            />
+            <span v-else>{{btnTitle}}</span>
+        </p>
         <p class="btn-smark" v-show="btnShow"></p>
     </div>
 </template>
@@ -24,6 +36,11 @@ export default {
         btnTitle: {
             type: String,
             default: '确认'
+        },
+
+        loading: {
+            type: Boolean,
+            default: false
         }
     },
 
@@ -44,6 +61,9 @@ export default {
       position relative
       user-select none
       .perfect-confirm {
+        display flex
+        align-items center
+        justify-content center
         width 100%
         height 84px
         line-height 84px

@@ -9,7 +9,7 @@
             <div class="perfect-info">
                 <h1>完善申请人信息</h1>
                 <p class="perfect-ms">本平台需实名认证，请<span>完善以下本人信息</span></p>
-                <p class="perfect-input">
+                <p class="perfect-input border-bottom">
                     <span>*</span>
                     <input 
                         type="text" 
@@ -20,7 +20,7 @@
                     />
                     <span class="tips" v-show="tips_show">姓名不能为空</span>
                 </p>
-                <p class="perfect-input">
+                <p class="perfect-input border-bottom">
                     <span>*</span>
                     <input 
                         type="text" 
@@ -31,7 +31,7 @@
                     />
                     <span class="tips" v-show="tips_idCard">{{idcardMessage}}</span>
                 </p>
-                <p class="perfect-input" style="margin-bottom: 0">
+                <p class="perfect-input border-bottom" style="margin-bottom: 0">
                     <input 
                         type="number" 
                         placeholder="请输入邀请码" 
@@ -54,9 +54,11 @@
 </template>
 
 <script>
+import { Dialog } from 'vant'
 import { perfectUserInfo, synchroinfo } from '@/api/user/user'
 import { idCard } from '@/libs/validate'
 import mixins from '@/libs/mixins'
+
 import {
   USER_REFRESHUSERINFO
 } from '@/actions/user'
@@ -65,6 +67,10 @@ export default {
     name: 'ry-perfect-dialog',
 
     mixins: [mixins],
+
+    components: {
+        [Dialog.Component.name]: Dialog.Component
+    },
 
     props: {
         show: {
@@ -108,30 +114,21 @@ export default {
 
             const nameSuccess = this.validateName() // 校验姓名是否为空
             const idCardSuccess = this.validateIdCard() //校验身份证是否为空、是否身份证符合规范
-
+            const codeSuccess = this.validateCode() // 校验邀请码是否为空
             if (!nameSuccess || !idCardSuccess) return
 
-            perfectUserInfo({
-                cardNo: this.idCard,
-                inviteCode: this.invidCode ? this.invidCode : '999999',
-                name: this.userName
-            })
-            .then(async (res) => {
-                if (res.data.success) {
-                    await this.$store.dispatch(USER_REFRESHUSERINFO())  // 刷新用户信息
-                    this.$store.dispatch('showDiaLog', false)
-                    if (this.$route.path !== '/') {
-                        this.timer = setTimeout(() => {
-                            this.$router.push('/')
-                        }, 300)
-                    }
-                    // 同步用户注册信息
-                    synchroinfo()
-                    .then((res) => {
-                        console.log(res)
-                    })
-                }
-            })
+            if (!codeSuccess) {
+                Dialog.confirm({
+                    title: '您是否确认忽略邀请码',
+                    message: '忽略邀请码将没有专属客服为您服务',
+                    confirmButtonColor: '#ff6f00',
+                    className: 'ry-tips',
+                    beforeClose: this.beforeClose
+                })
+                return
+            }
+
+            this.perfectInfo()
         },
 
         validateName() {
@@ -158,6 +155,52 @@ export default {
                 this.tips_idCard = false
             }
             return true
+        },
+
+        validateCode() {
+            if (!this.invidCode) return false
+            return true
+        },
+
+        perfectInfo() {
+           return perfectUserInfo({
+                cardNo: this.idCard,
+                inviteCode: this.invidCode ? this.invidCode : '999999',
+                name: this.userName
+            })
+            .then(async (res) => {
+                if (res.data.success) {
+                    await this.$store.dispatch(USER_REFRESHUSERINFO())  // 刷新用户信息
+                    this.$store.dispatch('showDiaLog', false)
+                    if (this.$route.path !== '/') {
+                        this.timer = setTimeout(() => {
+                            this.$router.push('/')
+                        }, 300)
+                    }
+                    // 同步用户注册信息
+                    synchroinfo()
+                    .then((res) => {
+                        console.log(res)
+                    })
+                }
+                return Promise.resolve(res)
+            })
+        },
+
+        beforeClose(action, done) {
+            if (action === 'confirm') {
+                this.perfectInfo()
+                .then((res) => {
+                    if (res.data.success) {
+                        done()
+                    } else {
+                        done(false)
+                    }
+                    
+                })
+            } else {
+                done()
+            }
         }
     }
 }
@@ -172,7 +215,7 @@ export default {
 }
 
 .perfect-info {
-  padding 0 80px
+  padding 0 60px
   width 670px
   background-color #fff
   border-radius 20px
@@ -193,6 +236,7 @@ export default {
       font-size 28px
       font-weight 600
       color #000
+      text-align center
       span {
           color #f00
       }
@@ -200,19 +244,21 @@ export default {
   .perfect-input {
       position relative
       margin-bottom 40px
-      border-bottom 2px solid #dcdcdc
+      border-color #dcdcdc
       input {
             display block
             width 100%
-            padding 12px 0 12px 50px
-            font-size 28px
-            line-height 28px
+            padding 8px 0 8px 50px
+            font-size 32px
+            line-height 32px
             color #666
             background none
+            caret-color #ff6f00
             &::-webkit-input-placeholder {
                 color #b4b4b4
                 letter-spacing 2px
-                font-size 24px
+                font-size 28px
+                line-height 42px
             }
       }
       span {
@@ -243,5 +289,12 @@ export default {
 
 .ry-button {
     margin 86px 0 60px
+}
+
+.ry-tips {
+    .van-dialog__message--has-title {
+        padding-top 10px
+        color #f00
+    }
 }
 </style>
