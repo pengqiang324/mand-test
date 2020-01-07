@@ -54,14 +54,12 @@ const routes = [
     }
   },
   {
-    path: '/child',
-    name: 'ry-child',
-    component: () => import(/* webpackChunkName: "child" */ '../views/Child.vue'),
+    path: '/personalInfo',
+    name: 'ry-personalInfo',
+    component: () => import(/* webpackChunkName: "personalInfo" */ '../views/personalTailor/info.vue'),
     meta: {
       index: 2,
-      hasFooter: false,
-      keepAlive: false,
-      title: '子页'
+      title: '顾问详情'
     }
   },
   {

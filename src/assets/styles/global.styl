@@ -27,3 +27,18 @@ img[lazy='loading'] {
   background-image url('../images/default_bg01.png') !important
   background-size cover
 }
+
+.btn-active {
+    position relative
+    overflow hidden
+    &:after {
+        display block
+        content ''
+        width 100%
+        height 100%
+        position absolute
+        left 0
+        top 0
+        background rgba(0,0,0,.1)
+    }
+}

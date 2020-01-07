@@ -12,12 +12,12 @@
             class="perfect-confirm"
         >
             <md-activity-indicator
-                v-if="loading"
+                v-show="loading"
                 type="carousel"
                 color="#fff"
                 :size="10"
             />
-            <span v-else>{{btnTitle}}</span>
+            <span v-show="!loading">{{btnTitle}}</span>
         </p>
         <p class="btn-smark" v-show="btnShow"></p>
     </div>
@@ -50,6 +50,7 @@ export default {
         },
 
         onTouchend() {
+            console.log(123)
             this.$emit('touchafter', false)
         }
     }

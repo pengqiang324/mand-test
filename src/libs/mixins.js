@@ -7,6 +7,7 @@ export default {
             scrollTop: 0,
             showNetWork: false, // 显示网络连接出错组件
             showErrorIn: false, // 显示不知出错在哪组件
+            isActive: false, // 点击显示按钮遮罩层
         }
     },
 
@@ -78,6 +79,14 @@ export default {
             } else {
                 this.showErrorIn = true
             }
+        },
+
+        publishStart() {
+            this.isActive = true
+        },
+
+        publishEnd() {
+            this.isActive = false
         }
     }
 }

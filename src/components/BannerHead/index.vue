@@ -49,7 +49,6 @@ export default {
                     delay:3000  //这里需要注意，如果想每2秒去自动切换，直接autoplay:2000是失效的，
                 },
                 loop: true,
-                
             }
         }
     },

@@ -17,30 +17,39 @@
                     class="scroll-list" 
                 >
                     <div class="per-scroll">
-                        <div class="per-list" v-for="(item, index) in list" :key="index">
-                            <div class="per-list-head">
-                                <h2 class="lazyload" v-lazy:background-image="item.headImage">
-                                    <img v-if="item.headImage == null" src="../../assets/images/common/ry-ts.png" alt="">
-                                </h2>
-                                <div class="per-lhead-pri">
-                                    <div class="per-pri-head">
-                                        <span class="per-pri-name">{{item.name}}</span>
-                                        <span class="per-pri-lname">花名:&nbsp;{{item.flowerName}}</span>
-                                        <span class="per-pri-zwei">{{item.levelName}}</span>
-                                        <van-icon name="arrow" class="per-icon-arrow" />
+                        <div
+                            v-for="(item, index) in list" 
+                            :key="index"
+                            class="per-list" 
+                        >
+                            <router-link
+                                :to="{path: '/personalInfo', query: {memberId: item.memberId}}"
+                                tag="div"
+                            >
+                                <div class="per-list-head">
+                                    <h2 class="lazyload" v-lazy:background-image="item.headImage">
+                                        <img v-if="item.headImage == null" src="../../assets/images/common/ry-ts.png" alt="">
+                                    </h2>
+                                    <div class="per-lhead-pri">
+                                        <div class="per-pri-head">
+                                            <span class="per-pri-name">{{item.name}}</span>
+                                            <span class="per-pri-lname">花名:&nbsp;{{item.flowerName}}</span>
+                                            <span class="per-pri-zwei">{{item.levelName}}</span>
+                                            <van-icon name="arrow" class="per-icon-arrow" />
+                                        </div>
+                                        <p class="per-pri-middle">专业：{{item.majorName}}</p>
+                                        <p class="per-pri-bottom">回复时间：周一至周六<span>9:00 — 18:00</span></p>
                                     </div>
-                                    <p class="per-pri-middle">专业：{{item.majorName}}</p>
-                                    <p class="per-pri-bottom">回复时间：周一至周六<span>9:00 — 18:00</span></p>
                                 </div>
-                            </div>
-                            <div class="per-info-pri">
-                                <p>回复率<span>{{item.recoveryRate}}%</span></p>
-                                <p class="per-info-fuwu">服务人数<span>{{item.totalService}}</span></p>
-                                <p class="per-info-pj">好评率<span>{{item.favorableRate}}%</span></p>
-                            </div>
-                            <div class="per-info-taste">
-                                <p><span>擅长:</span>{{item.expert}}</p>
-                            </div>
+                                <div class="per-info-pri">
+                                    <p>回复率<span>{{item.recoveryRate}}%</span></p>
+                                    <p class="per-info-fuwu">服务人数<span>{{item.totalService}}</span></p>
+                                    <p class="per-info-pj">好评率<span>{{item.favorableRate}}%</span></p>
+                                </div>
+                                <div class="per-info-taste">
+                                    <p><span>擅长:</span>{{item.expert}}</p>
+                                </div>
+                            </router-link>
                             <div class="per-info-jg">
                                 <span class="per-jg-active">
                                     <md-icon
