@@ -60,9 +60,7 @@
         <div class="register-login">
             <ry-button
                     btn-title="登录"
-                    :btn-show="btnShow"
                     :loading="loading"
-                    @touchbefore="touchbefore"
                     @touchafter="onLogin"
                 />
         </div>
@@ -254,7 +252,6 @@ export default {
         },
 
         async onLogin() {
-           this.btnShow = false
            const { isClick, message } = this.isClick
 
            if (!isClick) {
@@ -324,10 +321,6 @@ export default {
 
         onReProtocol() {
             this.$router.push('/reprotocol')
-        },
-
-        touchbefore() {
-            this.btnShow = true
         },
     }
 }

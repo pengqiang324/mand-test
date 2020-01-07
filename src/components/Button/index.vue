@@ -28,11 +28,6 @@ export default {
     name: 'ry-button',
 
     props: {
-        btnShow: {
-            type: Boolean,
-            default: false
-        },
-
         btnTitle: {
             type: String,
             default: '确认'
@@ -44,14 +39,21 @@ export default {
         }
     },
 
+    data() {
+        return {
+            btnShow: false
+        }
+    },
+
     methods: {
         onComfirm() {
             this.$emit('touchbefore', true)
+            this.btnShow = true
         },
 
         onTouchend() {
-            console.log(123)
             this.$emit('touchafter', false)
+            this.btnShow = false
         }
     }
 }

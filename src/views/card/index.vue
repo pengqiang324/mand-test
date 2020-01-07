@@ -119,7 +119,6 @@ export default {
         },
 
         getList() {
-            console.log(this.page)
             if (this.page === 1) this.showLoading = true
             const data = {
                 serviceType: 0, // 类别：信用卡

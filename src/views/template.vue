@@ -1,19 +1,23 @@
 <template>
   <div class="box">
-      <template v-if="showNetwork">
+      <template v-if="showNetWork">
         <ry-result-network class="ry-network"/>
       </template>
-      <template v-if="!showNetwork">
-          <ry-error-info v-show="showError"/>
-          <div class="home-box" v-show="!showError">
+      <template v-if="!showNetWork">
+          <ry-error-info v-show="showErrorIn"/>
+          <div class="home-box" v-show="!showErrorIn">
           </div>
       </template>
   </div>
 </template>
 
 <script>
+import mixins from '@/libs/mixins'
+
 export default {
     name: 'ry-##',
+
+    mixins: [mixins]
 }
 </script>
 

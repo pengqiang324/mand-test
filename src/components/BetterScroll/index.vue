@@ -265,6 +265,7 @@
       width: 100%;
       height: 40px;
       line-height: 40px;
+      font-size 24px
       text-align: center;
       color: #989898;
       padding 15px 0

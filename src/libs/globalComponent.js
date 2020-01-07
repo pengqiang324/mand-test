@@ -7,7 +7,9 @@ import {
     Tab, 
     Tabs,
     List,
-    Cell
+    Cell,
+    Step,
+    Steps
 } from 'vant'
 
 import { 
@@ -48,6 +50,8 @@ import RyBannerHead from '../components/BannerHead'
 
 export default {
     install(Vue) {
+        Vue.component(Steps.name, Steps)
+        Vue.component(Step.name, Step)
         Vue.component(Toast.name, Toast)
         Vue.component(Loading.name, Loading)
         Vue.component(Notify.name, Notify)

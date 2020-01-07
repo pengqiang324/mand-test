@@ -173,43 +173,26 @@
             <div class="personalInfo-pj">
                 <div class="personalInfo-pj-title">
                     <h2>客户评价<span>(50)</span></h2>
-                    <p>全部
+                    <router-link 
+                        to="/evaluateInfo" 
+                        tag="p"
+                    >全部
                         <md-icon
                             name="arrow-right"
                             size="md"
                             class="personalInfo-pj-arrow"
                         />
-                    </p>
+                    </router-link>
                 </div>
-                <ul class="personalInfo-pj-list">
-                    <li v-for="(item, index) in 3" :key="index">
-                        <h2></h2>
-                        <div class="personalInfo-pj-info">
-                            <div class="personalInfo-pj-head">
-                                <h4>彭新宇</h4>
-                                <p class="personalInfo-pj-start">
-                                    <van-rate 
-                                        v-model="starValue" 
-                                        size="14px"
-                                        color="#ff7800"
-                                        readonly 
-                                    />
-                                </p>
-                            </div>
-                            <div class="personalInfo-pj-content">评论内容！~评论内容！~评论内容！~评论内容！~</div>
-                            <div class="personalInfo-pj-time">
-                                <span>咨询服务：订制</span>
-                                <i>2019-11-14</i>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                <ry-pj-list
+                    :data="[1,2,3]"
+                    :star-value="starValue"
+                />
             </div>
         </ry-scroll-view>
         <div class="personalInfo-payment">
             <ry-button
                 btn-title="去支付"
-                :btn-show="btnShow"
                 :loading="loading"
                 @touchbefore="btnTouchBefore"
                 @touchafter="btnTouchAfter"
@@ -220,9 +203,10 @@
 
 <script>
 import Vue from 'vue';
-import { Icon, Rate } from 'vant'
+import { Icon } from 'vant'
 import mixins from '@/libs/mixins'
 import RyPjButton from '@/components/PjButton'
+import RyPjList from '@/components/PjList'
 Vue.use(Icon)
 
 export default {
@@ -231,8 +215,8 @@ export default {
     mixins: [mixins],
 
     components: {
-        [Rate.name]: Rate,
-        [RyPjButton.name]: RyPjButton
+        [RyPjButton.name]: RyPjButton,
+        [RyPjList.name]: RyPjList
     },
 
     data() {
@@ -284,14 +268,13 @@ export default {
         },
 
         btnTouchBefore(bool) {
-            this.btnShow = bool
             this.loading = bool
         },
 
         btnTouchAfter(bool) {
-            this.btnShow = bool
             setTimeout(() => {
                 this.loading = bool
+                this.$router.push('/identity')
             }, 2000)
         }
     }
@@ -380,7 +363,7 @@ export default {
                 overflow hidden
                 white-space nowrap
                 text-overflow ellipsis
-                height 25px
+                height 24px
                 line-height 24px
                 font-size 22px
                 color #000
@@ -439,12 +422,32 @@ export default {
     width 100%
     margin-bottom 20px
     height 90px
-    font-size 24px
     color #000
-    line-height 30px
     overflow hidden
+    p {
+        font-size 24px
+        line-height 30px
+    }
     span {
         margin-right 10px
+    }
+
+}
+
+/* iphone5 */
+@media screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2){
+    .per-pri-head {
+        .per-pri-zwei {
+            height 26px !important
+            line-height 26px !important
+        }
+    }
+
+    .per-info-taste {
+        p {
+            font-size 24px
+            line-height 32px
+        }
     }
 }
 
@@ -684,7 +687,7 @@ export default {
 }
 
 .personalInfo-pj {
-    padding 0 40px 120px
+    padding 0 40px 150px
     .personalInfo-pj-title {
         margin-bottom 30px
         display flex
@@ -711,64 +714,6 @@ export default {
                 line-height 28px
                 font-size 28px
                 font-weight 500
-            }
-        }
-    }
-
-    .personalInfo-pj-list {
-        li {
-            display flex
-            margin-bottom 30px
-            padding-bottom 20px
-            border-bottom 2px solid #dcdcdc
-        }
-
-        h2 {
-            margin-right 20px
-            width 50px
-            height 50px
-            background url('../../assets/images/common/ry-ts.png') center no-repeat
-            background-size 100% 100%
-            box-shadow 0px 2px 12px rgba(0,0,0,0.16)
-            border-radius 50%
-        }
-
-        .personalInfo-pj-info {
-            flex 1
-            .personalInfo-pj-head {
-                display flex
-                align-items center
-                justify-content space-between
-                padding-bottom 32px
-            }
-            h4 {
-                line-height 28px
-                font-size 28px
-                color #000
-            }
-            .personalInfo-pj-start {
-                font-size 28px
-            }
-            .personalInfo-pj-content {
-                padding-bottom 36px
-                line-height 40px
-                font-size 24px
-                color #989898
-            }
-            .personalInfo-pj-time {
-                display flex
-                align-items center
-                justify-content space-between
-                color #989898
-                height 24px
-                line-height 24px
-                font-size 24px
-                span {
-                   
-                }
-                i {
-                    font-style normal
-                }
             }
         }
     }

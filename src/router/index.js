@@ -63,6 +63,24 @@ const routes = [
     }
   },
   {
+    path: '/evaluateInfo',
+    name: 'ry-evaluateInfo',
+    component: () => import(/* webpackChunkName: "evaluateInfo" */ '../views/evaluateInfo'),
+    meta: {
+      index: 3,
+      title: '全部评价'
+    }
+  },
+  {
+    path: '/identity',
+    name: 'ry-identity',
+    component: () => import(/* webpackChunkName: "identity" */ '../views/identity'),
+    meta: {
+      index: 3,
+      title: '身份'
+    }
+  },
+  {
     path: '/setting',
     name: 'ry-setting',
     component: () => import(/* webpackChunkName: "setting" */ '../views/Setting.vue'),
