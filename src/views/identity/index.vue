@@ -195,7 +195,7 @@
             <!-- 通过遮罩层 start -->
             <div class="mask-box" v-if="maskPassShow">
                 <div class="mask-info">
-                    <img :src="img"/>
+                    <img v-lazy="img"/>
                     <span 
                         @touchstart="passTouchstart"
                         @touchend="passTouchend"
@@ -210,10 +210,10 @@
             <!-- 不通过遮罩层 start -->
             <div class="mask-box noPass-box" v-if="maskNoPassShow">
                 <div class="mask-info">
-                    <img :src="img"/>
+                    <img v-lazy="img"/>
                     <span 
                         @touchstart="passTouchstart"
-                        @touchend="passTouchend"
+                        @touchend="noPassTouchend"
                         :class="{'btn-active': isActive}"
                     >
                         <i>下一步</i>
@@ -591,7 +591,13 @@ export default {
 
         passTouchend() {
             this.publishEnd()
+            this.$router.replace('/purchase')
         },
+
+        noPassTouchend() {
+            this.publishEnd()
+            console.log(2)
+        }
     }
 }
 </script>
@@ -643,6 +649,9 @@ export default {
             display block
             width 100%
             height 100%
+            &[lazy='loading'] {
+                background none
+            }
         }
         span {
             display flex
@@ -751,9 +760,11 @@ export default {
             justify-content center
             padding 41px 33px
             h2 {
-                padding-bottom 20px
+                margin-bottom 20px
                 width 156px
                 height 156px
+                background #eee
+                border-radius 50%
                 overflow hidden
                 img {
                     display block

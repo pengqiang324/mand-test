@@ -82,6 +82,24 @@ const routes = [
     }
   },
   {
+    path: '/purchase',
+    name: 'ry-purchase',
+    component: () => import(/* webpackChunkName: "identity" */ '../views/payment'),
+    meta: {
+      index: 4,
+      title: '购买支付'
+    }
+  },
+  {
+    path: '/paySuccess',
+    name: 'ry-paySuccess',
+    component: () => import(/* webpackChunkName: "paySuccess" */ '../views/payment/paySuccess.vue'),
+    meta: {
+      index: 5,
+      title: '完成支付',
+    }
+  },
+  {
     path: '/setting',
     name: 'ry-setting',
     component: () => import(/* webpackChunkName: "setting" */ '../views/Setting.vue'),
