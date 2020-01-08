@@ -77,7 +77,8 @@ const routes = [
     component: () => import(/* webpackChunkName: "identity" */ '../views/identity'),
     meta: {
       index: 3,
-      title: '身份'
+      title: '身份',
+      keepAlive: true
     }
   },
   {

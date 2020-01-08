@@ -9,7 +9,8 @@ import {
     List,
     Cell,
     Step,
-    Steps
+    Steps,
+    Popup
 } from 'vant'
 
 import { 
@@ -50,6 +51,7 @@ import RyBannerHead from '../components/BannerHead'
 
 export default {
     install(Vue) {
+        Vue.component(Popup.name, Popup)
         Vue.component(Steps.name, Steps)
         Vue.component(Step.name, Step)
         Vue.component(Toast.name, Toast)

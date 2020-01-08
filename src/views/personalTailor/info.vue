@@ -227,15 +227,19 @@ export default {
             isAuto: false,
             isShowInfo: false,
             btnShow: false,
-            loading: false,
             btnTitle: '展开详情',
             btnInfoTitle: '展开详情',
-            starValue: 5
+            starValue: 5,
+            timer: null
         }
     },
 
     mounted() {
         this.init()
+    },
+
+    beforeDestroy() {
+        clearTimeout(this.timer)
     },
 
     methods: {
@@ -267,15 +271,11 @@ export default {
             conHeight > boxHeight ? this.isShow = true : this.isShow = false
         },
 
-        btnTouchBefore(bool) {
-            this.loading = bool
-        },
-
         btnTouchAfter(bool) {
-            setTimeout(() => {
+            this.timer = setTimeout(() => {
                 this.loading = bool
                 this.$router.push('/identity')
-            }, 2000)
+            }, 1000)
         }
     }
 }

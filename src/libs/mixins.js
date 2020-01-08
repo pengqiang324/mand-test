@@ -8,6 +8,7 @@ export default {
             showNetWork: false, // 显示网络连接出错组件
             showErrorIn: false, // 显示不知出错在哪组件
             isActive: false, // 点击显示按钮遮罩层
+            loading: false // 按钮加载图标控制
         }
     },
 
@@ -87,6 +88,11 @@ export default {
 
         publishEnd() {
             this.isActive = false
-        }
+        },
+
+        btnTouchBefore(bool) { // 按钮加载图标
+            if (this.loading) return
+            this.loading = bool
+        },
     }
 }

@@ -61,6 +61,7 @@
             <ry-button
                     btn-title="登录"
                     :loading="loading"
+                    @touchbefore="btnTouchBefore"
                     @touchafter="onLogin"
                 />
         </div>
@@ -114,7 +115,6 @@ export default {
             btnShow: false,
             changeColor: false,
             codeLoad: false,
-            loading: false,
             isKeyBoardShow: [],
             phoneNumber: '',
             indtyCode: '', // 验证码
@@ -263,7 +263,6 @@ export default {
                return
            }
 
-            this.loading = true
             const response = await this.$store.dispatch(USER_VALIDATESMSCODE({
                 smsCode: this.smsCode, 
                 validCode: this.indtyCode
