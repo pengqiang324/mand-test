@@ -77,8 +77,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "identity" */ '../views/identity'),
     meta: {
       index: 3,
-      title: '身份',
-      keepAlive: true
+      title: '身份'
     }
   },
   {
@@ -97,6 +96,26 @@ const routes = [
     meta: {
       index: 5,
       title: '完成支付',
+    }
+  },
+  {
+    path: '/business',
+    name: 'ry-business',
+    component: () => import(/* webpackChunkName: "business" */ '../views/business'),
+    meta: {
+      index: 2,
+      hasFooter: false,
+      title: '商学院'
+    }
+  },
+  {
+    path: '/businessInfo',
+    name: 'ry-businessInfo',
+    component: () => import(/* webpackChunkName: "business" */ '../views/business/businessInfo.vue'),
+    meta: {
+      index: 3,
+      hasFooter: false,
+      title: '公司介绍'
     }
   },
   {

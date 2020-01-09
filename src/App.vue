@@ -89,7 +89,7 @@ export default {
     this.$store.dispatch('hideAppLoading', true)
     
     let imgs = [
-    //用require的方式添加图片地址，直接添加图片地址的话，在build打包之后会查找不到图片，因为打包之后的图片名称会有一个加密的字符串
+        require('./assets/images/common/img-loading.gif'),
         require('./assets/images/default_bg01.png'),
         require('./assets/images/emptyInfo@2x.png'),
         require('./assets/images/ry_logo@2x.png'),
@@ -108,7 +108,7 @@ export default {
         image.src = img;
         image.onload = () => {
             count++;
-            if (count === 11) {
+            if (count === 13) {
               this.$store.dispatch('hideAppLoading', false)
             }
         }

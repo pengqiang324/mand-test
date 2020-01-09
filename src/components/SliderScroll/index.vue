@@ -115,39 +115,17 @@ export default {
                 stopPropagation: true,
                 probeType: 2
             })
-            this.slide.on('scrollEnd', this._onScrollEnd)
-
-            // user touches the slide area
-            this.slide.on('beforeScrollStart', () => {
-                clearTimeout(this.playTimer)
-            })
-            // user touched the slide done
-            this.slide.on('scrollEnd', () => {
-                this.autoGoNext()
-            })
             this.slide.on('slideWillChange', (page) => {
                 this.currentPageIndex = page.pageX
             })
-            this.autoGoNext()
       },
-      nextPage() {
-        this.slide.next()
-      },
-      _onScrollEnd() {
-        this.autoGoNext()
-      },
-      autoGoNext() {
-        clearTimeout(this.playTimer)
-        this.playTimer = setTimeout(() => {
-          this.nextPage()
-        }, 4000)
-      }
     }
 }
 </script>
 
 <style lang="stylus">
 .slider-content {
+    white-space nowrap
     &:after {
         content ''
         display block

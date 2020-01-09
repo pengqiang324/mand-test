@@ -649,8 +649,9 @@ export default {
             display block
             width 100%
             height 100%
-            &[lazy='loading'] {
-                background none
+            &[lazy="loading"] {
+                background url('../../assets/images/common/img-loading.gif') center no-repeat
+                background-size 56px
             }
         }
         span {

@@ -8,6 +8,7 @@ import {
     Tabs,
     List,
     Cell,
+    CellGroup,
     Step,
     Steps,
     Popup
@@ -65,6 +66,7 @@ export default {
         Vue.component(Tabs.name, Tabs)
         Vue.component(List.name, List)
         Vue.component(Cell.name, Cell)
+        Vue.component(CellGroup.name, CellGroup)
         Vue.component(Icon.name, Icon)
         Vue.component(NumberKeyboard.name, NumberKeyboard)
         Vue.component(ActivityIndicator.name, ActivityIndicator)

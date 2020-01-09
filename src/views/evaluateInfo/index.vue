@@ -119,9 +119,14 @@ export default {
         height 100%
     }
 }
+.evaluateInfo-loading {
+    img {
+        width 150px !important
+    }
+}
 </style>
 
-<style lang="stylus" scope>
+<style lang="stylus" scoped>
 .evaluate-box {
   position absolute
   left 0
@@ -137,12 +142,6 @@ export default {
 
 .pj-errorIn {
     background #f5f5f5
-}
-
-.evaluateInfo-loading {
-    img {
-        width 150px !important
-    }
 }
 
 .tabbar {
