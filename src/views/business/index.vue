@@ -29,16 +29,18 @@
                                 :loop="false"
                                 :isShowDoc="false"
                             >
-                                <div 
+                                <router-link
                                     v-for="(item,index) in slideData"
                                     :key="index"
+                                    :to="item.url"
+                                    tag="div"
                                     class="business-list"
                                 >
                                     <div class="business-list-info">
                                         <h2><img v-lazy="item.img" alt=""></h2>
                                         <p>{{item.name}}</p>
                                     </div>
-                                </div>
+                                </router-link>
                             </ry-slider-scroll>
                         </div>
                     </div>
@@ -65,11 +67,14 @@
                         <h2>专题栏</h2>   
                         <div class="business-special-list">
                             <ul>
-                                <li>
+                                <router-link
+                                    to="/courseList"
+                                    tag="li"
+                                >
                                     <h4><img v-lazy="bgImg" alt=""></h4>
                                     <h5>信用卡</h5>
                                     <p>99人已学习</p>
-                                </li>
+                                </router-link>
                                 <li>
                                     <h4><img v-lazy="bgImg" alt=""></h4>
                                     <h5>信用卡</h5>
@@ -127,26 +132,32 @@ export default {
             imgData: [imgUrl, imgUrl, imgUrl],
             slideData: [
                 {
+                    url: '/guide',
                     img: require('@/assets/images/business/business01.png'),
                     name: '融溢指南'
                 },
                 {
+                    url: '/Cognos',
                     img: require('@/assets/images/business/business02.png'),
                     name: '新手入门'
                 },
                 {
+                    url: '/guide',
                     img: require('@/assets/images/business/business03.png'),
                     name: '初级必学'
                 },
                 {
+                    url: '/guide',
                     img: require('@/assets/images/business/business04.png'),
                     name: '中级进阶'
                 },
                 {
+                    url: '/guide',
                     img: require('@/assets/images/business/business05.png'),
                     name: '大咖风采'
                 },
                 {
+                    url: '/guide',
                     img: require('@/assets/images/business/business06.png'),
                     name: '早安晚语'
                 }
@@ -171,7 +182,7 @@ export default {
 }
 
 .business-swiper {
-    bacground #eee
+    background #eee
 }
 
 .business-info {
@@ -184,6 +195,8 @@ export default {
         box-shadow 0px 10px 18px rgba(0,0,0,0.05)
         overflow hidden
         border-radius 10px
+        backface-visibility hidden
+        transform translate3d(0, 0, 0)
     }
 }
 

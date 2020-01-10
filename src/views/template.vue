@@ -6,6 +6,17 @@
       <template v-if="!showNetWork">
           <ry-error-info v-show="showErrorIn"/>
           <div class="home-box" v-show="!showErrorIn">
+              <ry-loading v-show="showloading" class="courseList-loading"/>
+              <ry-scroll
+                  v-show="!showloading"
+                  :total="total"
+                  :bounce="bounce"
+                  :data="data"
+                  :scrollbar="true"
+                  :pullUpLoad="true"
+                  @pullingUp="pullUpLoad"
+              >
+              </ry-scroll>
           </div>
       </template>
   </div>
@@ -17,7 +28,34 @@ import mixins from '@/libs/mixins'
 export default {
     name: 'ry-##',
 
-    mixins: [mixins]
+    mixins: [mixins],
+
+    data() {
+      return {
+        bounce: {
+            top: false,
+            bottom: false,
+            left: false,
+            right: false
+        },
+        data: [1,2,3,4,5,6,5,7,8,9,10],
+        page: 1,   // 请求页数
+        size: 5,  // 显示多少条数据
+        total: 40,
+      }
+    },
+
+    methods: {
+      pullUpLoad() {
+            this.page ++
+            // 异步更新数据
+            setTimeout(() => {
+                for (let i = 0; i < 10; i++) {
+                    this.data.push(this.data.length + 1)
+                }
+            }, 500)
+        },
+    }
 }
 </script>
 

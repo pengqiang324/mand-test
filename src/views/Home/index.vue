@@ -34,8 +34,13 @@
                   </div>
                 </div>
               </div>
-              <div class="ry-banner" v-lazy:background-image="bannerImg">
-              </div>
+              <router-link
+                to="/learnCourse"
+                v-lazy:background-image="bannerImg"
+                tag="div"
+                class="ry-banner"
+              >
+              </router-link>
               <div class="bank-list">
                 <h1 class="tj-bank">推荐银行</h1>
                 <div class="bank-loading">

@@ -82,11 +82,14 @@ export default {
 .businessInfo-con {
     position absolute
     top 320px
-    padding-top 40px
+    
     height calc(100% - 320px)
     width 100%
-    overflow-y scroll
     background #fff
     box-shadow 0 10px 18px rgba(0,0,0,0.05)
+    .video-scroll {
+        padding-top 40px
+        box-sizing border-box
+    }
 }
 </style>

@@ -143,6 +143,13 @@
         default: true
       },
       /*
+      * 双层嵌套滚动问题
+      */ 
+      nestedScroll: {
+        type: Boolean,
+        default: true
+      },
+      /*
       * 数据总长度
       */ 
      total: {
@@ -219,7 +226,8 @@
           pullDownRefresh: this.pullDownRefresh,
           pullUpLoad: this.pullUpLoad,
           scrollbar: this.scrollbar,
-          observeDom: this.observeDom
+          observeDom: this.observeDom,
+          nestedScroll: this.nestedScroll
         })
         // 上拉加载
         if (this.pullUpLoad) {

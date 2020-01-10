@@ -11,7 +11,8 @@ import {
     CellGroup,
     Step,
     Steps,
-    Popup
+    Popup,
+    Sticky
 } from 'vant'
 
 import { 
@@ -54,6 +55,7 @@ import RyPayment from '../components/PaySuccess'
 
 export default {
     install(Vue) {
+        Vue.component(Sticky.name, Sticky)
         Vue.component(Popup.name, Popup)
         Vue.component(Steps.name, Steps)
         Vue.component(Step.name, Step)

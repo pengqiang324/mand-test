@@ -119,6 +119,56 @@ const routes = [
     }
   },
   {
+    path: '/courseList',
+    name: 'ry-courseList',
+    component: () => import(/* webpackChunkName: "courseList" */ '../views/courseList'),
+    meta: {
+      index: 3,
+      hasFooter: false,
+      title: '课程'
+    }
+  },
+  {
+    path: '/guide',
+    name: 'ry-guide',
+    component: () => import(/* webpackChunkName: "guide" */ '../views/guide'),
+    meta: {
+      index: 3,
+      hasFooter: false,
+      title: '融溢指南'
+    }
+  },
+  {
+    path: '/Cognos',
+    name: 'ry-Cognos',
+    component: () => import(/* webpackChunkName: "Cognos" */ '../views/Cognos'),
+    meta: {
+      index: 3,
+      hasFooter: false,
+      title: '新手入门'
+    }
+  },
+  {
+    path: '/courseArticle',
+    name: 'ry-courseArticle',
+    component: () => import(/* webpackChunkName: "courseArticle" */ '../views/courseArticle'),
+    meta: {
+      index: 4,
+      hasFooter: false,
+      title: '课程文章'
+    }
+  },
+  {
+    path: '/learnCourse',
+    name: 'ry-learnCourse',
+    component: () => import(/* webpackChunkName: "learnCourse" */ '../views/learnCourse'),
+    meta: {
+      index: 2,
+      hasFooter: false,
+      title: '学习课程'
+    }
+  },
+  {
     path: '/setting',
     name: 'ry-setting',
     component: () => import(/* webpackChunkName: "setting" */ '../views/Setting.vue'),

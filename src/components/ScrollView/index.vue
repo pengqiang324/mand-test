@@ -80,12 +80,14 @@ export default {
     methods: {
         $_onRefresh() {
             // async data
+            if (!this.showRefresh) return
             this.$emit('onRefresh', {
                finishRefresh: this.$_onFinishRefresh
             })
         },
 
         $_onEndReached() {
+            if (!this.showMore) return
             if (this.isFinished) {
                 return
             }

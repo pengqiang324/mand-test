@@ -113,7 +113,8 @@ export default {
                 momentum: false,
                 bounce: false,
                 stopPropagation: true,
-                probeType: 2
+                probeType: 2,
+                click: true
             })
             this.slide.on('slideWillChange', (page) => {
                 this.currentPageIndex = page.pageX
