@@ -91,9 +91,9 @@ export default {
             this.isActive = false
         },
 
-        btnTouchBefore(bool) { // 按钮加载图标
-            if (this.loading) return
-            this.loading = bool
+        btnTouchBefore() { // 按钮加载图标
+            // if (this.loading) return
+            // this.loading = bool
         },
     }
 }

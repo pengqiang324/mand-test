@@ -43,3 +43,24 @@ export const idCard = function(value) {
     message: ''
   }
 }
+
+
+export const weiXin = function(value) {
+  if (!value) return
+  const weixin = value.trim()
+  const reg= /^[a-zA-Z][a-zA-Z0-9_-]{5,19}$/
+  let result = {}
+  if (weixin && !reg.test(weixin)) {
+    result = {
+        success: false,
+        message: '微信号有误，请重新输入'
+    }
+    return result
+  } else {
+    result = {
+        success: true,
+        message: '通过'
+    }
+    return result
+  }
+}

@@ -103,6 +103,8 @@ export default {
 
     methods: {
         paymentNext() {
+            if (this.loading) return
+            this.loading = true
             setTimeout(() => {
                 this.loading = false
                 this.$router.replace('/paySuccess')

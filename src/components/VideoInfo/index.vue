@@ -8,7 +8,7 @@
                     size="md"
                     class="video-icon"
                 />
-                <span>观看人数:&nbsp;248</span>
+                <span>观看次数:&nbsp;248</span>
             </p>
         </div>
 

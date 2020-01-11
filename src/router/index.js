@@ -169,6 +169,16 @@ const routes = [
     }
   },
   {
+    path: '/perfectApply',
+    name: 'ry-perfectApply',
+    component: () => import(/* webpackChunkName: "perfectApply" */ '../views/perfectApply'),
+    meta: {
+      index: 3,
+      hasFooter: false,
+      title: '完善申请人信息' 
+    }
+  },
+  {
     path: '/setting',
     name: 'ry-setting',
     component: () => import(/* webpackChunkName: "setting" */ '../views/Setting.vue'),
