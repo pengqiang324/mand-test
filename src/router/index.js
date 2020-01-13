@@ -175,7 +175,27 @@ const routes = [
     meta: {
       index: 3,
       hasFooter: false,
-      title: '完善申请人信息' 
+      title: '完善申请人信息'
+    }
+  },
+  {
+    path: '/shopOwner',
+    name: 'ry-shopOwner',
+    component: () => import(/* webpackChunkName: "shopOwner" */ '../views/shopOwner'),
+    meta: {
+      index: 4,
+      hasFooter: false,
+      title: '购买支付'
+    }
+  },
+  {
+    path: '/openSuccess',
+    name: 'ry-openSuccess',
+    component: () => import(/* webpackChunkName: "openSuccess" */ '../views/shopOwner/openSuccess.vue'),
+    meta: {
+      index: 5,
+      hasFooter: false,
+      title: '完成开通'
     }
   },
   {

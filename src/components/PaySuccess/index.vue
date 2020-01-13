@@ -50,7 +50,6 @@ export default {
             this.$emit('touchafter') // 点击后触发事件
         }
     }
-    
 }
 </script>
 

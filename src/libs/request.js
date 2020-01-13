@@ -5,7 +5,7 @@ import { IsIOS } from './lib'
 
 const service = axios.create({
     baseURL: process.env.NODE_ENV === 'development' ? process.env.VUE_APP_BASE_API : 'http://test-app.tunyukeji.com',
-    timeout: 5000,
+    timeout: 10000,
 })
 
 service.interceptors.request.use((config) => {

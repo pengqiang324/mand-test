@@ -81,16 +81,20 @@ export default {
     },
 
     mounted() {
-        this.$nextTick(() => {
-            const titleHead = document.querySelector('.van-tabs__wrap').offsetHeight
-            const headHeight = document.querySelector('.head-box').offsetHeight
-            const dHeight = document.querySelector('.per-scroll').offsetHeight
-            const fuwuHeight = this.$refs.fuwu.offsetHeight
-            this.height =  (dHeight - (fuwuHeight + titleHead + headHeight)) + 'px'
-        })
+        this.init()
     },
 
     methods: {
+        init() {
+            this.$nextTick(() => {
+                const titleHead = document.querySelector('.van-tabs__wrap').offsetHeight
+                const headHeight = document.querySelector('.head-box').offsetHeight
+                const dHeight = document.querySelector('.per-scroll').offsetHeight
+                const fuwuHeight = this.$refs.fuwu.offsetHeight
+                this.height =  (dHeight - (fuwuHeight + titleHead + headHeight)) + 'px'
+            })
+        },
+
         onLoad() {
             // 异步更新数据
             setTimeout(() => {

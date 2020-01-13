@@ -95,5 +95,10 @@ export default {
             // if (this.loading) return
             // this.loading = bool
         },
+
+        changeLoading() {
+            if (this.loading) return  // 防止用户多次请求
+            this.loading = true
+        }
     }
 }

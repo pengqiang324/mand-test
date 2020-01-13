@@ -130,7 +130,7 @@ export default {
         },
         // 确认
         onConfirm() {
-            // this.$router.replace()
+            this.$router.replace('/shopOwner')
         }
     }
 }
