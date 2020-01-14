@@ -1,47 +1,35 @@
 <template>
   <div class="perfectApply-box">
-        <ry-scroll-view
-            :bounce="false"
+        <!-- 完善申请人信息 start -->
+        <ry-perfect
+            :Loading="loading"
+            @touchafter="touchafter"
         >
-            <div class="perfectApply-info">
-                <div class="perfectApply-form">  
-                    <div>
-                        <h2>后续填写融溢表单须<span>与您注册平台信息保持一致，否侧影响提现</span></h2>
-                        <div class="perfectApply-form-list">
-                            <div class="perfectApply-form-div">
-                                <span>申请人姓名：</span>
-                                <p class="perfectApply-input"><input type="text" v-model="form.name" readonly/></p>
-                            </div>
-                            <div class="perfectApply-form-div">
-                                <span>身份证号码：</span>
-                                <p class="perfectApply-input"><input type="text" v-model="form.card" readonly/></p>
-                            </div>
-                            <div class="perfectApply-form-div">
-                                <span><i>手</i><i>机</i><i>号</i>码：</span>
-                                <p class="perfectApply-input"><input type="text" v-model="form.phone" readonly/></p>
-                            </div>
-                            <div class="perfectApply-form-div">
-                                <span>微<i>信</i>号：</span>
-                                <p class="perfectApply-input"><input type="text" v-model="form.weixin" @focus="showTips" @blur="hideTips"/></p>
-                                <p class="perfectApply-brook" v-if="showtip">请填写本人真实微信号,以免影响售后服务</p>
-                            </div>
-                            <div class="perfectApply-form-div">
-                                <span>邀<i>请</i>码：</span>
-                                <p class="perfectApply-input"><input type="text" v-model="form.identy" readonly/></p>
-                            </div>
-                        </div>
-                    </div>
+            <div class="perfectApply-form-list">
+                <div class="perfectApply-form-div">
+                    <span>申请人姓名：</span>
+                    <p class="perfectApply-input"><input type="text" v-model="form.name" readonly/></p>
                 </div>
-                <div class="perfectApply-btn">
-                    <ry-button
-                        btn-title="提交"
-                        :loading="loading"
-                        @touchbefore="btnTouchBefore"
-                        @touchafter="touchafter"
-                    />
+                <div class="perfectApply-form-div">
+                    <span>身份证号码：</span>
+                    <p class="perfectApply-input"><input type="text" v-model="form.card" readonly/></p>
+                </div>
+                <div class="perfectApply-form-div">
+                    <span><i>手</i><i>机</i><i>号</i>码：</span>
+                    <p class="perfectApply-input"><input type="text" v-model="form.phone" readonly/></p>
+                </div>
+                <div class="perfectApply-form-div">
+                    <span>微<i>信</i>号：</span>
+                    <p class="perfectApply-input"><input type="text" v-model="form.weixin" @focus="showTips" @blur="hideTips"/></p>
+                    <p class="perfectApply-brook" v-show="showtip">请填写本人真实微信号,以免影响售后服务</p>
+                </div>
+                <div class="perfectApply-form-div">
+                    <span>邀<i>请</i>码：</span>
+                    <p class="perfectApply-input"><input type="text" v-model="form.identy" readonly/></p>
                 </div>
             </div>
-        </ry-scroll-view>
+        </ry-perfect>
+        <!-- 完善申请人信息 end -->
         <!-- 信息提交成功 start -->
         <van-overlay :show="showDialog">
             <div class="perfectApply-wrapper">
@@ -63,6 +51,7 @@
 import mixins from '@/libs/mixins'
 import { weiXin } from '@/libs/validate'
 import { Icon } from 'vant'
+import RyPerfect from '@/components/PerfectInfo'
 
 export default {
     name: 'ry-perfectApply',
@@ -70,7 +59,8 @@ export default {
     mixins: [mixins],
 
     components: {
-        [Icon.name]: Icon
+        [Icon.name]: Icon,
+        [RyPerfect.name]: RyPerfect
     },
 
     data() {
@@ -99,7 +89,6 @@ export default {
         },
         // 提交完善信息
         touchafter() {
-            if(this.loading) return
             if(!this.validateWeixin()) {
                 this.$toast({
                     message: this.message,
@@ -107,7 +96,7 @@ export default {
                 })
                 return
             }
-            this.loading = true
+            this.changeLoading()
             
             setTimeout(() => {
                 this.loading = false
@@ -136,90 +125,63 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .perfectApply-box {
     background #f5f5f5
 }
 
-.perfectApply-info {
-    padding 60px 42px 
-    box-sizing border-box
-}
-
-.perfectApply-form {
-    padding 50px 40px 0
-    width 100%
-    height 770px
-    background #fff
-    border-radius 20px
-    box-sizing border-box
-    h2 {
-        padding 0 32px
-        margin-bottom 80px
-        line-height 40px
-        text-align center
-        font-size 28px
-        color #000
-        letter-spacing 2px
+.perfectApply-form-list  {
+    margin-top 80px
+    .perfectApply-form-div {
+        position relative
+        padding-bottom 66px
+        display flex
+        align-items baseline
+        height 40px
+        &:nth-child(3) {
+            i {
+                display inline-block
+                font-style normal
+                padding-right 8px
+            }
+        }
+        &:nth-child(4),
+        &:nth-child(5) {
+            i {
+                display inline-block
+                font-style normal
+                padding 0 25px
+            }
+        }
         span {
-            color #E90000
+            display block
+            height 28px
+            font-size 28px
+            color #707070
+            
         }
-    }
-    .perfectApply-form-list  {
-        .perfectApply-form-div {
-            position relative
-            margin-bottom 66px
+        .perfectApply-input {
             display flex
-            align-items baseline
-            height 40px
-            &:nth-child(3) {
-                i {
-                    display inline-block
-                    font-style normal
-                    padding-right 8px
-                }
-            }
-            &:nth-child(4),
-            &:nth-child(5) {
-                i {
-                    display inline-block
-                    font-style normal
-                    padding 0 25px
-                }
-            }
-            span {
-                display block
-                height 28px
-                font-size 28px
-                color #707070
-                
-            }
-            .perfectApply-input {
-                display flex
+            flex 1
+            height 35px
+            border-bottom 1px solid #ddd
+            input {
                 flex 1
-                height 35px
-                border-bottom 1px solid #ddd
-                input {
-                    flex 1
-                    font-size 28px
-                    color #333
-                    caret-color #FF6F00
-                }
+                font-size 28px
+                color #333
+                caret-color #FF6F00
             }
-            .perfectApply-brook {
-                position absolute
-                left 162px
-                bottom -28px
-                color #f00
-                font-size 22px
-            }
+        }
+        .perfectApply-brook {
+            position absolute
+            left 162px
+            top 45px
+            color #f00
+            font-size 22px
         }
     }
 }
 
-.perfectApply-btn {
-    padding 100px 82px 0
-}
 
 .perfectApply-wrapper {
     display flex 

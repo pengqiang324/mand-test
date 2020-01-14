@@ -7,6 +7,7 @@ import VueLazyload from 'vue-lazyload'
 import VueWechatTitle from 'vue-wechat-title'
 import VuePageStack from 'vue-page-stack'
 import VueTouch from 'vue-touch'
+import VueClipboard from 'vue-clipboard2'
 import VueComponent from './libs/globalComponent'
 import  fastClick from 'fastclick'
 import { USER_LOGIN, USER_USERWXINFO, USER_REFRESHUSERINFO } from '@/actions/user'
@@ -24,6 +25,7 @@ Vue.use(VueWechatTitle)
 Vue.use(VuePageStack, { router })
 Vue.use(VueTouch, {name: 'v-touch'})
 Vue.use(VueComponent)
+Vue.use(VueClipboard)
 Vue.config.productionTip = false
 
 VueTouch.config.swipe = {

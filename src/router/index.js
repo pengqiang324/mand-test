@@ -203,9 +203,19 @@ const routes = [
     name: 'ry-setting',
     component: () => import(/* webpackChunkName: "setting" */ '../views/Setting.vue'),
     meta: {
-      index: 2,
+      index: 3,
       hasFooter: false,
       title: '设置'
+    }
+  },
+  {
+    path: '/adviseApply',
+    name: 'ry-adviseApply',
+    component: () => import(/* webpackChunkName: "adviseApply" */ '../views/adviseApply'),
+    meta: {
+      index: 4,
+      hasFooter: false,
+      title: '顾问申请信息'
     }
   },
   {

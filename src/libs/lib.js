@@ -16,5 +16,5 @@ const IsAndroid = function () {
 
 export {
     IsIOS,
-    IsAndroid
+    IsAndroid,
 }

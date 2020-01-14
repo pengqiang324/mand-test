@@ -27,7 +27,12 @@
                           v-if="star"
                           class="mine-head-indenty"
                         >
-                          邀请码：779120<span>复制</span>
+                          邀请码：{{invicode}}
+                          <span
+                            v-clipboard:copy="invicode"
+                            v-clipboard:success="onCopy"
+                            v-clipboard:error="onError"
+                          >复制</span>
                         </p>
                         <router-link 
                           v-if="!star"
@@ -107,7 +112,7 @@
               </van-cell>
             </div>
         </div>
-        <div class="ry-logout" @click="loginOut">清除缓存</div>
+        <div role="button" class="ry-logout" @click="loginOut">清除缓存</div>
       </ry-scroll-view>
   </div>
 </template>
@@ -132,6 +137,7 @@ export default {
         starImg,
         bgImg,
         grade: 'd',
+        invicode: '779120',
         iconList: [
           {
             data: [
@@ -179,7 +185,8 @@ export default {
               },
               {
                 icon: require('../assets/images/mine/icon10.png'),
-                title: '设置'
+                title: '设置',
+                url: '/setting'
               }
             ]
           }
@@ -206,7 +213,8 @@ export default {
               },
               {
                 icon: require('../assets/images/mine/icon10.png'),
-                title: '设置'
+                title: '设置',
+                url: '/setting'
               },
             ]
           }
@@ -238,6 +246,12 @@ export default {
     },
 
     methods: {
+      onCopy() {
+        this.$toast.success('复制成功')
+      },
+      onError() {
+        this.$toast.fail('复制失败')
+      },
       loginOut() {
         logout()
         .then((res) => {
@@ -251,7 +265,7 @@ export default {
               });
             }
           });
-      },
+      }
     }
 }
 </script>
@@ -400,6 +414,9 @@ export default {
               border-radius 20px
               background rgba(255,136,0,0.3)
               color #D41C1C
+              &:active {
+                background #eee
+              }
             }
           }
           .mine-head-indenty,
