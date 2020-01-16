@@ -3,12 +3,13 @@
     <transition
       :name="transitionName" 
     > 
-      <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
+      <!-- <vue-page-stack > -->
         <router-view 
+          v-if="!$route.meta.keepAlive && isRouterAlive"
           class="router-view" 
           v-wechat-title='$route.meta.title'
         />
-      </vue-page-stack>
+      <!-- </vue-page-stack> -->
       <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
         <router-view 
           class="router-view"

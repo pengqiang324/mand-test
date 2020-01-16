@@ -1,143 +1,79 @@
 <template>
     <div class="card">
-        <template v-if="showNetWork">
-            <ry-result-network class="ry-network"/>
-        </template>
-        <template v-if="!showNetWork">
-            <ry-error-info v-show="showErrorIn"/>
-            <div class="card-scroll-list" v-show="!showErrorIn">
-                <ry-loading v-if="showLoading" class="per-loading"/>
-                <ry-scroll 
-                    v-else
-                    :total="total"
-                    :bounce="bounce"
-                    :data="list"
-                    :pullUpLoad="true"
-                    @pullingUp="pullUpLoad"
-                    class="scroll-list" 
+        <div class="card-scroll-list">
+            <div class="per-scroll">
+                <div
+                    v-for="(item, index) in data" 
+                    :key="index"
+                    class="per-list" 
                 >
-                    <div class="per-scroll">
-                        <div
-                            v-for="(item, index) in list" 
-                            :key="index"
-                            class="per-list" 
-                        >
-                            <router-link
-                                :to="{path: '/personalInfo', query: {memberId: item.memberId}}"
-                                tag="div"
-                            >
-                                <div class="per-list-head">
-                                    <h2 class="lazyload" v-lazy:background-image="item.headImage">
-                                        <img v-if="item.headImage == null" src="../../assets/images/common/ry-ts.png" alt="">
-                                    </h2>
-                                    <div class="per-lhead-pri">
-                                        <div class="per-pri-head">
-                                            <span class="per-pri-name">{{item.name}}</span>
-                                            <span class="per-pri-lname">花名:&nbsp;{{item.flowerName}}</span>
-                                            <span class="per-pri-zwei">{{item.levelName}}</span>
-                                            <van-icon name="arrow" class="per-icon-arrow" />
-                                        </div>
-                                        <p class="per-pri-middle">专业：{{item.majorName}}</p>
-                                        <p class="per-pri-bottom">回复时间：周一至周六<span>9:00 — 18:00</span></p>
-                                    </div>
+                    <router-link
+                        :to="{path: '/personalInfo', query: {memberId: item.memberId}}"
+                        tag="div"
+                    >
+                        <div class="per-list-head">
+                            <h2 class="lazyload" v-lazy:background-image="item.headImage">
+                                <img v-if="item.headImage == null" src="../../assets/images/common/ry-ts.png" alt="">
+                            </h2>
+                            <div class="per-lhead-pri">
+                                <div class="per-pri-head">
+                                    <span class="per-pri-name">{{item.name}}</span>
+                                    <span class="per-pri-lname">花名:&nbsp;{{item.flowerName}}</span>
+                                    <span class="per-pri-zwei">{{item.levelName}}</span>
+                                    <van-icon name="arrow" class="per-icon-arrow" />
                                 </div>
-                                <div class="per-info-pri">
-                                    <p>回复率<span>{{item.recoveryRate}}%</span></p>
-                                    <p class="per-info-fuwu">服务人数<span>{{item.totalService}}</span></p>
-                                    <p class="per-info-pj">好评率<span>{{item.favorableRate}}%</span></p>
-                                </div>
-                                <div class="per-info-taste">
-                                    <p><span>擅长:</span>{{item.expert}}</p>
-                                </div>
-                            </router-link>
-                            <div class="per-info-jg">
-                                <span class="per-jg-active">
-                                    <md-icon
-                                        name="rmb"
-                                        size="sm"
-                                        class="per-jg-icon"
-                                    ></md-icon>{{item.price}}
-                                </span>
-                                <span class="per-jg-inatice">
-                                    <md-icon
-                                        name="rmb"
-                                        size="xs"
-                                    ></md-icon>299
-                                </span>
+                                <p class="per-pri-middle">专业：{{item.majorName}}</p>
+                                <p class="per-pri-bottom">回复时间：周一至周六<span>9:00 — 18:00</span></p>
                             </div>
-                            <p :class="['per-hold', {'per-hold-active': item.status}]">名师咨询</p>
-                            <p :class="['per-online', {'per-online-active': item.status}]">可指导</p>
                         </div>
+                        <div class="per-info-pri">
+                            <p>回复率<span>{{item.recoveryRate}}%</span></p>
+                            <p class="per-info-fuwu">服务人数<span>{{item.totalService}}</span></p>
+                            <p class="per-info-pj">好评率<span>{{item.favorableRate}}%</span></p>
+                        </div>
+                        <div class="per-info-taste">
+                            <p><span>擅长:</span>{{item.expert}}</p>
+                        </div>
+                    </router-link>
+                    <div class="per-info-jg">
+                        <span class="per-jg-active">
+                            <md-icon
+                                name="rmb"
+                                size="sm"
+                                class="per-jg-icon"
+                            ></md-icon>{{item.price}}
+                        </span>
+                        <span class="per-jg-inatice">
+                            <md-icon
+                                name="rmb"
+                                size="xs"
+                            ></md-icon>299
+                        </span>
                     </div>
-                </ry-scroll>
+                    <p :class="['per-hold', {'per-hold-active': item.status}]">名师咨询</p>
+                    <p :class="['per-online', {'per-online-active': item.status}]">可指导</p>
+                </div>
             </div>
-        </template>
+        </div>
     </div>
 </template>
 
 <script>
 import { Icon } from 'vant'
-import mixins from '@/libs/mixins'
-import { getHomeAdviserByServiceType } from '@/api/personalTailor/personalTailor'
 
 export default {
     name: 'ry-card',
-
-    mixins: [mixins],
 
     components: {
         [Icon.name]: Icon,
     },
 
-    data() {
-        return {
-            bounce: {
-                top: true,
-                bottom: false,
-                left: false,
-                right: false
-            },
-            list: [],
-            page: 1,   // 请求页数
-            size: 5,  // 显示多少条数据
-            total: 20,
-            showLoading: false
-        }
-    },
-
-    created() {
-        this.getList()
-    },
-
-    mounted() {
-    },
-
-    methods: {
-        pullUpLoad() {
-            this.page ++
-            this.getList()
-        },
-
-        getList() {
-            if (this.page === 1) this.showLoading = true
-            const data = {
-                serviceType: 0, // 类别：信用卡
-                page: this.page,
-                size: this.size
+    props: {
+        data: {
+            type: Array,
+            default: () => {
+                return []
             }
-            getHomeAdviserByServiceType(data)
-            .then((res) => {
-                const { success, queryResult } = res.data
-                if(this.page === 1) this.showLoading = false
-                if (success) {
-                    this.total = queryResult.total
-                    this.list = this.list.concat(queryResult.list)
-                
-                    this.hideErrorTip()
-                } else {
-                    this.showErrorTip(res)
-                }
-            })
         }
     }
 }
@@ -147,6 +83,10 @@ export default {
 .card,
 .card-scroll-list {
     height 100%
+}
+
+.card-scroll-list  {
+    padding 0 40px 0
 }
 
 .scroll-list {
@@ -165,9 +105,6 @@ export default {
     background #fff
     box-sizing border-box
     box-shadow 0px 6px 12px rgba(0,0,0,0.16)
-    &:last-child {
-        margin-bottom 0
-    }
     .per-list-head {
         display flex
         h2 {
@@ -298,7 +235,7 @@ export default {
     .per-info-jg {
         display flex
         align-items flex-end
-        padding-top 22px
+        padding-top 10px
         height 28px
         span {
             display block
@@ -335,7 +272,7 @@ export default {
     }
     .per-hold {
         position absolute
-        bottom 30px
+        bottom 28px
         right 28px
         width 120px
         height 24px
@@ -375,6 +312,7 @@ export default {
 }
 
 .per-loading {
+    padding-top 180px
     img {
         width 130px !important
     }

@@ -12,8 +12,9 @@
                             :class="{'active': active === index}" 
                             @click="changeActive(index)"
                         >
-                    {{ number[index].length}}
-                            <span>{{item}}&nbsp;{{number[index] > 999 ? 999 : number[index]}}<i v-if="number[index] > 999" class="tabbar-icon">+</i></span>
+                            <span v-if="index === 0">{{item}}&nbsp;{{pjTotal.count > 999 ? 999 : pjTotal.count}}<i v-if="pjTotal.count > 999" class="tabbar-icon">+</i></span>
+                            <span v-if="index === 1">{{item}}&nbsp;{{pjTotal.good > 999 ? 999 : pjTotal.good}}<i v-if="pjTotal.good > 999" class="tabbar-icon">+</i></span>
+                            <span v-if="index === 2">{{item}}&nbsp;{{pjTotal.middle > 999 ? 999 : pjTotal.middle}}<i v-if="pjTotal.middle > 999" class="tabbar-icon">+</i></span>
                         </p>
                     </div>
                     <template v-if="showNetWork">
@@ -22,9 +23,9 @@
                     <template v-if="!showNetWork">
                         <ry-error-info v-show="showErrorIn" class="pj-errorIn"/>
                         <div class="pj-list-scroll"  v-show="!showErrorIn">
-                            <ry-loading v-show="showLoading" class="evaluateInfo-loading"/>
+                            <ry-loading v-show="showloading" class="evaluateInfo-loading"/>
                             <ry-scroll
-                                v-show="!showLoading"
+                                v-show="!showloading"
                                 :total="total"
                                 :bounce="bounce"
                                 :data="data"
@@ -35,7 +36,6 @@
                             >
                                 <ry-pj-list
                                     :data="data"
-                                    :star-value="5"
                                 />
                             </ry-scroll>
                         </div>
@@ -49,6 +49,7 @@
 import mixins from '@/libs/mixins'
 import RyPjList from '@/components/PjList'
 import { List } from 'vant'
+import { getAdviserCommentByMemberId } from '@/api/personalTailor/personalTailor'
 
 export default {
     name: 'ry-evaluate',
@@ -62,45 +63,69 @@ export default {
     
     data() {
         return {
+            title: ['全部', '好评', '中评'],
+            page: 1,   // 请求页数
+            size: 10,  // 显示多少条数据
+            total: 30,
+            active: 0,
+            query: '', // 查询参数
+            memberId: '',
+            isActive: false,
+            showloading: false,
             bounce: {
                 top: false,
                 bottom: false,
                 left: false,
                 right: false
             },
-            data: [1,2,3,4,5,6,5,7,8,9,10],
-            title: ['全部', '好评', '中评'],
-            number: {
-                '0': 1000,
-                '1': 258,
-                '2': 369
-            },
-            page: 1,   // 请求页数
-            size: 5,  // 显示多少条数据
-            total: 30,
-            active: 0,
-            isActive: false,
-            showLoading: false
+            pjTotal: {},
+            data: []
         }
     },
 
+    created() {
+        const { memberId, pjTotal } = this.$route.query
+        this.memberId = memberId
+        this.pjTotal = JSON.parse(pjTotal)
+        this.initData()
+    },
+
     methods: {
+        initData() {
+            if (this.page === 1) this.showloading = true
+            getAdviserCommentByMemberId({
+                memberId: this.memberId,
+                evaluateLevel: this.evaluateLevel,
+                page: this.page,
+                size: this.size
+            })
+            .then((res) => {
+                const { success, queryResult } = res.data
+                if (success) {
+                    this.data = this.data.concat(queryResult.list)
+                    this.total = queryResult.total
+                    this.hideErrorTip()
+                } else {
+                    this.showErrorTip(res)
+                }
+                if(this.showloading) this.showloading = false
+            })
+        },
+
         pullUpLoad() {
             this.page ++
             // 异步更新数据
-            setTimeout(() => {
-                for (let i = 0; i < 10; i++) {
-                    this.data.push(this.data.length + 1)
-                }
-            }, 500)
+            this.initData()
         },
 
         changeActive(index) {
             this.active = index // 激活按钮高亮状态
-            this.showLoading = true
-            setTimeout(() => {
-                this.showLoading = false
-            }, 2000)
+            this.page = 1
+            this.data = []
+            if (index) {
+                this.evaluateLevel = index - 1
+            }
+            this.initData()
         }
     }
 }

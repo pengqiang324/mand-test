@@ -1,26 +1,31 @@
 <template>
   <div class="pj-list">
       <ul class="personalInfo-pj-list">
-            <li v-for="(item, index) in data" :key="index">
-                <h2></h2>
+            <li 
+                v-for="(item, index) in data" 
+                :key="index"
+            >
+                <h2 v-lazy:background-image="item.customerHeadImage">
+                    <img v-if="!item.customerHeadImage" src="../../assets/images/common/ry-ts.png" alt="">
+                </h2>
                 <div class="personalInfo-pj-info">
                     <div class="personalInfo-pj-head">
-                        <h4>{{ name | formatName }}</h4>
+                        <h4>{{ item.customerName | formatName }}</h4>
                         <p class="personalInfo-pj-start">
                             <van-rate 
-                                v-model="starValue" 
+                                v-model="item.evaluateLevel" 
                                 size="14px"
                                 color="#ff7800"
                                 readonly 
                             />
                         </p>
                     </div>
-                    <div class="personalInfo-pj-content">评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~评论内容！~</div>
+                    <div class="personalInfo-pj-content">{{item.evaluateDescription}}</div>
                     <div class="personalInfo-pj-time">
-                        <span>咨询服务：订制</span>
+                        <span>咨询服务：{{item.majorName}}</span>
                     </div>
                     <div class="personalInfo-pj-day">
-                        <i>2019-11-14</i>
+                        <i>{{item.commentTime}}</i>
                     </div>
                 </div>
             </li>
@@ -34,11 +39,6 @@ export default {
     name: 'ry-pj-list',
 
     props: {
-        starValue: {
-            type: Number,
-            required: true
-        },
-
         data: {
             type: Array,
             default: () => {
@@ -49,12 +49,6 @@ export default {
 
     components: {
         [Rate.name]: Rate,
-    },
-
-    data() {
-        return {
-            name: '彭新宇'
-        }
     },
 
     filters: {
@@ -81,16 +75,25 @@ export default {
         &:last-child {
             margin-bottom 0
         }
+        &[lazy="loading"] {
+            background-image url('../../assets/images/common/ry-ts.png')
+            background-repeat no-repeat
+            background-size cover
+        }
     }
 
     h2 {
         margin-right 20px
         width 50px
         height 50px
-        background url('../../assets/images/common/ry-ts.png') center no-repeat
-        background-size 100% 100%
+        background-size cover
         box-shadow 0px 2px 12px rgba(0,0,0,0.16)
         border-radius 50%
+        img {
+            display block
+            width 100%
+            height 100%
+        }
     }
 
     .personalInfo-pj-info {

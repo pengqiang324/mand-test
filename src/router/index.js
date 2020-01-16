@@ -105,6 +105,7 @@ const routes = [
     meta: {
       index: 2,
       hasFooter: false,
+      keepAlive: true,
       title: '商学院'
     }
   },
@@ -204,6 +205,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "setting" */ '../views/Setting.vue'),
     meta: {
       index: 3,
+      keepAlive: true,
       hasFooter: false,
       title: '设置'
     }
@@ -219,11 +221,32 @@ const routes = [
     }
   },
   {
+    path: '/customer',
+    name: 'ry-customer',
+    component: () => import(/* webpackChunkName: "customer" */ '../views/advise/customer'),
+    meta: {
+      index: 1,
+      hasFooter: true,
+      keepAlive: true,
+      title: '客户'
+    }
+  },
+  {
+    path: '/expect',
+    name: 'ry-expect',
+    component: () => import(/* webpackChunkName: "expect" */ '../views/expect'),
+    meta: {
+      index: 1,
+      title: '敬请期待'
+    }
+  },
+  {
     path: '/register',
     name: 'ry-register',
     component: () => import(/* webpackChunkName: "register" */ '../views/Register/Register.vue'),
     meta: {
       index: 1,
+      keepAlive: true,
       title: '融溢'
     }
   },
@@ -233,6 +256,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "reagree" */ '../views/ReAgreement/ReAgree.vue'),
     meta: {
       index: 2,
+      keepAlive: true,
       title: '店主注册协议'
     }
   },
@@ -242,6 +266,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "reagree" */ '../views/ReAgreement/ReProtocol.vue'),
     meta: {
       index: 2,
+      keepAlive: true,
       title: '用户隐私保护政策'
     }
   },

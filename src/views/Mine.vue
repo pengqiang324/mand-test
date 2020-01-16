@@ -4,7 +4,7 @@
         :bounce="false"
       >
         <div class="mine-info">
-            <div class="mine-top">
+            <div :class="['mine-top',{'mine-customer-active': isCustomer}]">
                 <div 
                   v-lazy:background-image="bgImg"
                   class="mine-top-box lazyBg"
@@ -13,35 +13,42 @@
                     <div class="mine-head-top">
                       <h2><img v-lazy="txImg" alt=""></h2>
                       <div class="mine-head-right">
-                        <h4><b>周勇</b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
-                        <p class="mine-head-phone">18665861277
-                          <span v-if="star">店主</span>
-                          <span v-if="!star">客户</span>
-                          <img 
-                            v-lazy="starImg"
-                            v-for="(item,index) in star"
-                            :key="index"
-                          />
-                        </p>
-                        <p 
-                          v-if="star"
-                          class="mine-head-indenty"
-                        >
-                          邀请码：{{invicode}}
-                          <span
-                            v-clipboard:copy="invicode"
-                            v-clipboard:success="onCopy"
-                            v-clipboard:error="onError"
-                          >复制</span>
-                        </p>
-                        <router-link 
-                          v-if="!star"
-                          to="/learnCourse"
-                          tag="p"
-                          class="mine-get-indenty"
-                        >
-                          获取我的邀请码
-                        </router-link>
+                        <h4><b>周勇<font v-if="isCustomer">信用卡专员</font></b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
+                        <!-- 不是顾问状态显示 -->
+                        <div v-if="!isCustomer">
+                          <p class="mine-head-phone">18665861277
+                            <span v-if="star">店主</span>
+                            <span v-if="!star">客户</span>
+                            <img 
+                              v-lazy="starImg"
+                              v-for="(item,index) in star"
+                              :key="index"
+                            />
+                          </p>
+                          <p 
+                            v-if="star"
+                            class="mine-head-indenty"
+                          >
+                            邀请码：{{invicode}}
+                            <span
+                              v-clipboard:copy="invicode"
+                              v-clipboard:success="onCopy"
+                              v-clipboard:error="onError"
+                            >复制</span>
+                          </p>
+                          <router-link 
+                            v-if="!star"
+                            to="/learnCourse"
+                            tag="p"
+                            class="mine-get-indenty"
+                          >
+                            获取我的邀请码
+                          </router-link>
+                        </div>
+                        <!-- 不是顾问状态显示 -->
+                        <!-- 顾问状态显示 start -->
+                        <div v-if="isCustomer" class="mine-head-customer">专业：<span>3-50万信用卡私人定制</span></div>
+                        <!-- 顾问状态显示 end-->
                       </div>
                     </div>
                     <div class="mine-head-bottom">
@@ -64,8 +71,9 @@
                     </div>
                   </div>
                   
+                  <!-- 店主显示内容且不是顾问状态 start -->
                   <div 
-                    v-if="star"
+                    v-if="star && !isCustomer"
                     class="mine-info-pri"
                   >
                     <div class="mine-info-pri-left">
@@ -81,35 +89,46 @@
                       />
                     </div>
                   </div>
+                  <!-- 店主显示内容且不是顾问状态 end -->
                 </div>
             </div>
 
-            <div 
-              v-for="(item,index) in list"
-              :key="index"
-              class="mine-cell-list"
-            >
-              <van-cell 
-                v-for="(value,key) in item.data"
-                :key="key"
-                :to="value.url ? value.url : ''"
-                is-link
-                class="mine-cell"
+            <!-- 顾问状态显示 start -->
+            <div v-if="isCustomer" class="mine-customer-info">
+                <p>回复率：<span>100%</span></p>
+                <p>咨询人数：<span>76</span></p>
+                <p>好评率：<span>100%</span></p>
+            </div>
+            <!-- 顾问状态显示 end -->
+
+            <div class="mine-list-box">
+              <div 
+                v-for="(item,index) in list"
+                :key="index"
+                class="mine-cell-list"
               >
-                <template slot="title">
-                  <p>
-                    <img v-lazy="value.icon" alt="">
-                    <span v-if="value.isshow">2</span>
-                  </p>
-                  <span class="custom-title">{{value.title}}</span>
-                  <i 
-                    v-if="index === 1 && key === 2"
-                    class="mine-cell-icon"
-                  >
-                    必看
-                  </i>
-                </template>
-              </van-cell>
+                <van-cell 
+                  v-for="(value,key) in item.data"
+                  :key="key"
+                  :to="value.url ? value.url : ''"
+                  is-link
+                  class="mine-cell"
+                >
+                  <template slot="title">
+                    <p>
+                      <img v-lazy="value.icon" alt="">
+                      <span v-if="value.isshow">2</span>
+                    </p>
+                    <span class="custom-title">{{value.title}}</span>
+                    <i 
+                      v-if="index === 1 && key === 2"
+                      class="mine-cell-icon"
+                    >
+                      必看
+                    </i>
+                  </template>
+                </van-cell>
+              </div>
             </div>
         </div>
         <div role="button" class="ry-logout" @click="loginOut">清除缓存</div>
@@ -138,6 +157,7 @@ export default {
         bgImg,
         grade: 'd',
         invicode: '779120',
+        isCustomer: false,
         iconList: [
           {
             data: [
@@ -219,6 +239,29 @@ export default {
             ]
           }
         ],
+        customerList: [
+          {
+            data: [
+              {
+                icon: require('../assets/images/mine/icon03.png'),
+                title: '我的客户'
+              },
+              {
+                icon: require('../assets/images/mine/icon11.png'),
+                title: '融溢头条'
+              },
+              {
+                icon: require('../assets/images/mine/icon02.png'),
+                title: '个人信息'
+              },
+              {
+                icon: require('../assets/images/mine/icon10.png'),
+                title: '设置',
+                url: '/setting'
+              }
+            ]
+          }
+        ]
       }
     },
 
@@ -236,13 +279,23 @@ export default {
         }
       },
       list() {
-        switch(this.grade) {
-          case 'a':
-            return this.aIconList
-          default:
-            return this.iconList
+        if(this.isCustomer) {
+          // 顾问状态
+          return this.customerList
+        } else {
+          // 不是顾问状态
+          switch(this.grade) {
+            case 'a':
+              return this.aIconList
+            default:
+              return this.iconList
+          }
         }
       }
+    },
+
+    mounted() {
+      console.log(1)
     },
 
     methods: {
@@ -302,6 +355,9 @@ export default {
     padding-top 40px
     background url('../assets/images/banner/ry-bg01.png') top center no-repeat
     background-size 100%
+    &.mine-customer-active {
+      margin-bottom 40px
+    }
   }
 
   .mine-top-box {
@@ -347,11 +403,17 @@ export default {
             align-items center
             padding-bottom 10px
             b {
-              display block
+              display flex 
+              align-items flex-end
               height 40px
               line-height 40px
               font-size 40px
               color #000
+              font {
+                margin-left 30px
+                height 28px
+                font-size 28px
+              }
             }
             span {
               position relative
@@ -429,6 +491,15 @@ export default {
           }
           .mine-get-indenty {
             color #FF5E00
+          }
+          .mine-head-customer {
+            padding-top 28px
+            height 28px
+            line-height 28px
+            font-size 28px
+            span {
+              color #FF5E00
+            }
           }
         }
       }
@@ -605,6 +676,27 @@ export default {
         color #fff
         background #FE2300
         border-radius 10px 0 10px 10px
+      }
+    }
+  }
+
+  .mine-customer-info {
+    display flex
+    align-items center
+    justify-content space-between
+    padding 0 30px
+    margin 0 auto 40px
+    width 690px
+    height 90px
+    box-shadow 0 6px 14px rgba(0,0,0,0.25)
+    border-radius 10px
+    background #fff
+    box-sizing border-box
+    p {
+      height 24px
+      font-size 24px
+      span {
+        color #FF5E00
       }
     }
   }

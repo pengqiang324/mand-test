@@ -150,13 +150,13 @@ export default {
             i {
                 display inline-block
                 font-style normal
-                padding 0 25px
+                padding 0 28px
             }
         }
         span {
             display block
-            height 28px
-            font-size 28px
+            height 30px
+            font-size 30px
             color #707070
             
         }
@@ -167,14 +167,14 @@ export default {
             border-bottom 1px solid #ddd
             input {
                 flex 1
-                font-size 28px
-                color #333
+                font-size 30px
+                color #707070
                 caret-color #FF6F00
             }
         }
         .perfectApply-brook {
             position absolute
-            left 162px
+            left 175px
             top 45px
             color #f00
             font-size 22px

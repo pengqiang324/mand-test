@@ -168,24 +168,16 @@
 
     watch: {
       data() {
-        // if (this.isScrollUp) {
-        //   this.pullUpMsg = '加载更多'
-        //   if (this.data >= this.total) {
-        //     this.pullUpMsg = '没有更多了'
-        //     this.scroll.closePullUp() // 关闭上拉加载功能
-        //   }
-        // } else {
-        //   this.pullDownMsg = '下拉刷新'
-        //   console.log('刷新成功')
-        // }
         this.pullUpMsg = '加载更多'
-          if (this.data.length >= this.total) {
-            this.pullUpMsg = '没有更多了'
-            this.scroll.closePullUp() // 关闭上拉加载功能
-        }
+        if (this.data.length >= this.total) {
+          this.pullUpMsg = '没有更多了'
+          this.scroll.closePullUp() // 关闭上拉加载功能
+        } 
+
+        if (this.data.length === 0) this.scroll && this.scroll.openPullUp(true) // 开启上拉加载
+        
         setTimeout(() => {
           this.scroll.finishPullUp() // 完成一次下拉加载
-          // !this.isScrollUp && this.scroll.finishPullDown()
           this.scroll.refresh()
         }, 20)
       }
@@ -233,7 +225,7 @@
         if (this.pullUpLoad) {
           this.scroll.on('pullingUp', () => {
             // this.isScrollUp = true
-            this.pullUpMsg = '拼命加载中...'
+            this.pullUpMsg = '玩命加载中...'
             this.$emit('pullingUp')  // 滚动到底部
           })
         }

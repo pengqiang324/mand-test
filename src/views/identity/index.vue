@@ -61,7 +61,7 @@
                     <!-- 身份情况信息完善 end -->
 
                     <!-- 财力情况 start -->
-                    <div class="steps-box-info"  v-if="currentIndex === 1" key="caic">
+                    <div class="steps-box-info" v-if="currentIndex === 1" key="caic">
                         <ry-scroll-view
                             :bounce="false"
                             class="steps-scroll"
@@ -110,7 +110,7 @@
                     <!-- 财力情况 end -->
 
                     <!-- 信用卡信息 start -->
-                    <div class="steps-box-info"   v-if="currentIndex === 2" key="xyk">
+                    <div class="steps-box-info" v-if="currentIndex === 2" key="xyk">
                         <ry-scroll-view
                             :bounce="false"
                             class="steps-scroll"
@@ -157,7 +157,7 @@
                     <!-- 信用卡信息 end -->
 
                     <!-- 征信信息 start -->
-                    <div class="steps-box-info"   v-if="currentIndex === 3" key="zx">
+                    <div class="steps-box-info" v-if="currentIndex === 3" key="zx">
                         <ry-scroll-view
                             :bounce="false"
                             class="steps-scroll"
@@ -228,6 +228,8 @@
 <script>
 import { Steps } from 'mand-mobile'
 import mixins from '@/libs/mixins'
+import Vue from 'vue'
+import { addAdviserCustomerInfo } from '@/api/personalTailor/personalTailor'
 
 export default {
     name: 'ry-identity',
@@ -441,7 +443,8 @@ export default {
                 creditCardNumber: 1, // 信用卡数量
                 creditCardTime: 1, // 持卡时间
             },
-            img: ''
+            img: '',
+            memberId: ''
         }
     },
 
@@ -450,6 +453,11 @@ export default {
              const INDEX = this.activeIndex + 1
              return INDEX
          }
+    },
+
+    created() {
+        const { memberId } = this.$route.query
+        this.memberId = memberId
     },
 
     methods: {
@@ -561,24 +569,44 @@ export default {
                     this.maskNoPassShow = true
                     return
                 } else {
-                    await new Promise((resolve) => {
-                        setTimeout(() => {
-                            this.loading = false
-                            resolve(1)
-                        }, 1000)
-                    })
-                    switch(this.creditStatus) {
-                        case 1: 
-                            this.img = this.Imgs[2] // 征信优秀
-                            break
-                        case 2:
-                            this.img = this.Imgs[1] // 征信良好
-                            break
-                        default:
-                            this.img = this.Imgs[0] // 征信一般
-                            break
+                    const { 
+                        houseProperty, 
+                        carProperty,
+                        lifeInsurance,
+                        accumulationFund,
+                        businessLicense 
+                    } = this.clData
+                    const newData = Object.assign({},this.clData)
+
+                    if (houseProperty < 3) this.deleteAttr(newData, 'houseMortgage') // 删除房产抵押对象属性
+                    if (carProperty < 3) this.deleteAttr(newData, 'carMortgage') // 删除车抵押对象属性
+                    if (lifeInsurance < 3) this.deleteAttr(newData, 'insurancePeriod') // 删除保险期限属性
+                    if (accumulationFund > 2) this.deleteAttr(newData, 'accumulationFundTime') // 删除公积金期限属性
+                    if (businessLicense < 2)  this.deleteAttr(newData, 'businessLicenseType') // 删除执照类型属性
+
+                    const payload = {
+                        memberId: this.memberId,
+                        identity: this.identity,
+                        creditStatus: this.creditStatus,
+                        ...newData,
+                        ...this.xData
                     }
-                    this.maskPassShow = true
+                    const res = await addAdviserCustomerInfo(payload)
+
+                    if (res.data.success) {
+                        switch(this.creditStatus) {
+                            case 1: 
+                                this.img = this.Imgs[2] // 征信优秀
+                                break
+                            case 2:
+                                this.img = this.Imgs[1] // 征信良好
+                                break
+                            default:
+                                this.img = this.Imgs[0] // 征信一般
+                                break
+                        }
+                        this.maskPassShow = true
+                    }
                 }
             } else {
                 this.currentIndex ++
@@ -596,7 +624,11 @@ export default {
 
         noPassTouchend() {
             this.publishEnd()
-            console.log(2)
+            this.$router.back()
+        },
+
+        deleteAttr(obj, attr) {
+            Vue.delete(obj, attr)
         }
     }
 }

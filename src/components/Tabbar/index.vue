@@ -38,7 +38,8 @@ export default {
     data(){
         return {
             active: 0,
-            tabbarIcon: [
+            tabbarIcon: [],
+            tabbarIcon1: [
               {
                 title: '信用卡',
                 info: 0,
@@ -67,6 +68,22 @@ export default {
                 active: require('@/assets/images/tabbar/ry-icon04-active.png'),
                 inactive: require('@/assets/images/tabbar/ry-icon04.png')
               }
+            ],
+            tabbarIcon2: [
+              {
+                title: '客户',
+                info: 2,
+                url: '/customer',
+                active: require('@/assets/images/adviser/icon01-active.png'),
+                inactive: require('@/assets/images/adviser/icon01.png')
+              },
+              {
+                title: '我的',
+                info: 2,
+                url: '/mine',
+                active: require('@/assets/images/adviser/icon02-active.png'),
+                inactive: require('@/assets/images/adviser/icon02.png')
+              },
             ]
         }
     },
@@ -77,7 +94,12 @@ export default {
         if (navIndex == undefined) return
         this.active = navIndex
       }
-    }
+    },
+
+    created() {
+      this.tabbarIcon = this.tabbarIcon1
+      // this.tabbarIcon = this.tabbarIcon2
+    },
 }
 </script>
 

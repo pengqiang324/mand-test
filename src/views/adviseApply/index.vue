@@ -12,7 +12,7 @@
                         <div class="adviseApply-btn">
                             <van-image
                                 v-if="isshowImg"
-                                :src="txImg"
+                                :src="form.txImg"
                                 fit="cover"
                                 class="adviseApply-img"
                             />
@@ -105,10 +105,11 @@
                     </div>
                     <div 
                         class="perfectApply-form-div"
-                        @click="showSelect(2)"
+                        @click="showSheet"
                      >
                         <span><i>擅</i>长：</span>
                         <p class="perfectApply-input">
+                            <span class="active">{{form.begoodAt}}</span>
                             <van-icon 
                                 name="arrow"
                                 class="adviseApply-arrow"
@@ -118,6 +119,7 @@
                 </div>
             </div>
         </ry-perfect>
+        <!-- picker 选择器 start -->
         <div class="adviseApply-select">
             <van-popup 
                 v-model="showPicker"
@@ -132,6 +134,57 @@
                 />
             </van-popup>
         </div>
+        <!-- picker 选择器 end -->
+        <!-- 擅长 start -->
+        <div class="adviseApply-begoodAt">
+            <van-action-sheet 
+                v-model="showsheet" 
+                title="顾问擅长"
+                @close="onClosed"
+            >
+                <div class="adviseApply-bgAt-con">
+                    <div class="adviseApply-bgAt-info">
+                        <van-field
+                            v-model="messageInfo"
+                            :autosize="autosize"
+                            type="textarea"
+                            maxlength="400"
+                            placeholder="顾问擅长内容在400字以内"
+                            show-word-limit
+                            class="adviseApply-bgAt-fied"
+                        />
+                        <div class="adviseApply-bgAt-tips" >
+                            <span @click="changeTips">范例文本</span>
+                            <van-icon 
+                                name="question-o"
+                                class="adviseApply-bgAt-question" 
+                                @click="changeTips"
+                            />
+                            <div
+                                v-show="showdialog" 
+                                class="adviseApply-tips-box"
+                            >
+                                <p>擅长：大额信用卡办理、无抵押信用担保、资产抵押、征信解析。</p>
+                                <p>从事金融行业六年，擅长高额信用卡办理、信用资产打造，解析个人征信上万份；多家金融公司风控特邀顾问。专业无抵押信用贷款、抵押担保类贷款知识。</p>
+                            </div>
+                        </div>
+                        <div role="button" class="adviseApply-bgAt-btn">
+                            <ry-button
+                                btn-title="确定"
+                                @touchafter="bgAtTouchAfter"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </van-action-sheet>
+        </div>
+        <!-- 擅长 end -->
+        <!-- 审核结果信息 start -->
+        <ry-examine
+            :show-overlay="showOverlay"
+            :examine-status="examineStatus"
+        />
+        <!-- 审核结果信息 end -->
   </div>
 </template>
 
@@ -139,7 +192,8 @@
 import RyPerfect from '@/components/PerfectInfo'
 import { weiXin } from '@/libs/validate'
 import mixins from '@/libs/mixins'
-import { Uploader, Image, Icon, ActionSheet, Picker } from 'vant'
+import { Uploader, Image, Icon, ActionSheet, Picker, Field } from 'vant'
+import RyExamine from '@/components/Examine'
 
 export default {
     name: 'ry-adviseApply',
@@ -152,16 +206,25 @@ export default {
         [Image.name]: Image,
         [Icon.name]: Icon,
         [ActionSheet.name]: ActionSheet,
-        [Picker.name]: Picker
+        [Picker.name]: Picker,
+        [Field.name]: Field,
+        [RyExamine.name]: RyExamine
     },
 
     data() {
         return {
-            txImg: '',
             title: '',
+            message: '',
+            messageInfo: '',
+            examineStatus: '',
             isshowImg: false,
             showtip: false,
+            showsheet: false,
+            showPicker: false,
+            showdialog: false,
+            showOverlay: false, // 审核状态
             form: {
+                txImg: '',
                 name: '彭元帅',
                 fname: '彭大将军',
                 card: '431024199004102434',
@@ -169,20 +232,24 @@ export default {
                 weixin: '',
                 fwLeix: '',
                 Professional: '',
-                major: ''
+                major: '',
+                begoodAt: '',
             },
-            showPicker: false,
+            autosize: {
+                minHeight: 120,
+                maxHeight: 120
+            },
             status: 0,
             actions: [],
             fwList: ['信用卡', '信贷', '融资规划', '征信服务'],
-            zcList: ['技师', '嫩模', '韩国小姐', 'AV小姐'],
+            zcList: ['老师', '工程师', '厨师', '媒体'],
             zyList: ['篮球', '足球', '台球', '保龄球']
         }
     },
 
     methods: {
         touchafter() {
-            if(!this.validateWeixin()) {
+            if(!this.validate()) {
                 this.$toast({
                     message: this.message,
                     position: 'bottom'
@@ -194,13 +261,14 @@ export default {
 
             setTimeout(() => {
                 this.loading = false
+                this.examineStatus = '已通过'
+                this.showOverlay = true
             }, 1000)
         },
         
         afterRead(file) {
-            this.txImg = file.content
+            this.form['txImg'] = file.content
             this.isshowImg = true
-            console.log(file.content)
         },
 
         showTips() {
@@ -212,10 +280,28 @@ export default {
             this.onBlur()
         },
 
-        // 验证微信
-        validateWeixin() {
-            if (this.form.weixin == '') {
+        // 验证
+        validate() {
+            if (this.form.txImg == '') {
+                this.message = '请上传头像'
+                return false
+            } else if (this.form.fname == '') {
+                this.message = '请输入申请人花名'
+                return false
+            } else if(this.form.weixin == '') {
                 this.message = '微信号不能为空'
+                return false
+            } else if(this.form.fwLeix == '') {
+                this.message = '请选择服务类型'
+                return false
+            } else if (this.form.Professional == '') {
+                this.message = '请选择职称类型'
+                return false
+            } else if (this.form.major == '') {
+                this.message = '请选择专业类型'
+                return false
+            } else if (this.form.begoodAt == '') {
+                this.message = '请输入顾问擅长信息'
                 return false
             } else {
                 const { success, message } = weiXin(this.form.weixin)
@@ -240,7 +326,7 @@ export default {
             }
             this.showPicker = false
         },
-
+        // 类型选择器
         showSelect(status) {
             switch(status) {
                 case 0:
@@ -257,12 +343,29 @@ export default {
             }
             this.showPicker = true
             this.status = status
+        },
+        // 顾问擅长
+        showSheet() {
+            this.showsheet = true
+        },
+
+        bgAtTouchAfter() {
+            this.form['begoodAt'] = this.messageInfo
+            this.showsheet = false
+        },
+
+        changeTips() {
+            this.showdialog = !this.showdialog
+        },
+
+        onClosed() {
+            this.showdialog = false
         }
     }
 }
 </script>
 
-<style lang="stylus" scoped>
+<style lang="stylus">
 .adviseApply-box {
     background #f5f5f5
 }
@@ -311,7 +414,7 @@ export default {
         position relative
         padding-bottom 66px
         display flex
-        align-items baseline
+        align-items center
         height 40px
         i {
             display inline-block
@@ -320,44 +423,60 @@ export default {
         &:nth-child(4),
         &:nth-child(6) {
             i {
-                padding-right 8px
+                padding-right 10px
             }
         }
         &:nth-child(5) {
             i {
-                padding 0 25px
+                padding 0 30px
             }
         }
         &:nth-child(7),
         &:nth-child(8) {
             i {
+                padding-right 93px
+            }
+        }
+        &:nth-child(9) {
+            i {
                 padding-right 90px
+            }
+            .perfectApply-input {
+                justify-content flex-end
+                span {
+                    width 180px
+                    overflow hidden
+                    white-space nowrap
+                    text-overflow ellipsis
+                }
+                .adviseApply-arrow {
+                    
+                }
             }
         }
         span {
             display block
-            height 32px
-            font-size 32px
+            height 30px
+            font-size 30px
             color #707070
-            
         }
         .perfectApply-input {
             display flex
             align-items center
             flex 1
-            height 32px
-            padding-bottom 3px
+            height 35px
+            padding-bottom 5px
             border-bottom 1px solid #ddd
             input {
                 flex 1
-                font-size 32px
+                font-size 30px
                 color #707070
                 caret-color #FF6F00
             }
             span {
                 flex 1
                 display block
-                font-size 32px
+                font-size 30px
                 color #ccc
                 &.active {
                     color #707070
@@ -368,7 +487,7 @@ export default {
                 right -4px
                 padding-right 0
                 margin-left 16px
-                font-size 32px
+                font-size 30px
                 font-weight bold
                 color #aaa
             }
@@ -381,5 +500,71 @@ export default {
             font-size 22px
         }
     }
+}
+
+.adviseApply-bgAt-con {
+    padding 0 28px
+    box-sizing border-box
+    .adviseApply-bgAt-info {
+        padding-top 20px
+        border-top 4px solid #848484
+        .adviseApply-bgAt-fied {
+            margin-bottom 20px
+            border 2px solid #D1D1D1
+            box-sizing border-box
+            .van-field__control {
+                caret-color #ff6f00
+            }
+        }
+        .adviseApply-bgAt-tips {
+            position relative
+            display flex
+            align-items center
+            justify-content flex-end
+            color #FF3D00
+            span {
+                margin-right 10px
+                height 24px
+                text-align right
+                font-size 24px
+            }
+            .adviseApply-bgAt-question {
+                font-size 32px
+            }
+            .adviseApply-tips-box {
+                position absolute
+                right 35px
+                top 55px
+                padding 20px 28px
+                width 545px
+                line-height 30px
+                font-size 24px
+                color #3a3a3a
+                border-radius 20px 10px 20px 20px
+                background #ebebeb
+                z-index 3333
+                box-sizing border-box
+                &:after {
+                    position absolute
+                    top -27px
+                    right -4px
+                    display block
+                    content ''
+                    width 0
+                    height 0
+                    border-bottom 30px solid #ebebeb
+                    border-left 12px solid transparent
+                    border-right 12px solid transparent
+                    border-top none
+                    transform rotate(35deg)
+                    transform-origin left bottom
+                }
+            }
+        }
+    }
+}
+
+.adviseApply-bgAt-btn {
+    padding 72px 90px 120px
 }
 </style>

@@ -11,7 +11,7 @@
   <md-scroll-view
       ref="scrollView"
       :scrolling-x="false"
-      :auto-reflow="true"
+      :auto-reflow="autoReflow"
       :bouncing="bounce"
       @refreshing="$_onRefresh"
       @end-reached="$_onEndReached"
@@ -28,10 +28,10 @@
       ></md-scroll-view-refresh>
       <slot></slot>
       <md-scroll-view-more
-        v-if="showMore"
+        v-show="showMore && data.length > 0"
         slot="more"
         :is-finished="isFinished"
-        loading-text="更多加载中..."
+        loading-text="拼命加载中..."
         finished-text="没有更多了"
       >
       </md-scroll-view-more>
@@ -44,7 +44,6 @@ import {
     ScrollViewRefresh, 
     ScrollViewMore
 } from 'mand-mobile'
-// import { store } from '@/libs/store'
 
 export default {
     name: 'ry-scroll-view',
@@ -66,24 +65,57 @@ export default {
             default: false
         },
 
-        isFinished: {
-            type: Boolean,
-            default: false
+        data: {
+            type: Array,
+            default: () => {
+                return []
+            }
         },
 
         bounce: {
             type: Boolean,
             default: true
+        },
+
+        total: {
+            type: Number,
+            default: 10
         }
+    },
+
+    data() {
+        return {
+            isFinished: false,
+            autoReflow: true
+        }
+    },
+
+    watch: {
+        data() {
+            this.$_onFinishLoadMore()
+            
+            if(this.data.length >= this.total) {
+                this.isFinished = true
+                return
+            } else {
+                this.isFinished = false
+            }
+        }
+    },
+
+    deactived() {
+        this.autoReflow = false
+    },
+
+    beforeDestroy() {
+        this.autoReflow = false
     },
 
     methods: {
         $_onRefresh() {
             // async data
             if (!this.showRefresh) return
-            this.$emit('onRefresh', {
-               finishRefresh: this.$_onFinishRefresh
-            })
+            this.$emit('onRefresh')
         },
 
         $_onEndReached() {
@@ -91,9 +123,8 @@ export default {
             if (this.isFinished) {
                 return
             }
-            this.$emit('onEndReached', { 
-                finishLoadMore: this.$_onFinishLoadMore 
-            })
+
+            this.$emit('onEndReached')
         },
 
         $_onFinishRefresh() {
@@ -101,7 +132,7 @@ export default {
         },
 
         $_onFinishLoadMore() {
-            this.$refs.scrollView.reflowScroller() // 重置滚动内容
+            this.$refs.scrollView.reflowScroller() // 数据改变时刷新内容高度
             this.$refs.scrollView.finishLoadMore()
         },
 
