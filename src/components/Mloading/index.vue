@@ -1,5 +1,11 @@
 <template>
-  <van-loading :size="size" type="spinner" vertical>载入中...</van-loading>
+  <van-loading 
+    type="spinner" 
+    :size="size" 
+    :color="color"
+    vertical
+  >载入中...
+  </van-loading>
 </template>
 
 <script>
@@ -10,6 +16,10 @@ export default {
         size: {
             type: String,
             default: '24px'
+        },
+        color: {
+            type: String,
+            default: '#c9c9c9'
         }
     }
 }

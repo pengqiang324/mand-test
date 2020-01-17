@@ -4,9 +4,9 @@
         <ry-result-network class="ry-network"/>
       </template>
       <template v-if="!showNetWork">
-          <ry-error-info v-show="showErrorIn"/>
-          <div class="home-box" v-show="!showErrorIn">
-              <ry-loading v-show="showloading" class="courseList-loading"/>
+          <ry-error-info v-if="showErrorIn"/>
+          <div class="home-box" v-if="!showErrorIn">
+              <ry-loading v-if="showloading" class="courseList-loading"/>
               <ry-scroll
                   v-show="!showloading"
                   :total="total"

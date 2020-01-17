@@ -120,6 +120,7 @@ export default {
     reload () { // 刷新页面
       this.isRouterAlive = false
       this.$nextTick(() => {
+        this.transitionName = '' // 无需任何动画效果
         this.isRouterAlive = true
       })
     },

@@ -131,7 +131,14 @@
               </div>
             </div>
         </div>
-        <div role="button" class="ry-logout" @click="loginOut">清除缓存</div>
+        <div class="mine-cell-list">
+          <van-cell>
+            <!-- 使用 title 插槽来自定义标题 -->
+            <template slot="title">
+              <div role="button" class="ry-logout" @click="loginOut">清除缓存</div>
+            </template>
+          </van-cell>
+        </div>
       </ry-scroll-view>
   </div>
 </template>
@@ -294,10 +301,6 @@ export default {
       }
     },
 
-    mounted() {
-      console.log(1)
-    },
-
     methods: {
       onCopy() {
         this.$toast.success('复制成功')
@@ -334,20 +337,7 @@ export default {
   }
 
   .ry-logout {
-    margin 60px auto 
-    width: 70%;
-    height: 90px;
-    line-height: 90px;
-    text-align: center;
-    border-radius: 45px;
-    font-size: 32px;
-    color: #fff;
-    font-weight: 400;
-    background: linear-gradient(to right, #ff6f00, #ff3d00);
-  }
-
-  .mine-info {
-    
+    text-align center
   }
 
   .mine-top {

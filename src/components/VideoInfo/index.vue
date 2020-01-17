@@ -1,14 +1,14 @@
 <template>
   <div class="video-box">
         <div class="businessInfo-video">
-            <img src="../../assets/images/business/business-play.png"/>
+            <div class="prism-player" :id="playerId"></div>
             <p class="business-video-read">
                 <md-icon
                     name="visible"
                     size="md"
                     class="video-icon"
                 />
-                <span>观看次数:&nbsp;248</span>
+                <span>观看次数:&nbsp;{{view}}</span>
             </p>
         </div>
 
@@ -24,11 +24,92 @@
 
 <script>
 export default {
-    name: 'ry-video-info'
+    name: 'ry-video-info',
+
+    props: {
+        /*
+        ** 视频地址
+        */ 
+        source: {
+            type: String,
+            default: ''
+        },
+        /*
+        ** 媒体转码服务的媒体Id
+        */ 
+        vid: {
+            type: String,
+            default: ''
+        },
+        /*
+        ** 视频封面
+        */ 
+        cover: {
+            type: String,
+            default: ''
+        },
+        /*
+        ** 视频播放权证
+        */ 
+        playauth: {
+            type: String,
+            default: ''
+        },
+        /*
+        ** 视频观看次数
+        */ 
+        view: {
+            type: Number,
+            default: 0
+        }
+    },
+
+    data() {
+        return {
+            playerId: "aliplayer_" + Math.random().toString(36).substr(2),
+            playStyle: '',
+            firstFullscreen: false
+        }
+    },
+
+    mounted() {
+        setTimeout(() => {
+            this.aliPlayer()
+        }, 200)
+    },
+
+    methods: {
+        aliPlayer() {
+            const player = new window.Aliplayer({
+                    id: this.playerId,
+                    source: this.source,
+                    cover: this.cover,
+                    vid: this.vide,
+                    playauth: this.playauth,
+                    height: '100%',
+                    autoplay: false,
+                    isLive: false,
+                    rePlay: false,
+                    playsinline: true,
+                    preload: true,
+                    useH5Prism: true,
+                    controlBarVisibility: 'click'
+                }, function (player) {
+                    console.log("The player is created", player)
+                }
+            )
+            console.log(player)
+        }
+    }
 }
 </script>
 
 <style lang="stylus">
+video.center
+{
+    object-position:50% 50% !important;
+}
+
 .video-scroll {
     .scroll-view-container {
         height auto !important
@@ -44,8 +125,9 @@ export default {
     align-items center
     justify-content center
     width 100%
-    height 320px
+    height 500px
     background #AAA
+    font-size 24px
     img {
         width 80px
         display block
@@ -81,9 +163,8 @@ export default {
 
 .businessInfo-con {
     position absolute
-    top 320px
-    
-    height calc(100% - 320px)
+    top 500px
+    height calc(100% - 500px)
     width 100%
     background #fff
     box-shadow 0 10px 18px rgba(0,0,0,0.05)

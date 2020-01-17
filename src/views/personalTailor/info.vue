@@ -9,200 +9,197 @@
                 v-if="!showErrorIn"
                 class="personalInfo-con-info"
             >
-                <ry-loading v-show="showloading" class="courseList-loading"/>
-                <div 
-                    v-show="!showloading"
-                    class="personalInfo-con-scroll"
+                <ry-toast-loading :show="showloading"/>
+                <ry-scroll-view 
+                    ref="scroll"
+                    :bounce="false"
+                    @scroll="scroll"
                 >
-                    <ry-scroll-view 
-                        ref="scroll"
-                        :bounce="false"
-                        @scroll="scroll"
-                    >
-                        <div class="personalInfo-top">
-                            <div class="personalInfo-head">
-                                <div class="per-list-head">
-                                    <h2 class="lazyload">
-                                        <img v-if="data.headImage == null" src="../../assets/images/common/ry-ts.png" alt="">
-                                        <img v-else :src="data.headImage"/>
-                                    </h2>
-                                    <div class="per-lhead-pri">
-                                        <div class="per-pri-head">
-                                            <span class="per-pri-name">{{data.name}}</span>
-                                            <span class="per-pri-lname">花名:&nbsp;{{data.flowerName}}</span>
-                                            <span class="per-pri-zwei">{{data.levelName}}</span>
-                                        </div>
-                                        <p class="per-pri-middle">专业：{{data.majorName}}</p>
-                                        <p class="per-pri-bottom">回复时间：周一至周六<span>9:00 — 18:00</span></p>
+                    <div class="personalInfo-top">
+                        <div class="personalInfo-head">
+                            <div class="per-list-head">
+                                <h2 class="lazyload">
+                                    <img v-if="data.headImage == null" src="../../assets/images/common/ry-ts.png" alt="">
+                                    <img v-else :src="data.headImage"/>
+                                </h2>
+                                <div class="per-lhead-pri">
+                                    <div class="per-pri-head">
+                                        <span class="per-pri-name">{{data.name}}</span>
+                                        <span class="per-pri-lname">花名:&nbsp;{{data.flowerName}}</span>
+                                        <span class="per-pri-zwei">{{data.levelName}}</span>
                                     </div>
+                                    <p class="per-pri-middle">专业：{{data.majorName}}</p>
+                                    <p class="per-pri-bottom">回复时间：周一至周六<span>9:00 — 18:00</span></p>
                                 </div>
-                                <div class="per-info-pri">
-                                    <p>回复率<span>{{data.recoveryRate}}%</span></p>
-                                    <p class="per-info-fuwu">服务人数<span>{{data.totalService}}</span></p>
-                                    <p class="per-info-pj">好评率<span>{{data.favorableRate}}%</span></p>
-                                </div>
-                                <div 
-                                    ref="perBox"
-                                    :style="{height: isAuto ? 'auto': ''}"
-                                    class="per-info-taste" 
-                                >
-                                    <p ref="perCon"><span>擅长:</span>{{data.expert}}</p>
-                                </div>
-                                <p 
-                                    v-if="isShow"
-                                    @click="clickInfo"
-                                    class="personalInfo-info-btn" 
-                                >
-                                    <span>{{btnTitle}}<i :class="{'up': isUp}"></i></span>
-                                </p>
                             </div>
-                        </div>
-
-                        <div class="personalInfo-zx">
-                            <h3>名师咨询</h3>
-                            <div class="personalInfo-js">
-                                <div class="personalInfo-js-top">
-                                    <h2></h2>
-                                    <div class="personalInfo-pri">
-                                        <div class="personalInfo-priHead">
-                                            <span class="personalInfo-priName">名师咨询</span>
-                                            <p class="personalInfo-xx">
-                                                <md-icon
-                                                    name="rmb"
-                                                    size="sm"
-                                                    class="personalInfo-icon"
-                                                />
-                                                {{data.price}}/<span>次</span></p>
-                                        </div>
-                                        <p class="personalInfo-priMiddle">7个工作日内可追问咨询</p>
-                                    </div>
-                                </div>
-                                <div class="personalInfo-js-middle">
-                                    <ul>
-                                        <li
-                                            v-for="(item,index) in list"
-                                            :key="index"
-                                        >
-                                            <span>{{item.labelkey}}</span>
-                                            <i></i>
-                                            <p>{{item.labelvalue}}</p>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div 
-                                    v-show="isShowInfo"
-                                    class="personalInfo-js-bottom"
-                                >
-                                    <div class="personalInfo-js-img">
-                                        <img src="../../assets/images/personalInfo/ry-sc01.png" alt="">
-                                    </div>
-                                    <div class="personalInfo-js-lc">
-                                        <h4>服务流程</h4>
-                                        <div class="personalInfo-js-ul">
-                                            <ul>
-                                                <li class="personalInfo-li">
-                                                    <div class="personalInfo-js-icon">
-                                                        <img 
-                                                            src="../../assets/images/personalInfo/ry-lc-01.png" 
-                                                            alt=""
-                                                            class="personalInfo-js-img1"
-                                                        />
-                                                    </div>
-                                                    <p>购买支付</p>
-                                                </li>
-                                                <li>
-                                                    <van-icon name="arrow" class="ry-personalInfo-arrow"/>
-                                                </li>
-                                                <li class="personalInfo-li">
-                                                    <div class="personalInfo-js-icon">
-                                                        <img 
-                                                            src="../../assets/images/personalInfo/ry-lc-02.png" 
-                                                            alt=""
-                                                            class="personalInfo-js-img2"
-                                                        />
-                                                    </div>
-                                                    <p>收集需求信息</p>
-                                                </li>
-                                                <li>
-                                                    <van-icon name="arrow" class="ry-personalInfo-arrow"/>
-                                                </li>
-                                                <li class="personalInfo-li">
-                                                    <div class="personalInfo-js-icon">
-                                                        <img 
-                                                            src="../../assets/images/personalInfo/ry-lc-03.png" 
-                                                            alt=""
-                                                            class="personalInfo-js-img3"
-                                                        />
-                                                    </div>
-                                                    <p>使用服务</p>
-                                                </li>
-                                                <li>
-                                                    <van-icon name="arrow" class="ry-personalInfo-arrow"/>
-                                                </li>
-                                                <li class="personalInfo-li">
-                                                    <div class="personalInfo-js-icon">
-                                                        <img 
-                                                            src="../../assets/images/personalInfo/ry-lc-04.png" 
-                                                            alt=""
-                                                            class="personalInfo-js-img4"
-                                                        />
-                                                    </div>
-                                                    <p>服务评价</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="personalInfo-js-ts">
-                                        <h4>温馨提示</h4>
-                                        <div class="personalInfo-js-priInfo">
-                                            <p>1.<span>支付成功后，请您及时配合名师完善需求信息资料，使名师能全面了解您的情况和需求，尽快给出回复。</span></p>
-
-                                            <p>2.<span>名师再工作时间内会尽快联系您（9:00-18:00），如非工作时间请耐心等待。</span></p>
-
-                                            <p>3.<span>服务时间以名师与您开始进行服务时算起，以服务评价完为止，7个工作日内可追问咨询，逾期服务自动结束。</span></p>
-
-                                            <p>4.<span>为提高服务质量，请您针对需求与名师进行充分沟通。</span></p>
-
-                                            <p>5.<span>名师为融溢平台签约顾问，不会以任何理由向客户收取任何其它费用，欢迎广大用户共同监督。</span></p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <p 
-                                    class="personalInfo-info-btn" 
-                                    @click="clickInfoZx"
-                                >
-                                    <span>{{btnInfoTitle}}<i :class="{'up': isInfoUp}"></i></span>
-                                </p>
+                            <div class="per-info-pri">
+                                <p>回复率<span>{{data.recoveryRate}}%</span></p>
+                                <p class="per-info-fuwu">服务人数<span>{{data.totalService}}</span></p>
+                                <p class="per-info-pj">好评率<span>{{data.favorableRate}}%</span></p>
                             </div>
-                        </div>
-
-                        <div class="personalInfo-pj">
-                            <div class="personalInfo-pj-title">
-                                <h2>客户评价<span>({{pjTotal.count}})</span></h2>
-                                <router-link 
-                                    :to="{path: '/evaluateInfo', query: {memberId, pjTotal: JSON.stringify(pjTotal)}}" 
-                                    tag="p"
-                                >全部
-                                    <md-icon
-                                        name="arrow-right"
-                                        size="md"
-                                        class="personalInfo-pj-arrow"
-                                    />
-                                </router-link>
+                            <div 
+                                ref="perBox"
+                                :style="{height: isAuto ? 'auto': ''}"
+                                class="per-info-taste" 
+                            >
+                                <p ref="perCon"><span>擅长:</span>{{data.expert}}</p>
                             </div>
-                            <ry-pj-list
-                                :data="pjList"
-                            />
+                            <p 
+                                v-if="isShow"
+                                @click="clickInfo"
+                                class="personalInfo-info-btn" 
+                            >
+                                <span>{{btnTitle}}<i :class="{'up': isUp}"></i></span>
+                            </p>
                         </div>
-                    </ry-scroll-view>
-                    <div class="personalInfo-payment">
-                        <ry-button
-                            btn-title="去支付"
-                            :loading="loading"
-                            @touchbefore="btnTouchBefore"
-                            @touchafter="btnTouchAfter"
+                    </div>
+
+                    <div class="personalInfo-zx">
+                        <h3>名师咨询</h3>
+                        <div class="personalInfo-js">
+                            <div class="personalInfo-js-top">
+                                <h2></h2>
+                                <div class="personalInfo-pri">
+                                    <div class="personalInfo-priHead">
+                                        <span class="personalInfo-priName">名师咨询</span>
+                                        <p class="personalInfo-xx">
+                                            <md-icon
+                                                name="rmb"
+                                                size="sm"
+                                                class="personalInfo-icon"
+                                            />
+                                            {{data.price}}/<span>次</span></p>
+                                    </div>
+                                    <p class="personalInfo-priMiddle">7个工作日内可追问咨询</p>
+                                </div>
+                            </div>
+                            <div class="personalInfo-js-middle">
+                                <ul>
+                                    <li
+                                        v-for="(item,index) in list"
+                                        :key="index"
+                                    >
+                                        <span>{{item.labelkey}}</span>
+                                        <i></i>
+                                        <p>{{item.labelvalue}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div 
+                                v-show="isShowInfo"
+                                class="personalInfo-js-bottom"
+                            >
+                                <div class="personalInfo-js-img">
+                                    <img src="../../assets/images/personalInfo/ry-sc01.png" alt="">
+                                </div>
+                                <div class="personalInfo-js-lc">
+                                    <h4>服务流程</h4>
+                                    <div class="personalInfo-js-ul">
+                                        <ul>
+                                            <li class="personalInfo-li">
+                                                <div class="personalInfo-js-icon">
+                                                    <img 
+                                                        src="../../assets/images/personalInfo/ry-lc-01.png" 
+                                                        alt=""
+                                                        class="personalInfo-js-img1"
+                                                    />
+                                                </div>
+                                                <p>购买支付</p>
+                                            </li>
+                                            <li>
+                                                <van-icon name="arrow" class="ry-personalInfo-arrow"/>
+                                            </li>
+                                            <li class="personalInfo-li">
+                                                <div class="personalInfo-js-icon">
+                                                    <img 
+                                                        src="../../assets/images/personalInfo/ry-lc-02.png" 
+                                                        alt=""
+                                                        class="personalInfo-js-img2"
+                                                    />
+                                                </div>
+                                                <p>收集需求信息</p>
+                                            </li>
+                                            <li>
+                                                <van-icon name="arrow" class="ry-personalInfo-arrow"/>
+                                            </li>
+                                            <li class="personalInfo-li">
+                                                <div class="personalInfo-js-icon">
+                                                    <img 
+                                                        src="../../assets/images/personalInfo/ry-lc-03.png" 
+                                                        alt=""
+                                                        class="personalInfo-js-img3"
+                                                    />
+                                                </div>
+                                                <p>使用服务</p>
+                                            </li>
+                                            <li>
+                                                <van-icon name="arrow" class="ry-personalInfo-arrow"/>
+                                            </li>
+                                            <li class="personalInfo-li">
+                                                <div class="personalInfo-js-icon">
+                                                    <img 
+                                                        src="../../assets/images/personalInfo/ry-lc-04.png" 
+                                                        alt=""
+                                                        class="personalInfo-js-img4"
+                                                    />
+                                                </div>
+                                                <p>服务评价</p>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="personalInfo-js-ts">
+                                    <h4>温馨提示</h4>
+                                    <div class="personalInfo-js-priInfo">
+                                        <p>1.<span>支付成功后，请您及时配合名师完善需求信息资料，使名师能全面了解您的情况和需求，尽快给出回复。</span></p>
+
+                                        <p>2.<span>名师再工作时间内会尽快联系您（9:00-18:00），如非工作时间请耐心等待。</span></p>
+
+                                        <p>3.<span>服务时间以名师与您开始进行服务时算起，以服务评价完为止，7个工作日内可追问咨询，逾期服务自动结束。</span></p>
+
+                                        <p>4.<span>为提高服务质量，请您针对需求与名师进行充分沟通。</span></p>
+
+                                        <p>5.<span>名师为融溢平台签约顾问，不会以任何理由向客户收取任何其它费用，欢迎广大用户共同监督。</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p 
+                                class="personalInfo-info-btn" 
+                                @click="clickInfoZx"
+                            >
+                                <span>{{btnInfoTitle}}<i :class="{'up': isInfoUp}"></i></span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="personalInfo-pj">
+                        <div class="personalInfo-pj-title">
+                            <h2>客户评价<span>({{pjTotal.count}})</span></h2>
+                            <router-link 
+                                :to="{path: '/evaluateInfo', query: {memberId, pjTotal: JSON.stringify(pjTotal)}}" 
+                                tag="p"
+                            >全部
+                                <md-icon
+                                    name="arrow-right"
+                                    size="md"
+                                    class="personalInfo-pj-arrow"
+                                />
+                            </router-link>
+                        </div>
+                        <ry-m-loading v-if="isShowMLoading"/>
+                        <ry-pj-list
+                            v-else
+                            :data="pjList"
                         />
                     </div>
+                </ry-scroll-view>
+                <div class="personalInfo-payment">
+                    <ry-button
+                        btn-title="去支付"
+                        :loading="loading"
+                        @touchbefore="btnTouchBefore"
+                        @touchafter="btnTouchAfter"
+                    />
                 </div>
             </div>
         </template>
@@ -242,6 +239,7 @@ export default {
             isShowInfo: false,
             btnShow: false,
             showloading: false,
+            isShowMLoading: false,
             btnTitle: '展开详情',
             btnInfoTitle: '展开详情',
             timer: null,
@@ -259,13 +257,15 @@ export default {
         }
     },
 
-    mounted() {
-        this.init()
+    created() {
         this.initData()
     },
 
+    mounted() {
+        this.init()
+    },
+
     activated() {
-        console.log(1)
         // this.initData() // 网络出错点击刷新页面
     },
 
@@ -274,29 +274,34 @@ export default {
     },
 
     methods: {
-        initData() {
+        async initData() {
             this.showloading = true
+            this.isShowMLoading = true
             const { memberId } = this.$route.query
             this.memberId = memberId
+
+           await getAdviserInfoById({memberId})
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.data = data
+                    this.hideErrorTip()
+                }  else {
+                    this.showErrorTip(res)
+                }
+                this.showloading = false
+            })
+        
             this.$axios.all([
-                getAdviserInfoById({memberId}),
                 getAdviserCountComment({memberId}),
                 getAdviserNewComment({memberId})
             ])
-            .then(this.$axios.spread((res1,res2,res3) => {
-                const { success, data } = res3.data
-                if (!res1.data.success) {
-                    this.showErrorTip(res1)
-                    this.showloading = false
-                    return
-                }
-
+            .then(this.$axios.spread((res1,res2) => {
+                const { success, data } = res1.data
                 if (success) {
-                    this.data = res1.data.data
-                    this.pjTotal = res2.data.data
-                    this.pjList = data
-                    this.hideErrorTip()
-                    this.showloading = false
+                    this.pjTotal = data
+                    this.pjList = res2.data.data
+                    this.isShowMLoading = false
                 } 
             }))
         },
@@ -356,8 +361,7 @@ export default {
     background #f5f5f5
 }
 
-.personalInfo-con-info,
-.personalInfo-con-scroll {
+.personalInfo-con-info {
     height 100%
 }
 

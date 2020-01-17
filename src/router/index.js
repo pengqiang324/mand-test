@@ -130,6 +130,16 @@ const routes = [
     }
   },
   {
+    path: '/courseInfo',
+    name: 'ry-courseInfo',
+    component: () => import(/* webpackChunkName: "courseInfo" */ '../views/courseList/courseInfo.vue'),
+    meta: {
+      index: 4,
+      hasFooter: false,
+      title: '课程详情'
+    }
+  },
+  {
     path: '/guide',
     name: 'ry-guide',
     component: () => import(/* webpackChunkName: "guide" */ '../views/guide'),

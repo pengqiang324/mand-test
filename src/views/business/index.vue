@@ -10,6 +10,7 @@
                 :bounce="false"
                 class="business-scroll"
             >
+                <ry-toast-loading :show="showloading"/>
                 <div class="business-info">
                     <div class="business-head">
                         <div class="business-swiper">
@@ -49,17 +50,22 @@
                         <h2>公司介绍</h2>
                         <div class="business-introduce-info">
                             <h4>
-                                <img v-lazy="logoImg" alt="">
+                                <img v-lazy="companyData.imageUrl" alt="">
                             </h4>
-                            <router-link 
-                                to="/businessInfo"
-                                tag="div"
+                            <div
                                 class="businesss-info-right"
+                                @click="pushInfo(companyData.id)"
                             >
-                                <h3>融溢简介</h3>
-                                <p class="businesss-info-con">简介文案！简介文案！简介文案！简介文案！简介文案！</p>
-                                <p class="businesss-info-time"><span>时长3分钟</span><i>查看详情</i></p>
-                            </router-link>
+                                <h3>{{companyData.name}}</h3>
+                                <p class="businesss-info-con">{{companyData.description}}</p>
+                                <p class="businesss-info-time">
+                                    <span>
+                                        观看次数:
+                                        {{companyData.viewTotal}}
+                                    </span>
+                                    <i>查看详情</i>
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -67,28 +73,14 @@
                         <h2>专题栏</h2>   
                         <div class="business-special-list">
                             <ul>
-                                <router-link
-                                    to="/courseList"
-                                    tag="li"
+                                <li
+                                    v-for="(item,index) in subjectData"
+                                    :key="index"
+                                    @click="pushSubject(item.id)"
                                 >
-                                    <h4><img v-lazy="bgImg" alt=""></h4>
-                                    <h5>信用卡</h5>
-                                    <p>99人已学习</p>
-                                </router-link>
-                                <li>
-                                    <h4><img v-lazy="bgImg" alt=""></h4>
-                                    <h5>信用卡</h5>
-                                    <p>99人已学习</p>
-                                </li>
-                                <li>
-                                    <h4><img v-lazy="bgImg" alt=""></h4>
-                                    <h5>信用卡</h5>
-                                    <p>99人已学习</p>
-                                </li>
-                                <li>
-                                    <h4><img v-lazy="bgImg" alt=""></h4>
-                                    <h5>信用卡</h5>
-                                    <p>99人已学习</p>
+                                    <h4><img v-lazy="item.imageUrl" alt=""></h4>
+                                    <h5>{{item.name}}</h5>
+                                    <p>{{item.viewTotal}}人已学习</p>
                                 </li>
                             </ul>
                         </div> 
@@ -102,6 +94,7 @@
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import mixins from '@/libs/mixins'
+import { getAll, addView } from '@/api/business/business'
 
 export default {
     name: 'ry-business',
@@ -116,7 +109,6 @@ export default {
     data() {
         const imgUrl = require('@/assets/images/banner/swiper01.png')
         const bgImg = require('../../assets/images/business/business-bg.png')
-        const logoImg = require('../../assets/images/ry_logo@2x.png')
         return {
             swiperOption: {
                 notNextTick: true,
@@ -162,10 +154,76 @@ export default {
                     name: '早安晚语'
                 }
             ],
+            subjectData: [],
+            companyData: {},
             bgImg: bgImg,
-            logoImg: logoImg 
         }
     },
+
+    created() {
+        this.initData()
+    },
+
+    methods: {
+        async initData() {
+            const params1 = {
+                subject: 1 
+            }
+            const params2 = {
+                subject: 0
+            }
+            this.showloading = true
+            const res =  await getAll(params1)
+            const { success, data } = res.data
+            
+            if (success) {
+                this.companyData= data[0]
+                this.hideErrorTip()
+                this.showloading = false
+                getAll(params2)
+                .then((res2) => {
+                    const { success, data } = res2.data
+                    if (success) {
+                        this.subjectData = data
+                    }
+                })
+            } else {
+                this.showloading = false
+                this.showErrorTip(res)
+            }
+        },
+
+        async pushInfo(id) {
+            const res = await this.updateView(id)
+            const { success } = res.data
+            if (success) {
+                this.$router.push({
+                    path: '/businessInfo',
+                    query: {
+                        id,
+                        view: this.companyData.viewTotal // 观看次数
+                    }
+                })
+            }
+        },
+
+        async pushSubject(id) {
+            const res = await this.updateView(id)
+            const { success } = res.data
+            if (success) {
+                this.$router.push({
+                    path: '/courseList',
+                    query: {
+                        id
+                    }
+                })
+            }
+        },
+
+        async updateView(id) {
+            return addView({id})
+        }
+    }
 }
 </script>
 

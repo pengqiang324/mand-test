@@ -19,14 +19,6 @@
                             融溢是湖南豚鱼科技有限公司旗下的一款互联网+全民信用O2O服务平台。
                             利用大数据搜索等技术让百家银行的金融产品可以直观的呈现在用户面前,提供贷款,信用卡,信用咨询,
                             贷款经纪等搜索比价及信用咨询,贷款申请,量身私人定制服务。</p>
-                        <!-- <p>目前线上已覆盖PC端，融溢App，
-                            融溢网手机版等终端，具备集贷款产品信息搜索，产品研发，大数据处理，服务标准建立为一体的综合型信用服务平台，
-                            平台为贷款客户与银行，消费金融公司双方提供全面真实的信用相关信息及咨询服务，并满足用户资质审核，
-                            信用额度评估，约带面签等个性化服务，旨在不断提高服务效率，提升服务体验，为用户提供更安全，更便捷，更高效，
-                            更舒心，更合理的私人定制化综合信用服务。</p>
-                        <p>湖南豚鱼科技以建设全民信用体系，打造信用城市，推进信用行业进步，
-                            让“”个人和小微企业融资不在为难”为品牌使命！希望通过持之以恒的创新及技术的探索和运用，建立有效管理，
-                            高质量，高标准的信用信息服务标准，推进行业进步…！</p>     -->
                     </div>
 
                     <div class="businessInfo-introduction">
@@ -76,7 +68,7 @@ import { getAllByTypeId } from '@/api/business/business'
 import mixins from '@/libs/mixins'
 
 export default {
-    name: 'ry-businessInfo',
+    name: 'ry-courseInfo',
 
     mixins: [mixins],
 
@@ -95,7 +87,7 @@ export default {
     },
 
     created() {
-        this.initData()
+        // this.initData()
     },
 
     methods: {
@@ -113,16 +105,6 @@ export default {
             if (success) {
                 this.videoData = queryResult.list[0]
                 this.showloading = false
-                // const authParams = {
-                //     videoId: this.videoData.videoId
-                // }
-                // getPlayauth(authParams)
-                // .then((res) => {
-                //     const { success, data } = res.data
-                //     if (success) {
-                //         this.playAuth = data.playAuth
-                //     }
-                // })
             }
         }
     }

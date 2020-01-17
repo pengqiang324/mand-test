@@ -75,8 +75,8 @@ export default {
             if (this.showErrorIn) this.showErrorIn = false
         },
 
-        showErrorTip(res1) {
-            if (res1.code == -404 && res1.message.indexOf('401') == -1) { 
+        showErrorTip(res) {
+            if (res.code == -404 && res.message.indexOf('401') == -1) { 
                 this.showNetWork = true // 浏览器返回的错误
                 return 
             }

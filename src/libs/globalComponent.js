@@ -36,6 +36,7 @@ import {
 ** @ComponentName RyMLoading 载入组件
 ** @ComponentName RyBannerHead banner头部轮播组件
 ** @ComponentName RyPayment 完成支付成功组件
+** @ComponentName RyToastLoading 页面数据加载中组件
 */
 
 import RyLoading from '../components/Loading'
@@ -52,6 +53,7 @@ import RySliderScroll from '../components/SliderScroll'
 import RyMLoading from '../components/Mloading'
 import RyBannerHead from '../components/BannerHead'
 import RyPayment from '../components/PaySuccess'
+import RyToastLoading from '../components/ToastLoad'
 
 export default {
     install(Vue) {
@@ -86,5 +88,6 @@ export default {
         Vue.component(RyScrollView.name, RyScrollView)
         Vue.component(RyBannerHead.name, RyBannerHead)
         Vue.component(RyPayment.name, RyPayment)
+        Vue.component(RyToastLoading.name, RyToastLoading)
     }
 }

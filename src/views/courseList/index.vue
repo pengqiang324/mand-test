@@ -22,22 +22,26 @@
                                     v-show="!showloading"
                                     :total="total"
                                     :bounce="bounce"
-                                    :data="data"
+                                    :data="videoData"
                                     :scrollbar="true"
                                     :pullUpLoad="true"
                                     @pullingUp="pullUpLoad"
                                 >
                                     <ul>
                                         <li 
-                                            v-for="(item, index) in data"
+                                            v-for="(item, index) in videoData"
                                             :key="index"
+                                            class="needsclick"
                                         >
-                                            <h4 v-lazy:background-image="bgImg">
-                                                <p><span>01:40</span></p>
+                                            <h4 
+                                                v-lazy:background-image="item.imageUrl"
+                                                @click="addView(item.id)"
+                                            >
+                                                <p><span>{{item.videoTime}}</span></p>
                                             </h4>
                                             <div class="courseList-list-right">
-                                                <h3>资本大智慧之如何打造百万资产（1）</h3>
-                                                <p>观看次数：256</p>
+                                                <h3>{{item.title}}</h3>
+                                                <p>观看次数：{{item.view}}</p>
                                             </div>
                                         </li>
                                     </ul>
@@ -68,6 +72,7 @@
 </template>
 
 <script>
+import { getAllByTypeId, addListView } from '@/api/business/business'
 import mixins from '@/libs/mixins'
 
 export default {
@@ -77,33 +82,77 @@ export default {
     
     data() {
         const headImg = require('../../assets/images/banner/ry-banner.png')
-        const bgImg = require('../../assets/images/business/business-bg.png')
         return {
             headImg,
-            bgImg,
             bounce: {
                 top: false,
                 bottom: false,
                 left: false,
                 right: false
             },
-            data: [1,2,3,4,5,6,5,7,8,9,10],
+            videoData: [],
             page: 1,   // 请求页数
             size: 5,  // 显示多少条数据
             total: 40,
         }
     },
 
+    created() {
+        this.initData()
+    },
+
     methods: {
-        pullUpLoad() {
+        async initData() {
+            const { id } = this.$route.query
+            this.id = id
+            const params = {
+                vtId: id,
+                page: this.page,
+                size: this.size
+            }
+            this.showloading = true
+            const res = await getAllByTypeId(params)
+            const { success, queryResult } = res.data
+            if (success) {
+                this.videoData = this.videoData.concat(queryResult.list)
+                this.total = queryResult.total
+                this.showloading = false
+                this.hideErrorTip()
+            } else {
+                this.showErrorTip(res)
+            }
+        },
+
+        async pullUpLoad() {
             this.page ++
             // 异步更新数据
-            setTimeout(() => {
-                for (let i = 0; i < 10; i++) {
-                    this.data.push(this.data.length + 1)
-                }
-            }, 500)
+            const params = {
+                vtId: this.id,
+                page: this.page,
+                size: this.size
+            }
+            const res = await getAllByTypeId(params)
+            const { success, queryResult } = res.data
+            if (success) {
+                this.videoData = this.videoData.concat(queryResult.list)
+            }
         },
+
+        async addView(id) {
+            addListView({id})
+            .then((res) => {
+                const { success } = res.data
+                console.log(success)
+                if (success) {
+                    this.$router.push({
+                        path: '/courseInfo',
+                        query: {
+                            id
+                        }
+                    })
+                }
+            })
+        }
     }
 }
 </script>
@@ -184,6 +233,7 @@ export default {
                     width 200px
                     height 120px
                     background-color #eee
+                    background-size cover
                     border-radius 10px
                     overflow hidden
                     &[lazy='loading'] {
