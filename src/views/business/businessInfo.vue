@@ -6,6 +6,7 @@
         >
             <ry-toast-loading :show="showloading"/>
             <ry-video-info
+                v-if="showVideo"
                 :vid="videoData.videoId"
                 :source="videoData.videoUrl"
                 :cover="videoData.imageUrl"
@@ -90,7 +91,8 @@ export default {
             size: 1,
             videoData: {},
             playAuth: '',
-            view: 0
+            view: 0,
+            showVideo: false
         }
     },
 
@@ -107,22 +109,13 @@ export default {
                 size: this.size
             }
             this.showloading = true
-            this.view = view
+            this.view = parseInt(view)
             const res = await getAllByTypeId(params)
             const { success, queryResult } = res.data
             if (success) {
                 this.videoData = queryResult.list[0]
                 this.showloading = false
-                // const authParams = {
-                //     videoId: this.videoData.videoId
-                // }
-                // getPlayauth(authParams)
-                // .then((res) => {
-                //     const { success, data } = res.data
-                //     if (success) {
-                //         this.playAuth = data.playAuth
-                //     }
-                // })
+                this.showVideo = true
             }
         }
     }

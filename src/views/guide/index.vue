@@ -19,7 +19,8 @@
                             <van-cell 
                                 v-for="(item,index) in list"
                                 :key="index"
-                                :title="item.title" 
+                                :title="item.title"
+                                :to="{path: '/courseArticle', query: {id: 1}}" 
                                 is-link 
                             />
                         </van-cell-group>
@@ -72,6 +73,10 @@ export default {
                 },
             ]
         }
+    },
+
+    created() {
+        
     }
 }
 </script>
@@ -79,6 +84,7 @@ export default {
 <style lang="stylus">
 .guide-box {
     .guide-loading {
+        height 500px
         img {
             width 130px 
         }

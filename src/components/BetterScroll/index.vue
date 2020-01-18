@@ -160,7 +160,7 @@
     data() {
       return {
         scroll: null,
-        pullUpMsg: '加载更多',
+        pullUpMsg: '玩命加载中...',
         pullDownMsg: '下拉刷新',
         isScrollUp: false,
       }
@@ -168,7 +168,7 @@
 
     watch: {
       data() {
-        this.pullUpMsg = '加载更多'
+        this.pullUpMsg = '玩命加载中...'
         if (this.data.length >= this.total) {
           this.pullUpMsg = '没有更多了'
           this.scroll.closePullUp() // 关闭上拉加载功能
@@ -195,9 +195,6 @@
 
     activated() {
       this.scroll && this.scroll.refresh()
-    },
-
-    deactivated() {
     },
 
     beforeDestroy() {

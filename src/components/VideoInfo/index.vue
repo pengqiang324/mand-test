@@ -1,7 +1,13 @@
 <template>
   <div class="video-box">
         <div class="businessInfo-video">
-            <div class="prism-player" :id="playerId"></div>
+            <ry-m-loading v-if="!source"/>
+            <div 
+                v-else
+                :id="playerId" 
+                class="prism-player"
+            >
+            </div>
             <p class="business-video-read">
                 <md-icon
                     name="visible"
@@ -14,6 +20,7 @@
 
         <div class="businessInfo-con">
             <ry-scroll-view
+                :bounce="false"
                 class="video-scroll"
             >
                 <slot></slot>
@@ -73,9 +80,7 @@ export default {
     },
 
     mounted() {
-        setTimeout(() => {
-            this.aliPlayer()
-        }, 200)
+        this.aliPlayer()
     },
 
     methods: {
@@ -105,11 +110,6 @@ export default {
 </script>
 
 <style lang="stylus">
-video.center
-{
-    object-position:50% 50% !important;
-}
-
 .video-scroll {
     .scroll-view-container {
         height auto !important
@@ -126,7 +126,7 @@ video.center
     justify-content center
     width 100%
     height 500px
-    background #AAA
+    background #eee
     font-size 24px
     img {
         width 80px

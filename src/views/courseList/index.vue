@@ -2,6 +2,7 @@
   <div class="courseList-box">
         <ry-scroll
             :bounce="bounce"
+            :click="false"
         >
             <div class="courseList-head">
                 <img v-lazy="headImg" alt="">
@@ -18,8 +19,9 @@
                             <ry-error-info v-show="showErrorIn"/>
                             <div v-show="!showErrorIn" class="loading">
                                 <ry-loading v-show="showloading" class="courseList-loading"/>
+                                <ry-result-empty v-show="!total" class="empty-info-box"/>
                                 <ry-scroll
-                                    v-show="!showloading"
+                                    v-show="!showloading && total"
                                     :total="total"
                                     :bounce="bounce"
                                     :data="videoData"
@@ -31,11 +33,10 @@
                                         <li 
                                             v-for="(item, index) in videoData"
                                             :key="index"
-                                            class="needsclick"
+                                            @click="addView(item.id)"
                                         >
                                             <h4 
                                                 v-lazy:background-image="item.imageUrl"
-                                                @click="addView(item.id)"
                                             >
                                                 <p><span>{{item.videoTime}}</span></p>
                                             </h4>
@@ -72,7 +73,7 @@
 </template>
 
 <script>
-import { getAllByTypeId, addListView } from '@/api/business/business'
+import { getAllByTypeId } from '@/api/business/business'
 import mixins from '@/libs/mixins'
 
 export default {
@@ -138,18 +139,11 @@ export default {
             }
         },
 
-        async addView(id) {
-            addListView({id})
-            .then((res) => {
-                const { success } = res.data
-                console.log(success)
-                if (success) {
-                    this.$router.push({
-                        path: '/courseInfo',
-                        query: {
-                            id
-                        }
-                    })
+        addView(id) {
+            this.$router.push({
+                path: '/courseInfo',
+                query: {
+                    id
                 }
             })
         }
@@ -174,6 +168,10 @@ export default {
     setBg()
 
     background #f5f5f5
+}
+
+.empty-info-box {
+    height 100%
 }
 
 .courseList-head {

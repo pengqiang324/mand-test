@@ -8,6 +8,8 @@
             <ry-scroll-view
                 v-show="!showErrorIn"
                 :bounce="false"
+                ref="scroll"
+                @scroll="scroll"
                 class="business-scroll"
             >
                 <ry-toast-loading :show="showloading"/>
@@ -70,8 +72,15 @@
                     </div>
 
                     <div class="business-special">
-                        <h2>专题栏</h2>   
-                        <div class="business-special-list">
+                        <h2>专题栏</h2>
+                        <ry-m-loading
+                            v-if="showEnter"
+                            class="business-m-loading"
+                        />
+                        <div
+                            v-else
+                            class="business-special-list"
+                        >
                             <ul>
                                 <li
                                     v-for="(item,index) in subjectData"
@@ -157,6 +166,7 @@ export default {
             subjectData: [],
             companyData: {},
             bgImg: bgImg,
+            showEnter: false
         }
     },
 
@@ -173,6 +183,7 @@ export default {
                 subject: 0
             }
             this.showloading = true
+            this.showEnter = true
             const res =  await getAll(params1)
             const { success, data } = res.data
             
@@ -185,6 +196,7 @@ export default {
                     const { success, data } = res2.data
                     if (success) {
                         this.subjectData = data
+                        this.showEnter = false
                     }
                 })
             } else {
@@ -228,6 +240,10 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.business-m-loading {
+    padding 80px 0
+}
+
 .business-box {
     position absolute
     top 0

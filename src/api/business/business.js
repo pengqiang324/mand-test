@@ -45,3 +45,12 @@ export function addListView(params) {
         method: 'put'
     })
 }
+
+// 根据视频id获取视频信息
+export function getVideoId(params) {
+    return request({ 
+        url: `${api}/sysVideo/getVideoById`,
+        method: 'get',
+        params
+    })
+}
