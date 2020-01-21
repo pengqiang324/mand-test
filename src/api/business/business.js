@@ -54,3 +54,11 @@ export function getVideoId(params) {
         params
     })
 }
+
+// 导航列表模块获取
+export function getListAll() {
+    return request({
+        url: `${api}/sysNivbar/getAll`,
+        method: 'get'
+    })
+}

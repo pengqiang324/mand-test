@@ -48,7 +48,6 @@ const routes = [
     meta: {
       index: 1,
       navIndex: 2,
-      keepAlive: true,
       hasFooter: true,
       title: '私人定制'
     }
@@ -105,7 +104,6 @@ const routes = [
     meta: {
       index: 2,
       hasFooter: false,
-      keepAlive: true,
       title: '商学院'
     }
   },
@@ -300,7 +298,6 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  // mode: 'history',
   base: process.env.BASE_URL,
   scrollBehavior(to, from, savedPosition) {
     if (savedPosition) {

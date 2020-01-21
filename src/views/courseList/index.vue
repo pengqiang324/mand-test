@@ -33,7 +33,7 @@
                                         <li 
                                             v-for="(item, index) in videoData"
                                             :key="index"
-                                            @click="addView(item.id)"
+                                            @click="addView(item)"
                                         >
                                             <h4 
                                                 v-lazy:background-image="item.imageUrl"
@@ -53,10 +53,13 @@
                 </div>
             </div>
 
-            <div class="courseList-btn">
+            <div 
+                v-if="!userStatus"
+                class="courseList-btn"
+            >
                 <p 
                     @touchstart="publishStart"
-                    @touchend="publishEnd"
+                    @touchend="paymentNext"
                     :class="['courseList-btn-zf', {'btn-active': this.isActive}]"
                 >
                     <span>仅需支付
@@ -75,6 +78,7 @@
 <script>
 import { getAllByTypeId } from '@/api/business/business'
 import mixins from '@/libs/mixins'
+import { Dialog } from 'vant'
 
 export default {
     name: 'ry-courseList',
@@ -95,6 +99,8 @@ export default {
             page: 1,   // 请求页数
             size: 5,  // 显示多少条数据
             total: 40,
+            orderId: '',
+            data: {}
         }
     },
 
@@ -139,13 +145,39 @@ export default {
             }
         },
 
-        addView(id) {
-            this.$router.push({
-                path: '/courseInfo',
-                query: {
-                    id
-                }
-            })
+        addView(item) {
+            if (!this.userStatus) {
+                this.$store.dispatch('shopOwner/updateURL', '/business')
+                Dialog.confirm({
+                    title: '开通店主',
+                    message: '请支付¥399.00元，成为店主后才可观看！',
+                    confirmButtonText: '去支付',
+                    confirmButtonColor: '#ff6f00',
+                    beforeClose: this.beforeClose
+                })
+            } else {
+                this.$router.push({
+                    path: '/courseInfo',
+                    query: {
+                        id: item.id
+                    }
+                })
+            }
+        },
+
+        // 支付
+        paymentNext() {
+            this.publishEnd()
+            this.$router.push('/learnCourse')
+        },
+
+        beforeClose(action, done) {
+            if (action === 'confirm') {
+                done()
+                this.$router.push('/learnCourse')
+            } else {
+                done()
+            }
         }
     }
 }
@@ -191,7 +223,7 @@ export default {
 }
 
 .courseList-con {
-    padding 0 40px
+    padding 0 40px 64px
     .courseList-con-box {
         padding 20px 0 10px
         width 100%
@@ -286,7 +318,7 @@ export default {
 }
 
 .courseList-btn {
-    padding 64px 104px
+    padding 0 104px 64px
     .courseList-btn-zf {
         display flex
         align-items center

@@ -35,6 +35,7 @@
                     </div>
                     <div class="learnCourse-btn">
                         <ry-button  
+                            :loading="loading"
                             btn-title="立即购买"
                             @touchafter="touchafter"
                         />
@@ -46,8 +47,14 @@
 </template>
 
 <script>
+import { getInfo } from '@/api/perfectApply/perfectApply'
+import mixins from '@/libs/mixins'
+import { mapState } from 'vuex'
+
 export default {
     name: 'ry-learnCourse',
+
+    mixins: [mixins],
 
     data() {
         const headImg = require('../../assets/images/learnCourse/learnHeadBg.jpg')
@@ -123,8 +130,21 @@ export default {
                         '更多......'
                     ]
                 }
-            ]
+            ],
+            wxNo: ''
         }
+    },
+
+    computed: {
+        ...mapState('shopOwner', ['status', 'redirect_url'])
+    },
+    
+    beforeRouteEnter(to, from, next) {
+        next((vm) => {
+            if (vm.status) {
+                vm.$router.replace(vm.redirect_url) //重定向到目标页面
+            }
+        })
     },
 
     mounted() {
@@ -143,7 +163,7 @@ export default {
                     eHeight += element.getBoundingClientRect().height
                 } 
             })
-            document.styleSheets[0].addRule('.learnCourse-list-top', 'height:' + (eHeight + borderHeight)  + 'px')
+            document.styleSheets[1].addRule('.learnCourse-list-top', 'height:' + (eHeight + borderHeight)  + 'px')
         },
 
         changeDown(index) {
@@ -151,7 +171,21 @@ export default {
         },
 
         touchafter() {
-            this.$router.replace('/perfectApply')
+            this.loading = true
+            getInfo()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.wxNo = data.wxNo
+                    // 微信为空，未完善
+                    if (this.wxNo === '') {
+                        this.$router.push('/perfectApply')
+                    } else {
+                        this.$router.push('/shopOwner')
+                    }
+                }
+                this.loading = false
+            })
         }
     }
 }

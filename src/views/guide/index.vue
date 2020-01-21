@@ -17,12 +17,17 @@
                             v-show="!showloading"
                         >
                             <van-cell 
-                                v-for="(item,index) in list"
+                                v-for="(item,index) in data"
                                 :key="index"
                                 :title="item.title"
-                                :to="{path: '/courseArticle', query: {id: 1}}" 
+                                :to="{path: '/courseArticle', query: {id: item.id,name: item.title}}" 
                                 is-link 
-                            />
+                            >
+                                <template slot="title">
+                                    <span class="custom-title">{{index+1}}.</span>
+                                    <span>{{item.title}}</span>
+                                </template>
+                            </van-cell>
                         </van-cell-group>
                     </div>
                 </template>
@@ -34,6 +39,7 @@
 
 <script>
 import mixins from '@/libs/mixins'
+import { getArticalList } from '@/api/article/article'
 
 export default {
     name: 'ry-guide',
@@ -42,41 +48,37 @@ export default {
 
     data() {
         return {
-            list: [
-                {
-                    url: '',
-                    title: '1. 如何成为店主？'
-                },
-                {
-                    url: '',
-                    title: '2. 如何邀请新人成为店主？'
-                },
-                {
-                    url: '',
-                    title: '3. 如何分享销售？'
-                },
-                {
-                    url: '',
-                    title: '4. 如何咨询客服？'
-                },
-                {
-                    url: '',
-                    title: '5. 如何提现佣金？'
-                },
-                {
-                    url: '',
-                    title: '6. 如何查看我的收入记录？'
-                },
-                {
-                    url: '',
-                    title: '7. 如何联系团队里的客户？'
-                },
-            ]
+            data: [],
+            page: 1,
+            size: 50
         }
     },
 
     created() {
-        
+        this.initData()
+    },
+    
+    methods: {
+        initData() { 
+            this.showloading = true
+            const { id } = this.$route.query
+            const params = {
+                nbId: id,
+                page: this.page,
+                size: this.size
+            }
+            getArticalList(params)
+            .then((res) => {
+                const { success, queryResult } = res.data
+                if (success) {
+                    this.data = queryResult.list
+                    this.hideErrorTip()
+                } else {
+                    this.showErrorTip(res)
+                }
+                this.showloading = false
+            })
+        }
     }
 }
 </script>

@@ -1,0 +1,45 @@
+.swiper-business-img {
+  position relative
+  width 100%
+  background #eee
+  overflow hidden
+  .swiper-business-box {
+    width 100%
+    height 100%
+    transform: translate3d(0,0,0)
+    backface-visibility: hidden
+  }
+  img {
+    display block
+    width 100%
+    height 100%
+  }
+}
+
+.swiper-wrapper {
+    height 100%
+}
+
+.swiper-business-pagination {
+    position absolute
+    display flex
+    align-items center
+    justify-content center
+    bottom 10px !important
+    height 40px
+    z-index 1000
+    text-align center
+}
+
+.swiper-pagination-bullet {
+    width 14px
+    height 14px
+    background #4a4a4a
+    margin 0 8px !important
+    opacity 1 
+}
+.swiper-pagination-bullet-active {
+    width 30px
+    border-radius 15px
+    background #fff
+}

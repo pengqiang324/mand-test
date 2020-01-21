@@ -8,8 +8,8 @@
             <ry-video-info
                 v-if="showVideo"
                 :vid="videoData.videoId"
-                :source="videoData.videoUrl"
                 :cover="videoData.imageUrl"
+                :play-auth="playAuth"
                 :view="view"
             >
                 <div>
@@ -73,7 +73,7 @@
 
 <script>
 import RyVideoInfo from '@/components/VideoInfo'
-import { getAllByTypeId } from '@/api/business/business'
+import { getAllByTypeId, getPlayauth } from '@/api/business/business'
 import mixins from '@/libs/mixins'
 
 export default {
@@ -115,8 +115,21 @@ export default {
             if (success) {
                 this.videoData = queryResult.list[0]
                 this.showloading = false
-                this.showVideo = true
+                this.getPlayAuth() // 获取视频凭证
             }
+        },
+
+        getPlayAuth() {
+            getPlayauth({
+                videoId: this.videoData.videoId
+            })
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.playAuth = data.playAuth
+                    this.showVideo = true
+                }
+            })
         }
     }
 }

@@ -8,8 +8,8 @@
             <ry-video-info
                 v-if="showVideo"
                 :vid="videoData.videoId"
-                :source="videoData.videoUrl"
                 :cover="videoData.imageUrl"
+                :play-auth="playAuth"
                 :view="videoData.view"
             >
                 <div class="template-info" v-html="videoData.introduction"></div>
@@ -20,7 +20,7 @@
 
 <script>
 import RyVideoInfo from '@/components/VideoInfo'
-import { getVideoId } from '@/api/business/business.js'
+import { getVideoId, getPlayauth } from '@/api/business/business'
 import mixins from '@/libs/mixins'
 
 export default {
@@ -48,15 +48,26 @@ export default {
     },
 
     methods: {
-        initData() {
+        async initData() {
             const { id } = this.$route.query
             
-            getVideoId({id})
+            const res = await getVideoId({id})
+            const { success, data } = res.data
+            if (success) {
+                this.videoData = data
+                this.showloading = false
+            }
+            this.getPlayAuth()
+        },
+
+        getPlayAuth() {
+            getPlayauth({
+                videoId: this.videoData.videoId
+            })
             .then((res) => {
                 const { success, data } = res.data
                 if (success) {
-                    this.videoData = data
-                    this.showloading = false
+                    this.playAuth = data.playAuth
                     this.showVideo = true
                 }
             })

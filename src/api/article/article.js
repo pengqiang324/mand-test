@@ -9,3 +9,30 @@ export function getByType(params) {
         params
     })
 }
+
+// 导航列表文章列表
+export function getArticalList(params) {
+    return request({
+        url: `${api}/sysArticle/getBySysNivbarId`,
+        method: 'get',
+        params
+    })
+}
+
+// 文章详情
+export function getArticalInfo(params) {
+    return request({
+        url: `${api}/sysArticle/getInfoById`,
+        method: 'get',
+        params
+    })
+}
+
+// 文章列表轮播图
+export function getBannerImg(params) {
+    return request({
+        url: `${api}/sysCarousel/getByTypeOrColumnId`,
+        method: 'get',
+        params
+    })
+}

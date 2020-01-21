@@ -1,7 +1,7 @@
 <template>
   <div class="video-box">
         <div class="businessInfo-video">
-            <ry-m-loading v-if="!source"/>
+            <ry-m-loading v-if="!playAuth"/>
             <div 
                 v-else
                 :id="playerId" 
@@ -35,13 +35,6 @@ export default {
 
     props: {
         /*
-        ** 视频地址
-        */ 
-        source: {
-            type: String,
-            default: ''
-        },
-        /*
         ** 媒体转码服务的媒体Id
         */ 
         vid: {
@@ -58,7 +51,7 @@ export default {
         /*
         ** 视频播放权证
         */ 
-        playauth: {
+        playAuth: {
             type: String,
             default: ''
         },
@@ -87,10 +80,9 @@ export default {
         aliPlayer() {
             const player = new window.Aliplayer({
                     id: this.playerId,
-                    source: this.source,
                     cover: this.cover,
-                    vid: this.vide,
-                    playauth: this.playauth,
+                    vid: this.vid,
+                    playauth: this.playAuth,
                     height: '100%',
                     autoplay: false,
                     isLive: false,

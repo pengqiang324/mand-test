@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import {ResultPage} from 'mand-mobile'
+import { ResultPage } from 'mand-mobile'
 
 export default {
   name: 'ry-result-network',

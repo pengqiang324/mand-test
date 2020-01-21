@@ -265,7 +265,7 @@ export default {
             if (this.loading) return
 
             this.loading = true
-
+            
             const response = await this.$store.dispatch(USER_VALIDATESMSCODE({
                 smsCode: this.smsCode, 
                 validCode: this.indtyCode

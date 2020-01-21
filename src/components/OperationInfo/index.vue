@@ -6,10 +6,22 @@
         class="Cognos-scroll"
     >
         <div class="Cognos-info">
-            <h2><img v-lazy="bannerImg" alt=""></h2>
+            <div class="Cognos-swiper">
+                <h2 v-if="!imgData.length"><img :src="headImg" alt=""></h2>
+                <swiper v-else :options="swiperOption" ref="mySwiperA" class="swiper-business-img">
+                    <swiper-slide 
+                        v-for="item in imgData" 
+                        :key="item.id" 
+                        class="swiper-business-box"
+                    >
+                        <img :src="item.picUrl" alt=""/>
+                    </swiper-slide> 
+                    <div class="swiper-business-pagination"  slot="pagination"></div>
+                </swiper>
+            </div>
             <div class="Cognos-list">
                 <div class="Cognos-head">
-                    <van-divider :style="{borderColor: '#dcdcdc'}">新手入门</van-divider>
+                    <van-divider :style="{borderColor: '#dcdcdc'}">{{headTitle}}</van-divider>
                 </div>
                 <div class="Cognos-list-data">
                     <template v-if="showNetWork">
@@ -30,16 +42,16 @@
                             >
                                 <ul>
                                     <router-link 
-                                        v-for="(item,index) in data"
-                                        :key="index"
-                                        :to="item.url"
+                                        v-for="item in data"
+                                        :key="item.id"
+                                        :to="{path: '/courseArticle', query: {id: item.id}}"
                                         tag="li"
                                     >
                                         <div class="Cognos-list-left">
-                                            <h4>新手发圈必备要领</h4>
-                                            <p>2019-07-09</p>
+                                            <h4>{{item.title}}</h4>
+                                            <p>{{item.createTime}}</p>
                                         </div>
-                                        <h2 v-lazy:background-image="bgImg"></h2>
+                                        <h2 v-lazy:background-image="item.imageUrl"></h2>
                                     </router-link>
                                 </ul>
                             </ry-scroll>
@@ -53,6 +65,7 @@
 
 <script>
 import mixins from '@/libs/mixins'
+import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { Divider } from 'vant'
 
 export default {
@@ -61,7 +74,9 @@ export default {
     mixins: [mixins],
 
     components: {
-        [Divider.name]: Divider
+        [Divider.name]: Divider,
+        swiper,
+        swiperSlide
     },
 
     props: {
@@ -78,27 +93,45 @@ export default {
             required: true
         },
         // 顶部banner
-        bannerImg: {
+        imgData: {
+            type: Array,
+            default: () => {
+                return []
+            }
+        },
+        // 分割线标题
+        headTitle: {
             type: String,
-            required: true
+            default: ''
         }
     },
 
     data() {
-        const bgImg = require('../../assets/images/banner/swiper01.png')
+        const headImg = require('../../assets/images/cognos/banner-head.png')
         return {
-            bgImg,
+            headImg,
             bounce: {
                 top: false,
                 bottom: false,
                 left: false,
                 right: false
             },
+            swiperOption: {
+                notNextTick: true,
+                pagination: {
+                    el: '.swiper-business-pagination',
+                },
+                paginationClickable: true,
+                autoplay: {
+                    delay:3000  //这里需要注意，如果想每2秒去自动切换，直接autoplay:2000是失效的，
+                },
+                loop: true,
+            }
         }
     },
 
     methods: {
-         pullUpLoad() {
+        pullUpLoad() {
             this.$emit('pullUpLoad')
         },
     }
@@ -124,23 +157,23 @@ export default {
 </style>
 
 <style lang="stylus" scoped>
-.Cognos-list-box {
-    height 100%
-    img {
-
-    }
-}
-
-.Cognos-info {
+.Cognos-swiper {
+    background #eee
     h2 {
         width 100%
-        height 320px
         img {
             width 100%
-            height 100%
+            height 320px
             display block
         }
     }
+}
+
+.Cognos-list-box {
+    height 100%
+}
+
+.Cognos-info {
     .Cognos-list {
         position absolute
         top 320px
@@ -186,6 +219,7 @@ export default {
                     width 168px
                     height 112px
                     border-radius 10px
+                    background-size cover
                     &[lazy='loading'] {
                         background-color #eee
                     }
@@ -193,5 +227,9 @@ export default {
             }
         }
     }
+}
+
+.swiper-business-img {
+    height 320px
 }
 </style>

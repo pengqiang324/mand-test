@@ -3,13 +3,12 @@
     <transition
       :name="transitionName" 
     > 
-      <!-- <vue-page-stack > -->
-        <router-view 
-          v-if="!$route.meta.keepAlive && isRouterAlive"
+      <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
+        <router-view  
           class="router-view" 
           v-wechat-title='$route.meta.title'
         />
-      <!-- </vue-page-stack> -->
+      </vue-page-stack>
       <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
         <router-view 
           class="router-view"
@@ -66,6 +65,24 @@ export default {
           this.transitionName = 'slideup'
           return
         }
+        return
+      }
+
+      // 进入完成开通交互
+      if (to.path === '/openSuccess') {
+        this.transitionName = 'slideup'
+        return
+      }
+
+      // 离开完成开通交互
+      if (from.path === '/openSuccess') {
+        this.transitionName = 'slidedown'
+        return
+      }
+
+      // 进入学习页面
+      if (to.path === '/learnCourse') {
+        this.transitionName = 'push'
         return
       }
 

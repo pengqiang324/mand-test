@@ -34,13 +34,19 @@
                   </div>
                 </div>
               </div>
-              <router-link
-                to="/learnCourse"
-                v-lazy:background-image="bannerImg"
-                tag="div"
+              <div
+                v-if="!userStatus"
+                v-lazy:background-image="bgImg1"
+                class="ry-banner"
+                @click="toLearn"
+              >
+              </div>
+              <div
+                v-if="userStatus"
+                v-lazy:background-image="bgImg2"
                 class="ry-banner"
               >
-              </router-link>
+              </div>
               <div class="bank-list">
                 <h1 class="tj-bank">推荐银行</h1>
                 <div class="bank-loading">
@@ -63,10 +69,23 @@
                       <div v-if="item.isonline">
                         <p>{{item.onlineLowerclerk}}</p>
                       </div>
-                      <div :class="['rj-sq', { 'rj-sq-on': !item.isonline }]">
+                      <div v-if="!userStatus" :class="['rj-sq', { 'rj-sq-on': !item.isonline }]">
                         <span v-if="item.isonline">立即申请</span>
                         <span v-else>待定</span>
                       </div>
+                      <div v-if="userStatus" :class="['rj-sq', 'rj-sq-dz', { 'rj-sq-on': !item.isonline }]">
+                        <span>
+                          最高赚
+                          <md-icon name="rmb" size="xs" class="rj-sq-icon"/>
+                          <b>{{item.reward}}</b>
+                        </span>
+                      </div>
+                    </li>
+                    <li 
+                      v-if="userStatus"
+                      class="rq-qidai"
+                    >
+                      敬请期待...
                     </li>
                   </ul>
                 </div>
@@ -80,6 +99,7 @@
 <script>
 import mixins from '@/libs/mixins'
 import { getBankList, getNewNews } from '@/api/home'
+import { refreshUserInfo } from '@/api/user/user'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
 export default {
@@ -94,10 +114,13 @@ export default {
 
   data() {
     const imgUrl = require('@/assets/images/banner/swiper01.png')
+    const bgImg1 = require('@/assets/images/home/ry-banner01.png')
+    const bgImg2 = require('@/assets/images/home/ry-banner02.png')
     return {
       count: 0,
+      bgImg1,
+      bgImg2,
       showLoading: false,
-      bannerImg: require('@/assets/images/home/ry-banner01.png'),
       swiperIcon: {
         imgs: [
           {
@@ -134,6 +157,7 @@ export default {
   },
 
   created() {
+      this.onRefreshUser()
       this.showDiaLog() // 是否显示完善信息弹窗
       this.getBankList()
   },
@@ -141,6 +165,20 @@ export default {
   
 
   methods: {
+    // 刷新用户信息
+    onRefreshUser() {
+      refreshUserInfo()
+      .then((res) => {
+        const { success, data } = res.data
+        if (success) {
+          if (data.memberLevel !== 'A') { 
+            localStorage.setItem('userStatus', 1) // 设置店主状态
+            this.$store.dispatch('shopOwner/updateStatus', 1) 
+          }
+        }
+      })
+    },
+
     getNews() {
       getNewNews()
       .then((res) => {
@@ -178,6 +216,11 @@ export default {
             this.showErrorTip(res)
         }
       })
+    },
+
+    async toLearn() {
+      await this.$store.dispatch('shopOwner/updateURL', '/')
+      this.$router.push('/learnCourse')
     }
   }, 
 };
@@ -352,6 +395,13 @@ export default {
     &:nth-child(3n) {
       margin-right 0
     }
+    &.rq-qidai {
+      display flex
+      justify-content center
+      align-items center
+      font-size 28px
+      color #989898
+    }
     h2 {
       margin auto
       width 90px
@@ -418,12 +468,31 @@ export default {
       text-align center
       background #FC2F20
       border-radius 0 0 10px 10px
+      &.rj-sq-dz {
+        display flex
+        align-items center
+        justify-content center
+        span {
+          display flex
+          justify-content center
+          align-items baseline
+          line-height 24px
+          font-size 24px
+          .rj-sq-icon {
+            font-size 24px
+          }
+          b {
+            font-size 32px
+          }
+        }
+      }
+
       &.rj-sq-on {
         background #989898
       }
       span {
-        line-height 24px
-        font-size 24px
+        line-height 32px
+        font-size 32px
         font-family Noto Sans S Chinese
         color #fff
         letter-spacing 2px

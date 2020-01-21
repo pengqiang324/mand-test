@@ -31,8 +31,8 @@
         v-show="showMore && data.length > 0"
         slot="more"
         :is-finished="isFinished"
-        loading-text="拼命加载中..."
-        finished-text="没有更多了"
+        loading-text="玩命加载中..."
+        finished-text="我也是有底线的"
       >
       </md-scroll-view-more>
     </md-scroll-view>

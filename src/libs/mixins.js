@@ -14,10 +14,15 @@ export default {
     },
 
     computed: {
-        ...mapState([
-          'showNetwork',
-          'showError'
-        ])
+        ...mapState({
+            showNetwork: 'showNetwork',
+            showError: 'showError',
+            status: (state) => state.shopOwner.status
+        }),
+        userStatus() {
+            const status = window.localStorage.getItem('userStatus') ? window.localStorage.getItem('userStatus') : this.status
+            return status
+        }
     },
 
     mounted() {
@@ -31,6 +36,17 @@ export default {
 
     deactivated() {
         this.$off('scrolled')
+    },
+
+    beforeDestroy() {
+        if (document.addEventListener) {
+            document.removeEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
+        }
+        
+        if (document.attachEvent) {
+            document.detachEvent('WeixinJSBridgeReady', this.onBridgeReady)
+            document.detachEvent('onWeixinJSBridgeReady', this.onBridgeReady)
+        }
     },
 
     methods: {
@@ -100,6 +116,6 @@ export default {
         changeLoading() {
             if (this.loading) return  // 防止用户多次请求
             this.loading = true
-        }
+        },
     }
 }

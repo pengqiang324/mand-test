@@ -11,12 +11,12 @@
                 >
                   <div class="mine-info-head">
                     <div class="mine-head-top">
-                      <h2><img v-lazy="txImg" alt=""></h2>
+                      <h2><img v-lazy="consumerData.headImage" alt=""></h2>
                       <div class="mine-head-right">
-                        <h4><b>周勇<font v-if="isCustomer">信用卡专员</font></b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
+                        <h4><b>{{consumerData.name}}<font v-if="isCustomer">信用卡专员</font></b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
                         <!-- 不是顾问状态显示 -->
                         <div v-if="!isCustomer">
-                          <p class="mine-head-phone">18665861277
+                          <p class="mine-head-phone">{{consumerData.tel}}
                             <span v-if="star">店主</span>
                             <span v-if="!star">客户</span>
                             <img 
@@ -29,9 +29,9 @@
                             v-if="star"
                             class="mine-head-indenty"
                           >
-                            邀请码：{{invicode}}
+                            邀请码：{{consumerData.inviteCode}}
                             <span
-                              v-clipboard:copy="invicode"
+                              v-clipboard:copy="consumerData.inviteCode"
                               v-clipboard:success="onCopy"
                               v-clipboard:error="onError"
                             >复制</span>
@@ -59,10 +59,10 @@
                             size="xs"
                             class="mine-rmb"
                           />
-                          <span>0.00</span>
+                          <span>{{consumerData.usedAmount}}</span>
                       </h4>
                       <div class="mine-bottom-pri">
-                        <i>（总收入 0.00元）</i>
+                        <i>（总收入 {{consumerData.totalAmount}}元）</i>
                         <div class="mine-bottom-btn">
                           <div class="mine-pri-tx"><span>提现</span></div>
                           <div class="mine-pri-mx"><span>明细</span></div>
@@ -146,6 +146,7 @@
 <script>
 import { logout } from '@/api/user/user'
 import { Icon } from 'vant'
+import { refreshUserInfo } from '@/api/user/user'
 
 export default {
     name: 'ry-mine',
@@ -163,7 +164,6 @@ export default {
         starImg,
         bgImg,
         grade: 'd',
-        invicode: '779120',
         isCustomer: false,
         iconList: [
           {
@@ -268,18 +268,19 @@ export default {
               }
             ]
           }
-        ]
+        ],
+        consumerData: {}
       }
     },
 
     computed: {
       star() {
         switch(this.grade) {
-          case 'a':
+          case 'A':
             return 0
-          case 'd':
+          case 'D':
             return 1
-          case 'h':
+          case 'H':
             return 3
           default:
             return 2
@@ -301,18 +302,40 @@ export default {
       }
     },
 
+    created() {
+      this.initData()
+    },
+
     methods: {
+      initData() {
+        refreshUserInfo()
+        .then((res) => {
+          const { success, data } = res.data
+          if (success) {
+              this.consumerData = data
+              this.grade = data.memberLevel
+              if (data.memberLevel !== 'A') {
+                window.localStorage.setItem('userStatus', 1)
+                this.$store.dispatch('shopOwner/updateStatus', 1) 
+              }
+          }
+        })
+      },
+
       onCopy() {
         this.$toast.success('复制成功')
       },
+
       onError() {
         this.$toast.fail('复制失败')
       },
+
       loginOut() {
         logout()
         .then((res) => {
             if (res.status == 200) {
-              localStorage.removeItem('token'); // 清token
+              localStorage.removeItem('token') // 清token
+              localStorage.removeItem('userStatus') //用户状态
               this.$router.push({
                 path: '/',
                 query: {
@@ -379,6 +402,7 @@ export default {
           height 128px
           box-shadow 0 2px 10px rgba(0,0,0,0.16)
           border-radius 50%
+          overflow hidden
           img {
             width 128px
             height 128px

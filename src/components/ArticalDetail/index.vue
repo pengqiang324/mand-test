@@ -5,11 +5,11 @@
     >
         <div class="courseArticle-info">
             <div 
-                v-if="bannerImg"
+                v-if="data.imageUrl"
                 ref="img"
                 class="courseArticle-info-head"
             >
-                <img v-lazy="bannerImg" alt="">
+                <img v-lazy="data.imageUrl" alt="">
             </div>
             <div class="courseArticle-info-con" ref="courseArticleInfo">
                 <ry-scroll-view
@@ -17,14 +17,12 @@
                     class="courseArticle-info-scroll"
                 >
                     <div class="courseArticle-info-list">
-                        <h2>文章标题</h2>
-                        <p class="courseArticle-info-time">2019-07-09</p>
-                        <div 
-                            v-for="(item,index) in 30"
-                            :key="index"
+                        <h2>{{data.title}}</h2>
+                        <p class="courseArticle-info-time">{{data.createTime}}</p>
+                        <div
                             class="courseArticle-info-detail"
                         >
-                            啊减肥手机开发啊减肥阿健；帅哥按附件爱死 啊减肥手机开发啊减肥阿健；帅哥按附件爱死 啊减肥手机开发啊减肥阿健；帅哥按附件爱死 啊减肥手机开发啊减肥阿健；帅哥按附件爱死
+                            {{data.content}}
                         </div>
                     </div>
                 </ry-scroll-view>
@@ -38,24 +36,13 @@ export default {
     name: 'ry-artical',
 
     props: {
-        bannerImg: {
-            type: String,
-            default: ''
-        },
-
         data: {
-            type: Array,
+            type: Object,
             default: () => {
-                return  []
+                return  {}
             }
         }
     },
-
-    mounted() {
-        const Height = document.documentElement.clientHeight
-        const imgHeight = this.$refs.img ? this.$refs.img.offsetHeight : 0
-        this.$refs.courseArticleInfo.style.height = (Height - imgHeight) + 'px'
-    }
 }
 </script>
 
@@ -89,6 +76,7 @@ export default {
 .courseArticle-info-con {
     padding 0px 40px 0
     width 100%
+    height calc(100% - 320px)
     box-sizing border-box
     .courseArticle-info-list {
         padding-top 40px

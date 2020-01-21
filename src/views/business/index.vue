@@ -27,20 +27,20 @@
                                 <div class="swiper-business-pagination"  slot="pagination"></div>
                             </swiper>
                         </div>
-                        <div class="business-slide">
+                        <div class="business-slide" v-if="showSlide">
                             <ry-slider-scroll
                                 :loop="false"
                                 :isShowDoc="false"
                             >
                                 <router-link
-                                    v-for="(item,index) in slideData"
+                                    v-for="(item,index) in slideList"
                                     :key="index"
-                                    :to="item.url"
+                                    :to="{path: item.name == '融溢指南' ? '/guide' : '/Cognos', query: {id: item.id, name: item.name}}"
                                     tag="div"
                                     class="business-list"
                                 >
                                     <div class="business-list-info">
-                                        <h2><img v-lazy="item.img" alt=""></h2>
+                                        <h2><img v-lazy="item.iconUrl" alt=""></h2>
                                         <p>{{item.name}}</p>
                                     </div>
                                 </router-link>
@@ -103,7 +103,7 @@
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import mixins from '@/libs/mixins'
-import { getAll, addView } from '@/api/business/business'
+import { getAll, addView, getListAll } from '@/api/business/business'
 
 export default {
     name: 'ry-business',
@@ -131,6 +131,7 @@ export default {
                 loop: true,
             },
             imgData: [imgUrl, imgUrl, imgUrl],
+            slideList: [],
             slideData: [
                 {
                     url: '/guide',
@@ -166,12 +167,20 @@ export default {
             subjectData: [],
             companyData: {},
             bgImg: bgImg,
-            showEnter: false
+            showEnter: false,
+            showSlide: false
         }
     },
 
     created() {
         this.initData()
+        this.getList()
+    },
+
+    activated() {
+        this.hideErrorTip()
+        this.initData()
+        this.getList()
     },
 
     methods: {
@@ -203,6 +212,17 @@ export default {
                 this.showloading = false
                 this.showErrorTip(res)
             }
+        },
+
+        getList() {
+            getListAll()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.slideList = data
+                    this.showSlide = true
+                }
+            })
         },
 
         async pushInfo(id) {
@@ -435,49 +455,6 @@ export default {
 }
 
 .swiper-business-img {
-  position relative
-  width 670px
-  height 280px
-  background #eee
-  overflow hidden
-  .swiper-business-box {
-    width 100%
     height 280px
-    transform: translate3d(0,0,0)
-    backface-visibility: hidden
-  }
-  img {
-    display block
-    width 100%
-    height 100%
-  }
-}
-
-.swiper-wrapper {
-    height 100%
-}
-
-.swiper-business-pagination {
-    position absolute
-    display flex
-    align-items center
-    justify-content center
-    bottom 10px !important
-    height 40px
-    z-index 1000
-    text-align center
-}
-
-.swiper-pagination-bullet {
-    width 14px
-    height 14px
-    background #4a4a4a
-    margin 0 8px !important
-    opacity 1 
-}
-.swiper-pagination-bullet-active {
-    width 30px
-    border-radius 15px
-    background #fff
 }
 </style>

@@ -12,20 +12,20 @@
                 </div>
                 <div class="perfectApply-form-div">
                     <span>身份证号码：</span>
-                    <p class="perfectApply-input"><input type="text" v-model="form.card" readonly/></p>
+                    <p class="perfectApply-input"><input type="text" v-model="form.cardNo" readonly/></p>
                 </div>
                 <div class="perfectApply-form-div">
                     <span><i>手</i><i>机</i><i>号</i>码：</span>
-                    <p class="perfectApply-input"><input type="text" v-model="form.phone" readonly/></p>
+                    <p class="perfectApply-input"><input type="text" v-model="form.tel" readonly/></p>
                 </div>
                 <div class="perfectApply-form-div">
                     <span>微<i>信</i>号：</span>
-                    <p class="perfectApply-input"><input type="text" v-model="form.weixin" @focus="showTips" @blur="hideTips"/></p>
+                    <p class="perfectApply-input"><input type="text" v-model="form.wxNo" @focus="showTips" @blur="hideTips"/></p>
                     <p class="perfectApply-brook" v-show="showtip">请填写本人真实微信号,以免影响售后服务</p>
                 </div>
                 <div class="perfectApply-form-div">
                     <span>邀<i>请</i>码：</span>
-                    <p class="perfectApply-input"><input type="text" v-model="form.identy" readonly/></p>
+                    <p class="perfectApply-input"><input type="text" v-model="form.inviteCode" readonly/></p>
                 </div>
             </div>
         </ry-perfect>
@@ -52,6 +52,7 @@ import mixins from '@/libs/mixins'
 import { weiXin } from '@/libs/validate'
 import { Icon } from 'vant'
 import RyPerfect from '@/components/PerfectInfo'
+import { getEchOwnerInfo, updateInfo } from '@/api/perfectApply/perfectApply'
 
 export default {
     name: 'ry-perfectApply',
@@ -68,17 +69,31 @@ export default {
             showtip: false,
             form: {
                 name: '彭元帅',
-                card: '431024199004102434',
-                phone: '17773191626',
-                weixin: '',
-                identy: '999999'
+                cardNo: '431024199004102434',
+                tel: '17773191626',
+                wxNo: '',
+                inviteCode: '999999'
             },
             message: '',
             showDialog: false
         }
     },
 
+    created() {
+        this.initData()
+    },
+
     methods: {
+        initData() {
+            getEchOwnerInfo()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.form = Object.assign(this.form, data)
+                }
+            })
+        },
+
         showTips() {
             this.showtip = true
         },
@@ -97,19 +112,26 @@ export default {
                 return
             }
             this.changeLoading()
-            
-            setTimeout(() => {
+            this.loading = true
+            // 申请人信息修改
+            updateInfo({
+                wxNo: this.form.wxNo
+            })
+            .then((res) => {
+                const { success } = res.data
+                if (success) {
+                    this.showDialog = true
+                }
                 this.loading = false
-                this.showDialog = true
-            }, 1000)
+            })
         },
         // 验证微信
         validateWeixin() {
-            if (this.form.weixin == '') {
+            if (this.form.wxNo == '') {
                 this.message = '微信号不能为空'
                 return false
             } else {
-                const { success, message } = weiXin(this.form.weixin)
+                const { success, message } = weiXin(this.form.wxNo)
                 if (!success) {
                     this.message = message
                     return false

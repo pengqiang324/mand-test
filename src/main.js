@@ -53,9 +53,9 @@ router.beforeEach(async (to, from, next) => {
       // 开发环境、测试环境
       const response = {
         data: {
-          token: 'c8389772-ae5a-4926-8ac2-d567d45a2c09',
+          token: '60cd67aa-0ec5-4738-88ff-30ca97e29c4e',
           userId: '4370ca6e9f8a4083958f598ec56b5437',
-          wxOpen: 'oDUodwKJu92fTT9wymDuFVn5i1hY',
+          wxOpen: 'pq17773191626',
           top: 0,
           tel: 15211023567,
           isCert: 1,
@@ -65,7 +65,7 @@ router.beforeEach(async (to, from, next) => {
       store.commit('user/ISLOGIN', true)
       localStorage.setItem('token', response.data.token)
       localStorage.setItem('userInfo', JSON.stringify(response.data))
-      localStorage.setItem('loginState', 'isLogin');
+      localStorage.setItem('loginState', 'isLogin')
     }
     
     return next()

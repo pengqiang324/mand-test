@@ -7,10 +7,10 @@
                 <div class="shopOwner-info-top">
                     <h2>推荐人</h2>
                     <div class="shopOwner-info-detail">
-                        <h4><img v-lazy="txImg" alt=""></h4>
+                        <h4><img v-lazy="userInfo.headImage" alt=""></h4>
                         <div class="shopOwner-detail-right">
-                            <div class="shopOwner-right-top"><h3>推荐人：<span>周勇</span></h3><i>邀请您成为店主</i></div>
-                            <p>邀请码：<span>779120</span></p>
+                            <div class="shopOwner-right-top"><h3>推荐人：<span>{{userInfo.name}}</span></h3><i>邀请您成为店主</i></div>
+                            <p>邀请码：<span>{{userInfo.inviteCode}}</span></p>
                         </div>
                     </div>
                 </div>
@@ -68,6 +68,7 @@
 <script>
 import mixins from '@/libs/mixins'
 import RyPayselect from '@/components/PaySelect'
+import { addOrder, getRecommenderInfo, byOrderId } from '@/api/perfectApply/perfectApply'
 
 export default {
     name: 'ry-shopOwner',
@@ -86,6 +87,7 @@ export default {
             txImg,
             bgImg,
             tImg,
+            userInfo: {},
             iconList: [
                 {
                     imgUrl: require('../../assets/images/shopOwner/icon01.png'),
@@ -133,21 +135,100 @@ export default {
                     pri: '每月福利活动'
                 }
             ],
-            isUp: false
+            data: {},
+            isUp: false,
+            orderId: ''
+        }
+    },
+
+    created() {
+        this.initData()
+    },
+
+    beforeDestroy() {
+        if (document.addEventListener) {
+            document.removeEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
+        }
+        
+        if (document.attachEvent) {
+            document.detachEvent('WeixinJSBridgeReady', this.onBridgeReady)
+            document.detachEvent('onWeixinJSBridgeReady', this.onBridgeReady)
         }
     },
 
     methods: {
+        initData() {
+            getRecommenderInfo()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.userInfo = data
+                }
+            })
+        },
+
         changeUp() {
             this.isUp = !this.isUp
         },
 
         paymentNext() {
             this.changeLoading()
-            setTimeout(() => {
+            const data = {
+                orderType: 0,
+                payType: 0
+            }
+            addOrder(data)
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.orderId = data.orderId
+                    // 微信预下单
+                    byOrderId({
+                        orderId: this.orderId
+                    })
+                    .then((res) => {
+                        // 微信返回参数 调用微信支付窗口
+                        if (res.data.success) {
+                            this.data = res.data.data
+                            if (typeof WeixinJSBridge == "undefined"){
+                                if( document.addEventListener ){
+                                    document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
+                                }else if (document.attachEvent){
+                                    document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady)
+                                    document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady)
+                                }
+                            }else{
+                                this.onBridgeReady()
+                            }
+                        }
+                    })
+                }
+                
                 this.loading = false
-                this.$router.replace('/openSuccess')
-            }, 2000)
+            })
+        },
+
+        // 调起微信支付
+        onBridgeReady() {
+            const that = this
+            window.WeixinJSBridge.invoke(
+                'getBrandWCPayRequest', {
+                    appId: this.data.appId,     //公众号名称，由商户传入     
+                    timeStamp: this.data.timeStamp,         //时间戳，自1970年以来的秒数     
+                    nonceStr: this.data.nonceStr, //随机串     
+                    package: this.data.packageValue,     
+                    signType: this.data.signType,         //微信签名方式：     
+                    paySign: this.data.paySign //微信签名 
+                },
+                function(res){
+                    if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                        // 店主开通成功
+                        that.$store.dispatch('shopOwner/updateStatus', 1)  
+                        localStorage.setItem('userStatus', 1) // 设置状态为店主，防止用户不点完成开通确认按钮，直接返回至付款学习页面
+                        that.$router.replace('/openSuccess')
+                    } 
+                }
+            )
         }
     }
 }

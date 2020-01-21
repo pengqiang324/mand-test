@@ -14,11 +14,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
     name: 'ry-openSuccess',
 
+    computed: {
+        ...mapState('shopOwner', ['redirect_url'])
+    },
+
     methods: {
         touchafter() {
+            this.$router.replace(this.redirect_url) // 重定向地址
         }
     }
 }
