@@ -6,6 +6,10 @@ import shopOwner from './modules/shopOwner'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
+  getters: {
+    keepAlive: state => state.keepAlive
+  },
+
   state: {
     showLoading: true,  // 是否显示加载组件
     showNetwork: false,  // 是否显示网络连接出错组件
@@ -14,7 +18,8 @@ export default new Vuex.Store({
     showError: false,
     hideAppLoading: false,  // 隐藏app.vue中的全局loading
     showErrorLogin: false,  //  初始进公众号时返回系统繁忙，错误异常显示
-    errorMessage: ''      // 错误反馈信息描述
+    errorMessage: '',      // 错误反馈信息描述
+    keepAlive: []  // 缓存组件
   },
 
   mutations: {
@@ -45,6 +50,10 @@ export default new Vuex.Store({
 
     updateShowErrorLogin(state, showErrorLogin) {
       state.showErrorLogin = showErrorLogin
+    },
+
+    SET_KEEP_ALIVE: (state, keepAlive) => {
+      state.keepAlive.push(keepAlive)
     }
   },
 

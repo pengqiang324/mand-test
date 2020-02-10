@@ -182,7 +182,7 @@
         <!-- 审核结果信息 start -->
         <ry-examine
             :show-overlay="showOverlay"
-            :examine-status="examineStatus"
+            :examine-selectStatus="examineselectStatus"
         />
         <!-- 审核结果信息 end -->
   </div>
@@ -216,7 +216,7 @@ export default {
             title: '',
             message: '',
             messageInfo: '',
-            examineStatus: '',
+            examineselectStatus: '',
             isshowImg: false,
             showtip: false,
             showsheet: false,
@@ -239,7 +239,7 @@ export default {
                 minHeight: 120,
                 maxHeight: 120
             },
-            status: 0,
+            selectStatus: 0,
             actions: [],
             fwList: ['信用卡', '信贷', '融资规划', '征信服务'],
             zcList: ['老师', '工程师', '厨师', '媒体'],
@@ -261,7 +261,7 @@ export default {
 
             setTimeout(() => {
                 this.loading = false
-                this.examineStatus = '已通过'
+                this.examineselectStatus = '已通过'
                 this.showOverlay = true
             }, 1000)
         },
@@ -314,7 +314,7 @@ export default {
         },
 
         onConfirm(value) {
-            switch(this.status) {
+            switch(this.selectStatus) {
                 case 0:
                     this.form.fwLeix = value
                     break
@@ -327,8 +327,8 @@ export default {
             this.showPicker = false
         },
         // 类型选择器
-        showSelect(status) {
-            switch(status) {
+        showSelect(selectStatus) {
+            switch(selectStatus) {
                 case 0:
                     this.actions = this.fwList
                     this.title = '服务类型'
@@ -342,7 +342,7 @@ export default {
                     this.title = '专业类型'
             }
             this.showPicker = true
-            this.status = status
+            this.selectStatus = selectStatus
         },
         // 顾问擅长
         showSheet() {

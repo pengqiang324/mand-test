@@ -5,8 +5,8 @@
       >
         <div class="mine-info">
             <div :class="['mine-top',{'mine-customer-active': isCustomer}]">
-                <div 
-                  v-lazy:background-image="bgImg"
+                <div
+                  v-lazy:background-image="star ? bgImg : ''"
                   class="mine-top-box lazyBg"
                 >
                   <div class="mine-info-head">
@@ -163,7 +163,7 @@ export default {
         txImg,
         starImg,
         bgImg,
-        grade: 'd',
+        grade: 'A',
         isCustomer: false,
         iconList: [
           {
@@ -281,9 +281,9 @@ export default {
           case 'D':
             return 1
           case 'H':
-            return 3
+            return 3 
           default:
-            return 2
+            return 2  // Z ZH 2星店主 2星半店主
         }
       },
       list() {
@@ -379,9 +379,9 @@ export default {
     transform translateX(-50%)
     width 690px
     box-shadow 0 10px 18px rgba(0,0,0,0.05)
-    background-size 100% 100%
+    background-size 100% 
     background-repeat no-repeat
-    background-position center
+    background-position bottom center
     border-radius 10px
     overflow hidden
     .mine-info-head {

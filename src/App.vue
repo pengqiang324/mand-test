@@ -2,19 +2,19 @@
   <div id="app">
     <transition
       :name="transitionName" 
-    > 
-      <vue-page-stack v-if="!$route.meta.keepAlive && isRouterAlive">
-        <router-view  
-          class="router-view" 
-          v-wechat-title='$route.meta.title'
-        />
-      </vue-page-stack>
-      <keep-alive v-if="$route.meta.keepAlive && isRouterAlive">
+    >
+      <keep-alive :include="keepAlive">
         <router-view 
           class="router-view"
           v-wechat-title='$route.meta.title'
+          v-if="isRouterAlive"
         />
       </keep-alive>
+    </transition>
+    <transition
+      :name="transitionName" 
+    > 
+      
     </transition>
     <ry-loading v-if="hideAppLoading" class="ry-loading"></ry-loading>
     <ry-tabbar v-show="$route.meta.hasFooter"/>
@@ -54,11 +54,17 @@ export default {
       'showErrorInfo',
       'hideAppLoading',
       'showErrorLogin'
-    ])
+    ]),
+    keepAlive () {
+      return this.$store.getters.keepAlive
+    }
   },
 
   watch: {
     $route(to, from) {
+      // 动态缓存组件
+      if (to.meta.keepAlive && this.$store.getters.keepAlive.indexOf(to.name) == -1) this.$store.commit('SET_KEEP_ALIVE', to.name)
+
       // 刷新页面动画、首次进入注册页面
       if(!from.meta.index) {
         if (to.path === '/register') {
@@ -67,7 +73,7 @@ export default {
         }
         return
       }
-
+    
       // 进入完成开通交互
       if (to.path === '/openSuccess') {
         this.transitionName = 'slideup'
@@ -82,8 +88,22 @@ export default {
 
       // 进入学习页面
       if (to.path === '/learnCourse') {
-        this.transitionName = 'push'
-        return
+        switch(from.path) {
+          case '/shopOwner':
+            this.transitionName = 'pop'
+            return
+          default:
+            this.transitionName = 'push'
+            return
+        }
+      }
+
+      if (from.path === '/learnCourse') {
+        switch(to.path) {
+          case '/courseList':
+            this.transitionName = 'pop'
+            return
+        }
       }
 
       // 如果to索引大于from索引,判断为前进状态,反之则为后退状态

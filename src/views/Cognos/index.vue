@@ -89,7 +89,7 @@ export default {
             this.page ++
             // 异步更新数据
             this.initData()
-        },
+        }
     }
 }
 </script>

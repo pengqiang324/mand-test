@@ -43,11 +43,12 @@ const routes = [
   },
   {
     path: '/personalTailor',
-    name: 'ry-personalTailor',
+    name: 'ry-personal-tailor',
     component: () => import(/* webpackChunkName: "personalTailor" */ '../views/personalTailor'),
     meta: {
       index: 1,
       navIndex: 2,
+      keepAlive: true,
       hasFooter: true,
       title: '私人定制'
     }
@@ -58,6 +59,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "personalInfo" */ '../views/personalTailor/info.vue'),
     meta: {
       index: 2,
+      keepAlive: true,
       title: '顾问详情'
     }
   },
@@ -103,6 +105,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "business" */ '../views/business'),
     meta: {
       index: 2,
+      keepAlive: true,
       hasFooter: false,
       title: '商学院'
     }
@@ -113,6 +116,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "business" */ '../views/business/businessInfo.vue'),
     meta: {
       index: 3,
+      keepAlive: true,
       hasFooter: false,
       title: '公司介绍'
     }
@@ -143,12 +147,13 @@ const routes = [
     component: () => import(/* webpackChunkName: "guide" */ '../views/guide'),
     meta: {
       index: 3,
+      keepAlive: true,
       hasFooter: false,
       title: '融溢指南'
     }
   },
   {
-    path: '/Cognos',
+    path: '/Cognos/:id?',
     name: 'ry-Cognos',
     component: () => import(/* webpackChunkName: "Cognos" */ '../views/Cognos'),
     meta: {
@@ -173,6 +178,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "learnCourse" */ '../views/learnCourse'),
     meta: {
       index: 2,
+      keepAlive: true,
       hasFooter: false,
       title: '学习课程'
     }
@@ -183,6 +189,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "perfectApply" */ '../views/perfectApply'),
     meta: {
       index: 3,
+      keepAlive: true,
       hasFooter: false,
       title: '完善申请人信息'
     }

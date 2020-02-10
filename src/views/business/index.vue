@@ -35,7 +35,7 @@
                                 <router-link
                                     v-for="(item,index) in slideList"
                                     :key="index"
-                                    :to="{path: item.name == '融溢指南' ? '/guide' : '/Cognos', query: {id: item.id, name: item.name}}"
+                                    :to="{path: item.name == '融溢指南' ? '/guide' : `/Cognos/${item.id}`, query: {id: item.id, name: item.name}}"
                                     tag="div"
                                     class="business-list"
                                 >
@@ -173,12 +173,6 @@ export default {
     },
 
     created() {
-        this.initData()
-        this.getList()
-    },
-
-    activated() {
-        this.hideErrorTip()
         this.initData()
         this.getList()
     },

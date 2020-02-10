@@ -20,7 +20,8 @@ export default {
             status: (state) => state.shopOwner.status
         }),
         userStatus() {
-            const status = window.localStorage.getItem('userStatus') ? window.localStorage.getItem('userStatus') : this.status
+            const status = window.localStorage.getItem('userStatus') ? JSON.parse(window.localStorage.getItem('userStatus')) : this.status
+            
             return status
         }
     },

@@ -257,6 +257,14 @@ export default {
 }
 </script>
 
+<style lang="stylus">
+.tabTop {
+    .van-tabs__line {
+        transition visibility 0s, transform 0.3s !important
+    }
+}
+</style>
+
 <style lang="stylus" scoped>
 
 .per-box {
@@ -323,9 +331,6 @@ export default {
     z-index 2
     background #f5f5f5
     visibility hidden
-    .van-tabs__line {
-        transition visibility 0s, transform 0.3s !important
-    }
     &.tabVisible {
         visibility visible
     }

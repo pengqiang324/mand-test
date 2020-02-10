@@ -39,7 +39,7 @@ router.beforeEach(async (to, from, next) => {
   const flag = localStorage.getItem('loginState') === 'isLogin'
   const PAGE_TITLE = to.meta.title ? to.meta.title : '融溢'
   document.title = PAGE_TITLE
- 
+
   // 登录校验
   if (to.path === '/') {
     const token = localStorage.getItem('token')
@@ -53,8 +53,8 @@ router.beforeEach(async (to, from, next) => {
       // 开发环境、测试环境
       const response = {
         data: {
-          token: '60cd67aa-0ec5-4738-88ff-30ca97e29c4e',
-          userId: '4370ca6e9f8a4083958f598ec56b5437',
+          token: '4bf4a81a-b1f6-4fe6-b8ac-7db7013acd0d',
+          userId: '4938e9a532014a189bd75e0569af8a12',
           wxOpen: 'pq17773191626',
           top: 0,
           tel: 15211023567,

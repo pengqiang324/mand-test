@@ -174,6 +174,9 @@ export default {
           if (data.memberLevel !== 'A') { 
             localStorage.setItem('userStatus', 1) // 设置店主状态
             this.$store.dispatch('shopOwner/updateStatus', 1) 
+          } else {
+            localStorage.setItem('userStatus', 0) // 设置店主状态
+            this.$store.dispatch('shopOwner/updateStatus', 0) 
           }
         }
       })
