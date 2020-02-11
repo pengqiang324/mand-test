@@ -583,6 +583,7 @@ export default {
             background #fff
             border 1px solid #FF6811
             border-radius 20px
+            box-sizing border-box
             span {
               display block
               height 24px

@@ -17,25 +17,25 @@ const routes = [
       title: '融溢'
     }
   },
-  {
-    path: '/credit',
-    name: 'ry-credit',
-    component: () => import(/* webpackChunkName: "about" */ '../views/credit'),
-    meta: {
-      index: 1,
-      navIndex: 1,
-      keepAlive: true,
-      hasFooter: true,
-      title: '信贷',
-    }
-  },
+  // {
+  //   path: '/credit',
+  //   name: 'ry-credit',
+  //   component: () => import(/* webpackChunkName: "about" */ '../views/credit'),
+  //   meta: {
+  //     index: 1,
+  //     navIndex: 1,
+  //     keepAlive: true,
+  //     hasFooter: true,
+  //     title: '信贷',
+  //   }
+  // },
   {
     path: '/mine',
     name: 'ry-mine',
     component: () => import(/* webpackChunkName: "mine" */ '../views/Mine.vue'),
     meta: {
       index: 1,
-      navIndex: 3,
+      navIndex: 2,
       keepAlive: true,
       hasFooter: true,
       title: '我的'
@@ -47,7 +47,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "personalTailor" */ '../views/personalTailor'),
     meta: {
       index: 1,
-      navIndex: 2,
+      navIndex: 1,
       keepAlive: true,
       hasFooter: true,
       title: '私人定制'
@@ -244,6 +244,16 @@ const routes = [
       hasFooter: true,
       keepAlive: true,
       title: '客户'
+    }
+  },
+  {
+    path: '/applyCard',
+    name: 'ry-applyCard',
+    component: () => import(/* webpackChunkName: "expect" */ '../views/applyCard'),
+    meta: {
+      index: 2,
+      keepAlive: true,
+      title: '申请信用卡'
     }
   },
   {

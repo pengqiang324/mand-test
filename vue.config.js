@@ -40,8 +40,10 @@ module.exports = {
       },
       less: {
         modifyVars: {
-          // 或者可以通过 less 文件覆盖（文件路径为绝对路径）
-          'hack': `true; @import "${path.join(__dirname, 'src/assets/styles/resetLess.less')}";`
+          // 自定制vant主题
+          'picker-action-text-color': '#ff6f00',
+          'action-sheet-description-color': '#ff6f00',
+          'action-sheet-description-font-size': '17px'
         }
       }
     }

@@ -69,6 +69,7 @@ export default {
             total: 30,
             active: 0,
             query: '', // 查询参数
+            evaluateLevel: '', //查询评价等级（中评，好评）
             memberId: '',
             isActive: false,
             showloading: false,
@@ -122,8 +123,11 @@ export default {
             this.active = index // 激活按钮高亮状态
             this.page = 1
             this.data = []
+           
             if (index) {
                 this.evaluateLevel = index - 1
+            } else {
+                this.evaluateLevel = '' // 全部评价
             }
             this.initData()
         }

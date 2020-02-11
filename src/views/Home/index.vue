@@ -1,5 +1,6 @@
 <template>
-  <div class="home needsclick" v-cloak>
+  <div class="index-box needsclick" v-cloak>
+      <div class="home">
         <template v-if="showNetWork">
           <ry-result-network class="ry-network"/>
         </template>
@@ -45,6 +46,7 @@
                 v-if="userStatus"
                 v-lazy:background-image="bgImg2"
                 class="ry-banner"
+                @click="toBusiness"
               >
               </div>
               <div class="bank-list">
@@ -56,7 +58,11 @@
                     v-if="showLoading"
                   />
                   <ul v-else>
-                    <li v-for="(item, index) in bankList" :key="index">
+                    <li 
+                      v-for="(item, index) in bankList" 
+                      :key="index"
+                      @click="selectMode"
+                    >
                       <h2 class="lazyload" v-lazy:background-image="item.picName" key="1"></h2>
                       <h4>{{item.name}}</h4>
                       <div class="bank-lable">
@@ -93,14 +99,26 @@
             </ry-scroll-view>
           </div>
         </template>
+      </div>
+      <!-- 申请方式选择 start -->
+      <van-action-sheet 
+        v-model="show" 
+        description="申请信用卡"
+        :round="false"
+        :actions="actions"
+        @select="onSelect" 
+      />
+      <!-- 申请方式选择 end -->
   </div>
 </template>
 
 <script>
+import { ActionSheet } from 'vant'
 import mixins from '@/libs/mixins'
 import { getBankList, getNewNews } from '@/api/home'
 import { refreshUserInfo } from '@/api/user/user'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
+
 
 export default {
   name: "ry-home",
@@ -109,7 +127,8 @@ export default {
 
   components: {
     swiper,
-    swiperSlide
+    swiperSlide,
+    [ActionSheet.name]: ActionSheet
   },
 
   data() {
@@ -121,6 +140,14 @@ export default {
       bgImg1,
       bgImg2,
       showLoading: false,
+      show: false,
+      bankList: [],
+      topMovieLists: [],
+      actions: [
+        { name: '本人申请' },
+        { name: '亲友申请' }
+      ],
+      imgData: [imgUrl, imgUrl, imgUrl],
       swiperIcon: {
         imgs: [
           {
@@ -140,9 +167,6 @@ export default {
           }
         ]
       },
-      bankList: [],
-      topMovieLists: [],
-      imgData: [imgUrl, imgUrl, imgUrl],
       swiperOption: {
           notNextTick: true,
           direction: "vertical",   //控制滚动的方向
@@ -154,6 +178,13 @@ export default {
           
       }
     }
+  },
+
+  beforeRouteEnter(to,from,next) {
+    next((vm) => {
+      // 缓存组件
+      if (vm.$store.getters.keepAlive.indexOf(to.name) == -1) vm.$store.commit('SET_KEEP_ALIVE', to.name)
+    })
   },
 
   created() {
@@ -221,6 +252,25 @@ export default {
       })
     },
 
+    toBusiness() {
+      this.$router.push('/business')
+    },
+
+    // 申请方式选择
+    selectMode() {
+      if (this.userStatus) {
+        this.show = true
+        return
+      }
+      this.$router.push('/applyCard')
+    },
+
+    onSelect() {
+      // 默认情况下点击选项时不会自动收起
+      // 可以通过 close-on-click-action 属性开启自动收起
+      this.show = false;
+    },
+
     async toLearn() {
       await this.$store.dispatch('shopOwner/updateURL', '/')
       this.$router.push('/learnCourse')
@@ -234,6 +284,9 @@ export default {
  setPadding()
 }
 
+.index-box {
+  z-index 2
+}
 
 .home {
   width 100%
@@ -467,14 +520,13 @@ export default {
       bottom 0
       width 100%
       height 48px
-      line-height 48px
       text-align center
       background #FC2F20
       border-radius 0 0 10px 10px
+      display flex
+      align-items center
+      justify-content center
       &.rj-sq-dz {
-        display flex
-        align-items center
-        justify-content center
         span {
           display flex
           justify-content center
@@ -494,7 +546,7 @@ export default {
         background #989898
       }
       span {
-        line-height 32px
+        display block
         font-size 32px
         font-family Noto Sans S Chinese
         color #fff

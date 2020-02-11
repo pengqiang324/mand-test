@@ -182,6 +182,10 @@ export default {
                 const { success, data } = res.data
                 if (success) {
                     this.orderId = data.orderId
+                    this.$toast.loading({
+                        message: '请稍后...',
+                        forbidClick: true
+                    })
                     // 微信预下单
                     byOrderId({
                         orderId: this.orderId
@@ -189,6 +193,7 @@ export default {
                     .then((res) => {
                         // 微信返回参数 调用微信支付窗口
                         if (res.data.success) {
+                            this.$toast.clear()
                             this.data = res.data.data
                             if (typeof WeixinJSBridge == "undefined"){
                                 if( document.addEventListener ){

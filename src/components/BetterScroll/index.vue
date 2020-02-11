@@ -170,7 +170,7 @@
       data() {
         this.pullUpMsg = '玩命加载中...'
         if (this.data.length >= this.total) {
-          this.pullUpMsg = '我也是有底线的'
+          this.pullUpMsg = '已加载全部内容'
           this.scroll && this.scroll.closePullUp() // 关闭上拉加载功能
         } 
 

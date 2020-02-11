@@ -17,7 +17,7 @@ export default {
     created() {
         if (this.show) {
             this.$toast.loading({
-                message: '请稍后...',
+                message: '努力加载中...',
                 forbidClick: true,
                 duration: 0
             })

@@ -32,7 +32,7 @@
         slot="more"
         :is-finished="isFinished"
         loading-text="玩命加载中..."
-        finished-text="我也是有底线的"
+        finished-text="已加载全部内容"
       >
       </md-scroll-view-more>
     </md-scroll-view>

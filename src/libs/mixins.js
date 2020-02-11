@@ -40,6 +40,8 @@ export default {
     },
 
     beforeDestroy() {
+        this.$off('scrolled')
+        
         if (document.addEventListener) {
             document.removeEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
         }

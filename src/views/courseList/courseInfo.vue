@@ -50,12 +50,11 @@ export default {
     methods: {
         async initData() {
             const { id } = this.$route.query
-            
+            this.showloading = true
             const res = await getVideoId({id})
             const { success, data } = res.data
             if (success) {
                 this.videoData = data
-                this.showloading = false
             }
             this.getPlayAuth()
         },
@@ -70,6 +69,7 @@ export default {
                     this.playAuth = data.playAuth
                     this.showVideo = true
                 }
+                this.showloading = false
             })
         }
     }

@@ -114,7 +114,6 @@ export default {
             const { success, queryResult } = res.data
             if (success) {
                 this.videoData = queryResult.list[0]
-                this.showloading = false
                 this.getPlayAuth() // 获取视频凭证
             }
         },
@@ -129,6 +128,7 @@ export default {
                     this.playAuth = data.playAuth
                     this.showVideo = true
                 }
+                this.showloading = false
             })
         }
     }
