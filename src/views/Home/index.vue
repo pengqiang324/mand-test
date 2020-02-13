@@ -1,5 +1,5 @@
 <template>
-  <div class="index-box needsclick" v-cloak>
+  <div ref="indexBox" class="needsclick" v-cloak>
       <div class="home">
         <template v-if="showNetWork">
           <ry-result-network class="ry-network"/>
@@ -106,7 +106,8 @@
         description="申请信用卡"
         :round="false"
         :actions="actions"
-        @select="onSelect" 
+        @select="onSelect"
+        @close="onClose" 
       />
       <!-- 申请方式选择 end -->
   </div>
@@ -180,11 +181,18 @@ export default {
     }
   },
 
-  beforeRouteEnter(to,from,next) {
+  beforeRouteEnter(to, from, next) {
     next((vm) => {
       // 缓存组件
       if (vm.$store.getters.keepAlive.indexOf(to.name) == -1) vm.$store.commit('SET_KEEP_ALIVE', to.name)
     })
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (to.path !== '/applyCard') {
+      this.$store.commit('applyCard/REFRESH_INFO_STATUS', false)
+    }
+    next()
   },
 
   created() {
@@ -259,16 +267,52 @@ export default {
     // 申请方式选择
     selectMode() {
       if (this.userStatus) {
+        this.$refs.indexBox.style.zIndex = 2
         this.show = true
         return
       }
-      this.$router.push('/applyCard')
+      this.$router.push({
+        path: '/applyCard',
+        query: {
+          showTel: false,
+          readOnly: true,
+          showIndenty: true
+        }
+      })
     },
 
-    onSelect() {
+    onSelect(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
       this.show = false;
+      const { name } = item
+      
+      switch(name) {
+        case '本人申请':
+          this.$router.push({
+            path: '/applyCard',
+            query: {
+              showTel: false,
+              readOnly: true,
+              showIndenty: false
+            }
+          })
+          break
+        default: 
+          this.$router.push({
+            path: '/applyCard',
+            query: {
+              title: '亲友',
+              showTel: true,
+              readOnly: false,
+              showIndenty: true
+            }
+          })
+      }
+    },
+
+    onClose() {
+      this.$refs.indexBox.style.zIndex = 0
     },
 
     async toLearn() {
@@ -284,9 +328,6 @@ export default {
  setPadding()
 }
 
-.index-box {
-  z-index 2
-}
 
 .home {
   width 100%

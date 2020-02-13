@@ -36,14 +36,13 @@
                               v-clipboard:error="onError"
                             >复制</span>
                           </p>
-                          <router-link 
+                          <!-- <p 
                             v-if="!star"
-                            to="/learnCourse"
-                            tag="p"
                             class="mine-get-indenty"
+                            @click="toLearn"
                           >
-                            获取我的邀请码
-                          </router-link>
+                            <span>获取我的邀请码</span>
+                          </p> -->
                         </div>
                         <!-- 不是顾问状态显示 -->
                         <!-- 顾问状态显示 start -->
@@ -144,6 +143,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { logout } from '@/api/user/user'
 import { Icon } from 'vant'
 import { refreshUserInfo } from '@/api/user/user'
@@ -236,7 +236,8 @@ export default {
               },
               {
                 icon: require('../assets/images/mine/icon05.png'),
-                title: '商学院'
+                title: '商学院',
+                url: '/business'
               },
               {
                 icon: require('../assets/images/mine/icon10.png'),
@@ -274,6 +275,7 @@ export default {
     },
 
     computed: {
+      ...mapState('shopOwner', ['refreshUserInfo']),
       star() {
         switch(this.grade) {
           case 'A':
@@ -293,7 +295,7 @@ export default {
         } else {
           // 不是顾问状态
           switch(this.grade) {
-            case 'a':
+            case 'A':
               return this.aIconList
             default:
               return this.iconList
@@ -306,9 +308,17 @@ export default {
       this.initData()
     },
 
+    async activated() {
+      // 是否刷新用户数据
+      if (this.refreshUserInfo) {
+        await this.initData()
+        this.$store.commit('shopOwner/REFRESH_USER_INFO', false)
+      }
+    },
+
     methods: {
-      initData() {
-        refreshUserInfo()
+      async initData() {
+        return refreshUserInfo()
         .then((res) => {
           const { success, data } = res.data
           if (success) {
@@ -318,6 +328,7 @@ export default {
                 window.localStorage.setItem('userStatus', 1)
                 this.$store.dispatch('shopOwner/updateStatus', 1) 
               }
+              return Promise.resolve()
           }
         })
       },
@@ -344,6 +355,11 @@ export default {
               });
             }
           });
+      },
+
+      async toLearn() {
+        await this.$store.dispatch('shopOwner/updateURL', '/mine')
+        this.$router.push('/learnCourse')
       }
     }
 }
@@ -505,6 +521,11 @@ export default {
           }
           .mine-get-indenty {
             color #FF5E00
+            span {
+              &:active {
+                background #ccc
+              }
+            }
           }
           .mine-head-customer {
             padding-top 28px
@@ -558,22 +579,19 @@ export default {
             justify-content flex-end
             align-items center
           }
-          .mine-pri-tx {
-            display flex
-            align-items center
-            justify-content center
-            margin-right 10px
-            width 96px
-            height 36px
-            background #ccc
-            border-radius 18px
-            span {
-              display block
-              height 24px
-              font-size 24px
-              color #fff
+          .mine-pri-tx,
+          .mine-pri-mx {
+            &:active {
+              background #FF5E00
+              span {
+                color #fff
+              }
             }
           }
+          .mine-pri-tx {
+            margin-right 10px
+          }
+          .mine-pri-tx,
           .mine-pri-mx {
             display flex
             align-items center
@@ -585,7 +603,9 @@ export default {
             border-radius 20px
             box-sizing border-box
             span {
-              display block
+              display flex
+              justify-content center
+              align-items center
               height 24px
               font-size 24px
               color #FF5E00

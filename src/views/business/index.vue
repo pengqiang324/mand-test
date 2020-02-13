@@ -307,6 +307,8 @@ export default {
             width 96px
             height 96px
             background #eee
+            border-radius 10px
+            overflow hidden
             img {
                 display block
                 width 100%

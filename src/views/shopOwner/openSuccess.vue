@@ -23,6 +23,12 @@ export default {
         ...mapState('shopOwner', ['redirect_url'])
     },
 
+    beforeRouteLeave(to, from, next) {
+        // 解决在用户更新客户，店主时我的数据不更新问题
+        this.$store.commit('shopOwner/REFRESH_USER_INFO', true)
+        next()
+    },
+
     methods: {
         touchafter() {
             this.$router.replace(this.redirect_url) // 重定向地址

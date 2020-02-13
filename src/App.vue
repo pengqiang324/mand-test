@@ -64,7 +64,7 @@ export default {
     $route(to, from) {
       // 动态缓存组件
       if (to.meta.keepAlive && this.$store.getters.keepAlive.indexOf(to.name) == -1) this.$store.commit('SET_KEEP_ALIVE', to.name)
-      
+
       // 刷新页面动画、首次进入注册页面
       if(!from.meta.index) {
         if (to.path === '/register') {

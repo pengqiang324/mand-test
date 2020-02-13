@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import user from './modules/user'
 import shopOwner from './modules/shopOwner'
+import applyCard from './modules/applyCard'
 
 Vue.use(Vuex)
 
@@ -54,6 +55,10 @@ export default new Vuex.Store({
 
     SET_KEEP_ALIVE: (state, keepAlive) => {
       state.keepAlive.push(keepAlive)
+    },
+
+    RESET_KEEP_ALIVE: (state, keepAlive) => {
+      state.keepAlive = keepAlive
     }
   },
 
@@ -73,6 +78,7 @@ export default new Vuex.Store({
 
   modules: {
     user,
-    shopOwner
+    shopOwner,
+    applyCard
   }
 })

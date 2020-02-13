@@ -1,6 +1,7 @@
 const state = {
     status: 0,
-    redirect_url: ''
+    redirect_url: '',
+    refreshUserInfo: false
 }
 
 const mutations = {
@@ -11,6 +12,11 @@ const mutations = {
     // 用户状态（是否为店主）
     SAVESTATUS: (state, payload) => {
         state.status = payload
+    },
+
+    // 更新是否刷新用户信息
+    REFRESH_USER_INFO: (state, payload) => {
+        state.refreshUserInfo = payload
     }
 }
 

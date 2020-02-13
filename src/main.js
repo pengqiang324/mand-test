@@ -16,7 +16,7 @@ import { USER_LOGIN, USER_USERWXINFO, USER_REFRESHUSERINFO } from '@/actions/use
 // 全局样式
 import './assets/styles/index.styl'
 import "mand-mobile/components/_style/global.styl"
-import "normalize.css"
+// import "normalize.css"
 import "vant/es/index.less"
 import 'swiper/dist/css/swiper.css'
 
@@ -53,9 +53,9 @@ router.beforeEach(async (to, from, next) => {
       // 开发环境、测试环境
       const response = {
         data: {
-          token: '4bf4a81a-b1f6-4fe6-b8ac-7db7013acd0d',
-          userId: '4938e9a532014a189bd75e0569af8a12',
-          wxOpen: 'pq17773191626',
+          token: '67530429-912c-48e1-98e3-4b8ee4c0dd8a',
+          userId: '487a9a0af5b94853b834e19c078a99ad',
+          wxOpen: 'oDUodwEdpd_NkdurVFK0n2gcvPws',
           top: 0,
           tel: 15211023567,
           isCert: 1,

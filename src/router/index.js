@@ -252,7 +252,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "expect" */ '../views/applyCard'),
     meta: {
       index: 2,
-      keepAlive: true,
       title: '申请信用卡'
     }
   },
