@@ -167,6 +167,7 @@ export default {
 
         // 支付
         paymentNext() {
+            this.$store.dispatch('shopOwner/updateURL', '/business')
             this.publishEnd()
             this.$router.push('/learnCourse')
         },
@@ -328,7 +329,8 @@ export default {
         background #FF4400
         border-radius 34px
         span {
-            height 32px
+            display flex
+            align-items baseline
             color #fff
             font-weight 400
             font-size 32px

@@ -36,14 +36,14 @@
                 </div>
               </div>
               <div
-                v-if="!userStatus"
+                v-if="!isShopkeeper"
                 v-lazy:background-image="bgImg1"
                 class="ry-banner"
                 @click="toLearn"
               >
               </div>
               <div
-                v-if="userStatus"
+                v-if="isShopkeeper"
                 v-lazy:background-image="bgImg2"
                 class="ry-banner"
                 @click="toBusiness"
@@ -61,7 +61,7 @@
                     <li 
                       v-for="(item, index) in bankList" 
                       :key="index"
-                      @click="selectMode"
+                      @click="selectMode(item)"
                     >
                       <h2 class="lazyload" v-lazy:background-image="item.picName" key="1"></h2>
                       <h4>{{item.name}}</h4>
@@ -75,11 +75,11 @@
                       <div v-if="item.isonline">
                         <p>{{item.onlineLowerclerk}}</p>
                       </div>
-                      <div v-if="!userStatus" :class="['rj-sq', { 'rj-sq-on': !item.isonline }]">
+                      <div v-if="!isShopkeeper" :class="['rj-sq', { 'rj-sq-on': !item.isonline }]">
                         <span v-if="item.isonline">立即申请</span>
                         <span v-else>待定</span>
                       </div>
-                      <div v-if="userStatus" :class="['rj-sq', 'rj-sq-dz', { 'rj-sq-on': !item.isonline }]">
+                      <div v-if="isShopkeeper" :class="['rj-sq', 'rj-sq-dz', { 'rj-sq-on': !item.isonline }]">
                         <span>
                           最高赚
                           <md-icon name="rmb" size="xs" class="rj-sq-icon"/>
@@ -88,7 +88,7 @@
                       </div>
                     </li>
                     <li 
-                      v-if="userStatus"
+                      v-if="isShopkeeper"
                       class="rq-qidai"
                     >
                       敬请期待...
@@ -107,13 +107,14 @@
         :round="false"
         :actions="actions"
         @select="onSelect"
-        @close="onClose" 
+        @closed="onClose" 
       />
       <!-- 申请方式选择 end -->
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { ActionSheet } from 'vant'
 import mixins from '@/libs/mixins'
 import { getBankList, getNewNews } from '@/api/home'
@@ -142,6 +143,7 @@ export default {
       bgImg2,
       showLoading: false,
       show: false,
+      isShopkeeper: false,
       bankList: [],
       topMovieLists: [],
       actions: [
@@ -154,7 +156,7 @@ export default {
           {
             img: require('@/assets/images/home/ry-icon01.png'),
             bgColor: '#fff',
-            title: '3-50万信用卡'
+            title: '我的优惠券'
           },
           {
             img: require('@/assets/images/home/ry-icon02.png'),
@@ -177,8 +179,13 @@ export default {
           },
           loop: true,
           
-      }
+      },
+      paramsData: {} // 申请信用卡银行信息
     }
+  },
+
+  computed: {
+    ...mapState('shopOwner', ['refreshHomeStatus']),
   },
 
   beforeRouteEnter(to, from, next) {
@@ -201,22 +208,37 @@ export default {
       this.getBankList()
   },
 
-  
+  async activated() {
+      // 是否刷新用户数据
+      if (this.refreshHomeStatus) {
+        this.$toast.loading({
+          message: '更新中...',
+          forbidClick: true,
+          duration: 0
+        })
+        await this.onRefreshUser()
+        this.$store.commit('shopOwner/REFRESH_USER_STATUS', false)
+        this.$toast.clear()
+      }
+  },
 
   methods: {
     // 刷新用户信息
     onRefreshUser() {
-      refreshUserInfo()
+      return refreshUserInfo()
       .then((res) => {
         const { success, data } = res.data
         if (success) {
           if (data.memberLevel !== 'A') { 
+            this.isShopkeeper = true
             localStorage.setItem('userStatus', 1) // 设置店主状态
             this.$store.dispatch('shopOwner/updateStatus', 1) 
           } else {
+            this.isShopkeeper = false
             localStorage.setItem('userStatus', 0) // 设置店主状态
             this.$store.dispatch('shopOwner/updateStatus', 0) 
           }
+          return Promise.resolve()
         }
       })
     },
@@ -236,7 +258,7 @@ export default {
       const data = {
         city_name: '长沙',
       }
-      getBankList(data)
+      return getBankList(data)
       .then((res) => {
         const { data, success } = res.data
         this.showLoading = false
@@ -265,8 +287,12 @@ export default {
     },
 
     // 申请方式选择
-    selectMode() {
-      if (this.userStatus) {
+    selectMode(data) {
+      if (!data.isonline) return // 敬请期待
+      // 保存到sessionStorage中, 防止用户返回页面出现paramsData undefinde
+      window.sessionStorage.setItem('paramsData',JSON.stringify(data))
+
+      if (this.isShopkeeper) {
         this.$refs.indexBox.style.zIndex = 2
         this.show = true
         return
@@ -284,7 +310,6 @@ export default {
     onSelect(item) {
       // 默认情况下点击选项时不会自动收起
       // 可以通过 close-on-click-action 属性开启自动收起
-      this.show = false;
       const { name } = item
       
       switch(name) {
@@ -309,6 +334,7 @@ export default {
             }
           })
       }
+      this.show = false
     },
 
     onClose() {
@@ -489,6 +515,9 @@ export default {
     overflow hidden
     box-shadow:0px 8px 14px rgba(0,0,0,0.1);
     box-sizing border-box
+    &:active {
+        box-shadow: 0 0.1rem 0.14rem rgba(0,0,0,.2)
+    }
     &:nth-child(3n) {
       margin-right 0
     }

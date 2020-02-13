@@ -31,7 +31,7 @@ export const validatePhone = function(value) {
 export const idCard = function(value) {
   if (!value) return
   const id = value.trim()
-  if (id && (!(/\d{17}[\d|x]|\d{15}/).test(id) || (id.length !== 15 && id.length !== 18))) {
+  if (id && (!(/^(([1][1-5])|([2][1-3])|([3][1-7])|([4][1-6])|([5][0-4])|([6][1-5])|([7][1])|([8][1-2]))\d{4}(([1][9]\d{2})|([2]\d{3}))(([0][1-9])|([1][0-2]))(([0][1-9])|([1-2][0-9])|([3][0-1]))\d{3}[0-9xX]$/).test(id) || (id.length !== 15 && id.length !== 18))) {
     return {
       success: false,
       message: '身份证号码不符合规范'

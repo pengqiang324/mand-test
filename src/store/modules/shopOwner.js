@@ -1,7 +1,8 @@
 const state = {
     status: 0,
     redirect_url: '',
-    refreshUserInfo: false
+    refreshUserInfo: false,
+    refreshHomeStatus: false,
 }
 
 const mutations = {
@@ -17,6 +18,11 @@ const mutations = {
     // 更新是否刷新用户信息
     REFRESH_USER_INFO: (state, payload) => {
         state.refreshUserInfo = payload
+    },
+
+    // 是否更新首页用户状态
+    REFRESH_USER_STATUS: (state, payload) => {
+        state.refreshHomeStatus = payload
     }
 }
 

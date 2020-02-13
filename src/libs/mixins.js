@@ -21,7 +21,6 @@ export default {
         }),
         userStatus() {
             const status = window.localStorage.getItem('userStatus') ? JSON.parse(window.localStorage.getItem('userStatus')) : this.status
-            
             return status
         }
     },

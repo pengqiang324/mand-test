@@ -58,18 +58,13 @@ export default {
                 page: this.page,
                 size: this.size
             }
-            this.showloading = true
             getArticalList(params)
             .then((res) => {
                 const { success, queryResult } = res.data
                 if (success) {
                     this.data = this.data.concat(queryResult.list)
                     this.total = queryResult.total
-                    this.hideErrorTip()
-                } else {
-                    this.showErrorTip(res)
                 }
-                this.showloading = false
             })
         },
 

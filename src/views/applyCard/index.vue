@@ -9,6 +9,7 @@
                 <van-field 
                     v-model="form.name"
                     placeholder="请输入申请人姓名"
+                    clearable 
                     :readonly="readOnly"
                 >
                     <span slot="label" class="name">姓<i></i>名</span>
@@ -16,7 +17,11 @@
                 <van-field 
                     v-model="form.card" 
                     placeholder="请输入申请人身份证"
+                    clearable 
+                    :error="errorCard"
+                    :error-message="errorCardMessage"
                     :readonly="readOnly"
+                    @input="onCardInput"
                 >
                     <span slot="label" class="card">身<i>份</i>证</span>
                 </van-field>
@@ -26,7 +31,7 @@
                     placeholder="请输入申请人手机号"
                     :error-message="errorMessage" 
                     clearable 
-                    :error="error"
+                    :error="errorTel"
                     :readonly="readOnly"
                     @input="onInput"
                 >
@@ -34,12 +39,12 @@
                 </van-field>
                 <van-field 
                     v-if="showTel ? true: false"
-                    v-model="form.indenty" 
+                    v-model="form.indenty"
+                    ref="indenty" 
                     type="tel" 
                     label="手机验证码" 
                     placeholder="请输入验证码"
                     :error-message="errorIndentyMessage" 
-                    clearable 
                     @input="onIndentyInput"
                 >
                     <span 
@@ -80,9 +85,10 @@
 <script>
 import { Field } from 'vant'
 import mixins from '@/libs/mixins'
-import { validatePhone } from '@/libs/validate'
-import { getApplyCardInfo } from '@/api/applyCard/applyCard'
+import { validatePhone, idCard } from '@/libs/validate'
+import { getApplyCardInfo, nologin } from '@/api/applyCard/applyCard'
 import { mapState } from 'vuex'
+import { SEND_VALIDCODE } from '@/actions/applyCard'
 
 export default {
     name: 'ry-applyCard',
@@ -104,9 +110,13 @@ export default {
             },
             title: '本人',
             btnTitle: '发送验证码',
+            redirectUrl: '',  // 重定向新世界url
             errorMessage: '',
             errorIndentyMessage: '',
-            error: false,
+            errorCardMessage: '',
+            smsCode: '',
+            errorTel: false,
+            errorCard: false,
             codeLoad: false,
             readOnly: false,
             showTel: false
@@ -135,9 +145,11 @@ export default {
     methods: {
         init() {
             const { readOnly, showTel, showIndenty, title } = this.$route.query
-            this.readOnly = JSON.parse(readOnly)
-            this.showTel = JSON.parse(showTel)
-            this.showIndenty = JSON.parse(showIndenty)
+            if (readOnly !== undefined) {
+                this.readOnly = JSON.parse(readOnly)
+                this.showTel = JSON.parse(showTel)
+                this.showIndenty = JSON.parse(showIndenty)
+            }
             if (title) this.title = title
         },
 
@@ -156,30 +168,25 @@ export default {
         async getCode() {
             const { success, message } = validatePhone(this.form.tel)
             if (!success) {
-                if (message !== '手机号不能为空') this.error = true
+                if (message !== '手机号不能为空') this.errorTel = true
                 this.errorMessage = message
             } else {
                 if (this.btnTitle == '发送验证码') {
                     this.codeLoad = true
                     const content = `验证码已发送至 ${this.form.tel.substr(0, 3)}****${this.form.tel.substr(7, 4)}`
-                    // const response = await this.$store.dispatch(USER_GETVALIDATECODE({tel: this.form.tel}))
-                    // if (response.data.success) {
-                    //     this.smsCode = response.data.data.smsCode
-                    //     this.$notify({
-                    //         message: content,
-                    //         color: '#fff',
-                    //         background: 'rgba(0,0,0,.7)'
-                    //     })
-                    //     this.validateBtn()
-                    // } else {
-                    //     this.codeLoad = false
-                    // }
-                    this.$notify({
-                        message: content,
-                        color: '#fff',
-                        background: 'rgba(0,0,0,.7)'
-                    })
-                    this.validateBtn()
+                    const response = await this.$store.dispatch(SEND_VALIDCODE({tel: this.form.tel}))
+                    if (response.data.success) {
+                        this.smsCode = response.data.data.smsCode
+                        this.$notify({
+                            message: content,
+                            color: '#fff',
+                            background: 'rgba(0,0,0,.7)'
+                        })
+                        this.validateBtn()
+                        this.$refs.indenty.focus()
+                    } else {
+                        this.codeLoad = false
+                    }
                 } else {
                     return
                 }
@@ -194,7 +201,7 @@ export default {
                 if(time == 0) {
                     clearInterval(timer)
                     this.disabled = false
-                    this.btnTitle = "获取验证码"
+                    this.btnTitle = "发送验证码"
                 } else {
                     this.btnTitle =time + '秒后重试'
                     this.disabled = true
@@ -205,18 +212,18 @@ export default {
 
         onInput(value) {
             if (!value) {
-                this.error = false
+                this.errorTel = false
                 this.errorMessage = ''
             }
 
             const { success } = validatePhone(value)
             if(success) {
-                this.error = false
+                this.errorTel = false
                 this.errorMessage = ''
             } else {
                 if (this.errorMessage == '请输入正确的手机号') return
                 if (value && this.errorMessage ) {
-                    this.error = false
+                    this.errorTel = false
                     this.errorMessage = ''
                     return
                 }
@@ -229,9 +236,37 @@ export default {
             }
         },
 
+        onCardInput(value) {
+            if (!value) {
+                this.errorCard = false
+                this.errorCardMessage = ''
+                return
+            }
+            const { success, message } = idCard(value)
+            if (!success) {
+                this.errorCard = true
+                this.errorCardMessage = message
+            } else {
+                this.errorCard = false
+                this.errorCardMessage = ''
+            }
+        },
+
         isClick() {
             let resultData = {}
-            if(!this.form.tel) {
+            if (!this.form.name) {
+                resultData = {
+                    isClick: false,
+                    message: '姓名不能为空'
+                }
+                return resultData
+            } else if (!this.form.card) {
+                resultData = {
+                    isClick: false,
+                    message: '身份证不能为空'
+                }
+                return resultData
+            } else if(!this.form.tel) {
                 resultData = {
                     isClick: false,
                     message: '手机号不能为空'
@@ -277,21 +312,53 @@ export default {
 
         // 提交
         confirm() {
-            const { isClick, message } = this.isClick()
-            if (!isClick) {
-                switch(message) {
-                    case '手机号不能为空':
-                        this.errorMessage = message
-                        break
-                    default:
-                        this.errorIndentyMessage = message
+            const applyCode = '782rfi'
+            const ParamsData = JSON.parse(window.sessionStorage.getItem('paramsData'))
+
+            if (this.showTel) { // 当亲友申请时才校验数据
+                const { isClick, message } = this.isClick()
+                if (!isClick) {
+                    switch(message) {
+                        case '姓名不能为空':
+                            this.$toast({
+                                message,
+                                duration: 2000,
+                                position: 'bottom'
+                            })
+                            break
+                        case '身份证不能为空':
+                            this.$toast({
+                                message,
+                                duration: 2000,
+                                position: 'bottom'
+                            })
+                            break
+                        case '手机号不能为空':
+                            this.errorTel = true
+                            this.errorMessage = message
+                            break
+                        default:
+                            this.errorIndentyMessage = message
+                    }
+                    return
                 }
-                return
+                this.changeLoading()
+                setTimeout(() => {
+                    this.loading = false
+                },2000)
+            } else {
+                // 本人申请
+                this.changeLoading()
+                nologin()
+                .then((res) => {
+                    const { success, data } = res.data
+                    if (success) {
+                        this.redirectUrl = data
+                        window.location.href = `${this.redirectUrl}&bank_id=${ParamsData.bankId}&is_rec=${ParamsData.isRec}&apply_code=${applyCode}`
+                    }
+                    this.loading = false
+                })
             }
-            this.changeLoading()
-            setTimeout(() => {
-                this.loading = false
-            },2000)
         }
     }
 }
@@ -352,8 +419,8 @@ export default {
         border-radius 20*2px
         box-sizing border-box
         &:active {
-            background #b5b5b5
-            color #fff
+            border-color #ff6f00
+            color #ff6f00
         }
     }
 }

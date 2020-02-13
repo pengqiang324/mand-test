@@ -154,7 +154,7 @@ module.exports = {
       changeOrigin: true,
       ws: true,
       pathRewrite: {
-        ['^' + process.env.VUE_APP_BASE_API]: '',
+        '^/dev-api': '',
       },
      }
     }

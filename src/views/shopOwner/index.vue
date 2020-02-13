@@ -228,8 +228,11 @@ export default {
                 function(res){
                     if(res.err_msg == "get_brand_wcpay_request:ok" ) {
                         // 店主开通成功
-                        that.$store.dispatch('shopOwner/updateStatus', 1)  
-                        localStorage.setItem('userStatus', 1) // 设置状态为店主，防止用户不点完成开通确认按钮，直接返回至付款学习页面
+                        window.localStorage.setItem('userStatus', 1) // 设置状态为店主，防止用户不点完成开通确认按钮，直接返回至付款学习页面
+                        that.$store.dispatch('shopOwner/updateStatus', 1) 
+                        // 解决在用户更新客户，店主时我的数据不更新问题
+                        that.$store.commit('shopOwner/REFRESH_USER_INFO', true)
+                        that.$store.commit('shopOwner/REFRESH_USER_STATUS', true)
                         that.$router.replace('/openSuccess')
                     } 
                 }

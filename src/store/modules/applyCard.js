@@ -1,3 +1,4 @@
+import { sendValidCode } from '@/api/applyCard/applyCard'
 const state = {
     isGetInfo: false
 }
@@ -9,8 +10,16 @@ const mutations = {
     }
 }
 
+const actions = {
+    // 发送验证码
+    validCodeSend(_, { payload }) {
+        return sendValidCode(payload)
+    },
+}
+
 export default {
     namespaced: true,
     state,
-    mutations
+    mutations,
+    actions
 }

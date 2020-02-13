@@ -7,8 +7,7 @@
     >
         <div class="Cognos-info">
             <div class="Cognos-swiper">
-                <h2 v-if="!imgData.length"><img :src="headImg" alt=""></h2>
-                <swiper v-else :options="swiperOption" ref="mySwiperA" class="swiper-business-img">
+                <swiper :options="swiperOption" ref="mySwiperA" class="swiper-business-img">
                     <swiper-slide 
                         v-for="item in imgData" 
                         :key="item.id" 
@@ -24,39 +23,33 @@
                     <van-divider :style="{borderColor: '#dcdcdc'}">{{headTitle}}</van-divider>
                 </div>
                 <div class="Cognos-list-data">
-                    <template v-if="showNetWork">
-                        <ry-result-network class="ry-network"/>
-                    </template>
-                    <template v-if="!showNetWork">
-                        <ry-error-info v-show="showErrorIn"/>
-                        <div v-show="!showErrorIn" class="Cognos-list-box">
-                            <ry-loading v-show="showloading" class="Cognos-loading"/>
-                            <ry-scroll
-                                v-show="!showloading"
-                                :total="total"
-                                :bounce="bounce"
-                                :data="data"
-                                :scrollbar="true"
-                                :pullUpLoad="true"
-                                @pullingUp="pullUpLoad"
-                            >
-                                <ul>
-                                    <router-link 
-                                        v-for="item in data"
-                                        :key="item.id"
-                                        :to="{path: '/courseArticle', query: {id: item.id}}"
-                                        tag="li"
-                                    >
-                                        <div class="Cognos-list-left">
-                                            <h4>{{item.title}}</h4>
-                                            <p>{{item.createTime}}</p>
-                                        </div>
-                                        <h2 v-lazy:background-image="item.imageUrl"></h2>
-                                    </router-link>
-                                </ul>
-                            </ry-scroll>
-                        </div>
-                    </template>
+                    <div class="Cognos-list-box">
+                        <ry-loading v-show="!data.length" class="Cognos-loading"/>
+                        <ry-scroll
+                            v-show="data.length"
+                            :total="total"
+                            :bounce="bounce"
+                            :data="data"
+                            :scrollbar="true"
+                            :pullUpLoad="true"
+                            @pullingUp="pullUpLoad"
+                        >
+                            <ul>
+                                <router-link 
+                                    v-for="item in data"
+                                    :key="item.id"
+                                    :to="{path: '/courseArticle', query: {id: item.id}}"
+                                    tag="li"
+                                >
+                                    <div class="Cognos-list-left">
+                                        <h4>{{item.title}}</h4>
+                                        <p>{{item.createTime}}</p>
+                                    </div>
+                                    <h2 v-lazy:background-image="item.imageUrl"></h2>
+                                </router-link>
+                            </ul>
+                        </ry-scroll>
+                    </div>
                 </div>
             </div>
         </div>
@@ -64,14 +57,11 @@
 </template>
 
 <script>
-import mixins from '@/libs/mixins'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import { Divider } from 'vant'
 
 export default {
     name: 'ry-operation',
-
-    mixins: [mixins],
 
     components: {
         [Divider.name]: Divider,

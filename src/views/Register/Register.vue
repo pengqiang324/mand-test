@@ -8,24 +8,19 @@
         <div class="user-info">
             <div class="user-name border-input">
                 <input 
-                    type="text" 
+                    type="tel" 
                     placeholder="请输入手机号码" 
-                    readonly="readonly"
                     v-model="phoneNumber"
-                    ref="input0"
-                    @focus="toggleKeyboard(0)"
-                    class="needsclick"
+                    @blur="onBlur"
                 />
             </div>
             <div class="user-number border-input">
                 <input 
-                    type="text" 
+                    type="tel" 
                     placeholder="请输入6位验证码"
-                    readonly="readonly"
                     v-model="indtyCode"
-                    ref="input1"
-                    @focus="toggleKeyboard(1)"
-                    class="needsclick"
+                    ref="indtyCode"
+                    @blur="onBlur"
                 />
                 <span
                     class="getcode" 
@@ -65,22 +60,6 @@
                     @touchafter="onLogin"
                 />
         </div>
-        <!-- 数字键盘start -->
-        <div class="keyboard">
-            <md-number-keyboard
-                v-model="isKeyBoardShow[0]"
-                hide-dot
-                @enter="onNumberEnter"
-                @delete="onNumberDelete"
-                ></md-number-keyboard>
-            <md-number-keyboard
-                v-model="isKeyBoardShow[1]"
-                hide-dot
-                @enter="onNumberEnter"
-                @delete="onNumberDelete"
-                ></md-number-keyboard>
-        </div>
-        <!-- 数字键盘end -->
     </div>
   </div>
 </template>
@@ -113,14 +92,11 @@ export default {
             checked: false,
             disabled: false,
             btnShow: false,
-            changeColor: false,
             codeLoad: false,
-            isKeyBoardShow: [],
             phoneNumber: '',
             indtyCode: '', // 验证码
             smsCode: '',
-            btnTitle: '获取验证码',
-            index: 0
+            btnTitle: '获取验证码'
         }
     },
 
@@ -163,43 +139,6 @@ export default {
             this.checked = !this.checked
         },
 
-        toggleKeyboard(index) {
-            this.index = index
-            document.activeElement.blur() //禁止默认键盘 IOS
-            switch (index) {
-                case 0:
-                    if (this.isKeyBoardShow[1]) this.isKeyBoardShow[1] = false
-                    break
-                default:
-                    if (this.isKeyBoardShow[0]) this.isKeyBoardShow[0] = false
-            }
-
-            this.$set(this.isKeyBoardShow, index, !this.isKeyBoardShow[index])
-        },
-
-        onNumberEnter(val) {
-            switch (this.index) {
-                case 0:
-                    this.phoneNumber += val
-                    break
-                default:
-                    this.indtyCode += val
-            }
-        },
-
-        onNumberDelete() {
-            switch (this.index) {
-                case 0:
-                    if (this.phoneNumber === '') return
-                    this.phoneNumber = this.phoneNumber.substr(0, this.phoneNumber.length - 1)
-                    break
-                default:
-                    if (this.indtyCode === '') return
-                    this.indtyCode = this.indtyCode.substr(0, this.indtyCode.length - 1)
-            }
-            
-        },
-
         async getCode() {
             const { success, message } = validatePhone(this.phoneNumber)
             if (!success) {
@@ -221,9 +160,8 @@ export default {
                             color: '#fff',
                             background: 'rgba(0,0,0,.7)'
                         })
-                        //打开数字键盘
-                        this.isKeyBoardShow[1] = true
-                        this.index = 1
+            
+                        this.$refs.indtyCode.focus()
                         this.validateBtn()
                     } else {
                         this.codeLoad = false
@@ -361,6 +299,7 @@ export default {
             font-size 16*2px
             line-height 23*2px
             color #666
+            caret-color #ff8324
             background none
             &::-webkit-input-placeholder {
                 font-size 28px
