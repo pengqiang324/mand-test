@@ -256,6 +256,15 @@ const routes = [
     }
   },
   {
+    path: '/myOrder',
+    name: 'ry-myOrder',
+    component: () => import(/* webpackChunkName: "expect" */ '../views/MyOrder'),
+    meta: {
+      index: 3,
+      title: '会员卡订单'
+    }
+  },
+  {
     path: '/expect',
     name: 'ry-expect',
     component: () => import(/* webpackChunkName: "expect" */ '../views/expect'),

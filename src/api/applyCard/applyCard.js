@@ -25,3 +25,21 @@ export function sendValidCode(data) {
         data
     })
 }
+
+// 姓名和身份证身份校验
+export function nameAndCardNoAuth(data) {
+    return request({ 
+        url: `${api}/user/nameAndCardNoAuth`,
+        method: 'post',
+        data
+    })
+}
+
+// 新世界用户帮他人申请办卡免登录接口
+export function applyForOthers(data) {
+    return request({ 
+        url: `${api}/xinshijie/applyForOthers`,
+        method: 'post',
+        data
+    })
+}

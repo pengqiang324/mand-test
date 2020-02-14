@@ -3,18 +3,12 @@
     <transition
       :name="transitionName" 
     >
-      <keep-alive :include="keepAlive">
+      <keep-alive :include="keepAlive" v-if="isRouterAlive">
         <router-view 
           class="router-view"
           v-wechat-title='$route.meta.title'
-          v-if="isRouterAlive"
         />
       </keep-alive>
-    </transition>
-    <transition
-      :name="transitionName" 
-    > 
-      
     </transition>
     <ry-loading v-if="hideAppLoading" class="ry-loading"></ry-loading>
     <ry-tabbar v-show="$route.meta.hasFooter"/>

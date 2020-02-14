@@ -27,24 +27,30 @@
                     :disabled="disabled"
                     @click.stop="getCode"
                 >
+                    <van-icon 
+                        v-show="reget"
+                        name="replay" 
+                        color="#ff6f00"
+                        size="16"
+                    />
                     <van-loading
                         v-show="codeLoad" 
                         size="16px" 
                         color="#ff6f00" 
                         class="van-load"
                     />
-                    {{btnTitle}}
+                    <b v-html="btnTitle"></b>
                 </span>
             </div>
             <p class="register-tips">若您未注册，验证后自动注册并登陆</p>
             <div class="register-agree">
                 <van-checkbox 
-                class="register-checkbox"
-                v-model="checked" 
-                checked-color="#ff4300"
-                shape="square"
-                icon-size="15px"
-                :label-disabled="true"
+                    class="register-checkbox"
+                    v-model="checked" 
+                    checked-color="#ff4300"
+                    shape="square"
+                    icon-size="15px"
+                    :label-disabled="true"
                 >
                     <span class="login-agree" @click="onCheck">登录即同意</span>
                     <span class="register-span" @click="onReAgree">《用户注册协议》</span>
@@ -65,7 +71,7 @@
 </template>
 
 <script>
-import { Checkbox } from 'vant'
+import { Checkbox, Icon } from 'vant'
 import { validatePhone } from '@/libs/validate'
 import mixins from '@/libs/mixins'
 import qs from 'qs'
@@ -84,7 +90,8 @@ export default {
     mixins: [mixins],
 
     components: {
-        [Checkbox.name]: Checkbox
+        [Checkbox.name]: Checkbox,
+        [Icon.name]: Icon
     },
 
     data() {
@@ -93,10 +100,12 @@ export default {
             disabled: false,
             btnShow: false,
             codeLoad: false,
+            reget: false,
             phoneNumber: '',
             indtyCode: '', // 验证码
             smsCode: '',
-            btnTitle: '获取验证码'
+            btnTitle: '获取验证码',
+            timer: null
         }
     },
 
@@ -148,8 +157,10 @@ export default {
                     position: 'bottom'
                 })
             } else {
-                if (this.btnTitle == '获取验证码') {
+                if (this.btnTitle == '获取验证码' || this.btnTitle == '重新获取') {
                     this.codeLoad = true
+                    this.reget = false
+                    this.indtyCode = ''
                     const content = `验证码已发送至 ${this.phoneNumber.substr(0, 3)}****${this.phoneNumber.substr(7, 4)}`
                     const response = await this.$store.dispatch(USER_GETVALIDATECODE({tel: this.phoneNumber}))
                     if (response.data.success) {
@@ -165,6 +176,7 @@ export default {
                         this.validateBtn()
                     } else {
                         this.codeLoad = false
+                        if (this.btnTtile == '重新获取') this.reget = true
                     }
                 } else {
                     return
@@ -175,15 +187,17 @@ export default {
         validateBtn(){
             this.codeLoad = false
             //倒计时
-            let time = 60
-            let timer = setInterval(() => {
+            let time = 120
+            this.timer = setInterval(() => {
                 if(time == 0) {
-                    clearInterval(timer)
+                    clearInterval(this.timer)
                     this.disabled = false
-                    this.btnTitle = "获取验证码"
+                    this.reget = true
+                    this.btnTitle = `重新获取`
                 } else {
-                    this.btnTitle =time + '秒后重试'
+                    this.btnTitle =`<i>${time}</i>秒后重试`
                     this.disabled = true
+                    this.reget = false
                     time--
                 }
             },1000)
@@ -236,9 +250,9 @@ export default {
             const response = await this.$store.dispatch(USER_LOGIN({
                 username: this.phoneNumber
             }));
-            
             if (response.data.success) {
                 const { isCert } = response.data.data
+                this.loading = false
                 if (!isCert) {
                     this.$store.dispatch('showDiaLog', true) // 显示完善信息
                 } else {
@@ -246,7 +260,7 @@ export default {
                     this.$router.push('/')
                 }
             } 
-            this.loading = false
+            
         },
 
         // 获取微信code
@@ -324,6 +338,19 @@ export default {
                 border-radius 20*2px
                 .van-load {
                     margin-right 6px
+                }
+                &:active {
+                    border-color #ff6f00
+                    color #ff6f00
+                }
+                b {
+                    font-weight 100
+                    i {
+                        font-style normal
+                        color #ff6f00
+                        margin-right 6px
+                        font-size 28px
+                    }
                 }
             }
         }

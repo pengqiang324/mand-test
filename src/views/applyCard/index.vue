@@ -52,13 +52,19 @@
                         @click="getCode"
                         class="indenty"
                     >
+                        <van-icon 
+                            v-show="reget"
+                            name="replay" 
+                            color="#ff6f00"
+                            size="16"
+                        />
                         <van-loading
                             v-show="codeLoad" 
                             size="16px" 
                             color="#ff6f00" 
                             class="van-load"
                         />
-                        {{btnTitle}}
+                        <b v-html="btnTitle"></b>
                     </span>
                 </van-field>
                 <van-field 
@@ -83,12 +89,13 @@
 </template>
 
 <script>
-import { Field } from 'vant'
+import { Field, Icon } from 'vant'
 import mixins from '@/libs/mixins'
 import { validatePhone, idCard } from '@/libs/validate'
-import { getApplyCardInfo, nologin } from '@/api/applyCard/applyCard'
+import { getApplyCardInfo, nologin, nameAndCardNoAuth, applyForOthers } from '@/api/applyCard/applyCard'
 import { mapState } from 'vuex'
 import { SEND_VALIDCODE } from '@/actions/applyCard'
+import { USER_VALIDATESMSCODE } from '@/actions/user'
 
 export default {
     name: 'ry-applyCard',
@@ -96,7 +103,8 @@ export default {
     mixins: [mixins],
 
     components: {
-        [Field.name]: Field
+        [Field.name]: Field,
+        [Icon.name]: Icon
     },
 
     data() {
@@ -119,7 +127,8 @@ export default {
             errorCard: false,
             codeLoad: false,
             readOnly: false,
-            showTel: false
+            showTel: false,
+            reget: false
         }
     },
 
@@ -171,8 +180,11 @@ export default {
                 if (message !== '手机号不能为空') this.errorTel = true
                 this.errorMessage = message
             } else {
-                if (this.btnTitle == '发送验证码') {
+                if (this.btnTitle == '发送验证码'|| this.btnTitle == '重新发送') {
                     this.codeLoad = true
+                    this.reget = false
+                    this.indenty = ''
+
                     const content = `验证码已发送至 ${this.form.tel.substr(0, 3)}****${this.form.tel.substr(7, 4)}`
                     const response = await this.$store.dispatch(SEND_VALIDCODE({tel: this.form.tel}))
                     if (response.data.success) {
@@ -186,6 +198,7 @@ export default {
                         this.$refs.indenty.focus()
                     } else {
                         this.codeLoad = false
+                        if (this.btnTtile == '重新发送') this.reget = true
                     }
                 } else {
                     return
@@ -196,15 +209,15 @@ export default {
         validateBtn(){
             this.codeLoad = false
             //倒计时
-            let time = 60
+            let time = 120
             let timer = setInterval(() => {
                 if(time == 0) {
                     clearInterval(timer)
-                    this.disabled = false
-                    this.btnTitle = "发送验证码"
+                    this.reget = true
+                    this.btnTitle = "重新发送"
                 } else {
-                    this.btnTitle =time + '秒后重试'
-                    this.disabled = true
+                    this.reget = false
+                    this.btnTitle =`<i>${time}</i>秒后重试`
                     time--
                 }
             },1000)
@@ -310,11 +323,23 @@ export default {
             }
         },
 
-        // 提交
-        confirm() {
+        noLogin() {
             const applyCode = '782rfi'
             const ParamsData = JSON.parse(window.sessionStorage.getItem('paramsData'))
 
+            nologin()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.redirectUrl = data
+                    window.location.href = `${this.redirectUrl}&bank_id=${ParamsData.bankId}&is_rec=${ParamsData.isRec}&apply_code=${applyCode}`
+                } 
+                this.loading = false
+            })
+        },
+
+        // 提交
+        async confirm() {
             if (this.showTel) { // 当亲友申请时才校验数据
                 const { isClick, message } = this.isClick()
                 if (!isClick) {
@@ -343,21 +368,31 @@ export default {
                     return
                 }
                 this.changeLoading()
-                setTimeout(() => {
-                    this.loading = false
-                },2000)
+                const res1 = await nameAndCardNoAuth({
+                    cardNo: this.form.card,
+                    name: this.form.name
+                })
+                if (res1.data && res1.data.success) {
+                    const res2 = await this.$store.dispatch(USER_VALIDATESMSCODE({
+                        smsCode: this.smsCode, 
+                        validCode: this.form.indenty
+                    }))
+                    if (res2.data && res2.data.success) {
+                        const res3 = await applyForOthers({
+                            cardNo: this.form.card,
+                            name: this.form.name,
+                            tel: this.form.tel
+                        })
+                        if ( res3.data && res3.data.success ) {
+                            this.noLogin()
+                        }
+                    }  
+                } 
+                this.loading = false
             } else {
                 // 本人申请
                 this.changeLoading()
-                nologin()
-                .then((res) => {
-                    const { success, data } = res.data
-                    if (success) {
-                        this.redirectUrl = data
-                        window.location.href = `${this.redirectUrl}&bank_id=${ParamsData.bankId}&is_rec=${ParamsData.isRec}&apply_code=${applyCode}`
-                    }
-                    this.loading = false
-                })
+                
             }
         }
     }
@@ -421,6 +456,15 @@ export default {
         &:active {
             border-color #ff6f00
             color #ff6f00
+        }
+        b {
+            font-weight 100
+            i {
+                font-style normal
+                color #ff6f00
+                margin-right 6px
+                font-size 28px
+            }
         }
     }
 }

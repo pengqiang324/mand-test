@@ -120,7 +120,7 @@
                     </p>
                     <span class="custom-title">{{value.title}}</span>
                     <i 
-                      v-if="index === 1 && key === 2"
+                      v-if="index === 1 && key === 1"
                       class="mine-cell-icon"
                     >
                       必看
@@ -170,7 +170,8 @@ export default {
             data: [
               {
                 icon: require('../assets/images/mine/icon01.png'),
-                title: '我的订单'
+                title: '我的订单',
+                url: '/myOrder'
               },
               {
                 icon: require('../assets/images/mine/icon02.png'),
@@ -180,11 +181,11 @@ export default {
                 icon: require('../assets/images/mine/icon03.png'),
                 title: '我的团队'
               },
-              {
-                icon: require('../assets/images/mine/icon04.png'),
-                title: '我的顾问',
-                isshow: true
-              },
+              // {
+              //   icon: require('../assets/images/mine/icon04.png'),
+              //   title: '我的顾问',
+              //   isshow: true
+              // },
               {
                 icon: require('../assets/images/mine/icon05.png'),
                 title: '商学院',
@@ -225,11 +226,11 @@ export default {
                 icon: require('../assets/images/mine/icon01.png'),
                 title: '我的订单'
               },
-              {
-                icon: require('../assets/images/mine/icon04.png'),
-                title: '我的顾问',
-                isshow: true
-              },
+              // {
+              //   icon: require('../assets/images/mine/icon04.png'),
+              //   title: '我的顾问',
+              //   isshow: true
+              // },
               {
                 icon: require('../assets/images/mine/icon08.png'),
                 title: '联系推荐人'
