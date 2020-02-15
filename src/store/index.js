@@ -20,7 +20,8 @@ export default new Vuex.Store({
     hideAppLoading: false,  // 隐藏app.vue中的全局loading
     showErrorLogin: false,  //  初始进公众号时返回系统繁忙，错误异常显示
     errorMessage: '',      // 错误反馈信息描述
-    keepAlive: []  // 缓存组件
+    keepAlive: [],  // 缓存组件
+    scrollInfo: {}  //记录页面滚动距离
   },
 
   mutations: {
@@ -59,6 +60,10 @@ export default new Vuex.Store({
 
     RESET_KEEP_ALIVE: (state, keepAlive) => {
       state.keepAlive = keepAlive
+    },
+    // 保存页面滚动距离
+    updateScrollOffset(state, { name, scrollTop }) {
+      Vue.set(state.scrollInfo,name,scrollTop)
     }
   },
 

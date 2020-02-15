@@ -21,7 +21,7 @@
         title-inactive-color="#000"
         line-width="33.3%"
         :border="false"
-        @click="acitveChange"
+        @click="activeChange"
         class="tabs-tab"
       >
         <van-tab 
@@ -30,71 +30,117 @@
           :title="item" 
           title-style="font-weight:bold;font-size:16px;"
         >
-          <div 
-            :class="'tabs-box'+index"
-          >
-            <div
-              v-show="active == 2"
-              class="tabs-head-list"
+          <!-- 会员卡订单 申卡贷款订单 start -->
+          <div v-show="active !== 1">
+            <!-- 二级tabs start -->
+            <div 
+              :class="'tabs-box'+index"
             >
-              <van-tabs 
-                v-model="active2"
-                background="#f5f5f5"
-                color="#FF6600"
-                title-active-color="#000"
-                title-inactive-color="#000"
-                line-width="16.6%"
-                :border="false"
+              <div
+                v-show="active == 2"
+                class="tabs-head-list"
               >
-                <van-tab 
-                  v-for="(value,key) in tabList2"
-                  :key="key"
-                  :title="value" 
-                  :title-style="active2 == key ? 'font-weight:bold;font-size: 16px;' : 'font-size: 14px;'"
+                <van-tabs 
+                  v-model="active2"
+                  background="#f5f5f5"
+                  color="#FF6600"
+                  title-active-color="#000"
+                  title-inactive-color="#000"
+                  line-width="16.6%"
+                  :border="false"
                 >
-                </van-tab>
-              </van-tabs>
+                  <van-tab 
+                    v-for="(value,key) in tabList2"
+                    :key="key"
+                    :title="value" 
+                    :title-style="active2 == key ? 'font-weight:bold;font-size: 16px;' : 'font-size: 14px;'"
+                  >
+                  </van-tab>
+                </van-tabs>
+              </div>
             </div>
-          </div>
-          <div
-            :class="'tabs-scroll'+index"
-          >
-            <ry-scroll-view 
-              :showMore="true"
-              :bounce="false"
-              :data="data"
-              :total="total"
-              @onEndReached="loadMore"
+            <!-- 二级tabs end -->
+            <!-- 滚动区域内容 start -->
+            <div
+              :class="'tabs-scroll'+index"
             >
-              <ul class="data-list">
-                <li 
-                  v-for="(item,index) in 10"
-                  :key="index"
-                >
-                  <div class="order-user">
-                    <h2>
-                      <span v-lazy:background-image="txImg" ></span>
-                      <i>周勇</i>
-                    </h2>
-                    <p>
-                      <img :src="weixinImg" alt="">
-                      <img :src="telImg" alt="">
-                    </p>
-                  </div>
-                  <div class="order-pri">
-                    <div class="order-member">
-                      <h3>购买会员卡</h3>
-                      <span>开通店主</span>
-                    </div>
-                    <div class="order-time">加入时间：2019-09-23  17:45:28</div>
-                  </div>
-                  <div class="order-proccess">
-                    <p class="proccess-btn">进度查询</p>
-                  </div>
-                </li>
-              </ul>
-            </ry-scroll-view>
+              <template v-if="showNetWork">
+                <ry-result-network class="ry-network"/>
+              </template>
+              <template v-if="!showNetWork">
+                <ry-error-info v-if="showErrorIn"/>
+                <div class="myorder-view" v-if="!showErrorIn">
+                  <ry-loading v-show="showloading" class="myorder-loading"/>
+                  <!-- 空数据 start -->
+                  <ry-result-empty 
+                    v-if="!showloading && !data.length"
+                    class="myOrder-empty"
+                  />
+                  <!-- 空数据 end -->
+                  <ry-scroll-view 
+                    v-show="!showloading &&data.length"
+                    :showMore="true"
+                    :bounce="false"
+                    :data="data"
+                    :total="total"
+                    @onEndReached="loadMore"
+                  >
+                    <ul
+                      class="data-list"
+                    >
+                      <li 
+                        v-for="(item,index) in data"
+                        :key="index"
+                      >
+                        <div class="order-user">
+                          <h2>
+                            <span v-lazy:background-image="txImg" ></span>
+                            <i>周勇</i>
+                          </h2>
+                          <p>
+                            <span 
+                              v-clipboard:copy="weixinNum"
+                              v-clipboard:success="onCopyWeixin"
+                              v-clipboard:error="onError"
+                            >
+                              <img 
+                                :src="weixinImg"
+                              >
+                            </span>
+                            <span
+                              @click="showTelDialog"
+                            >
+                              <img :src="telImg" alt="">
+                            </span>
+                          </p>
+                        </div>
+                        <div class="order-pri">
+                          <div class="order-member">
+                            <h3>购买会员卡</h3>
+                            <span>开通店主</span>
+                          </div>
+                          <div class="order-time">加入时间：2019-09-23  17:45:28</div>
+                        </div>
+                        <div class="order-proccess">
+                          <p class="proccess-btn">进度查询</p>
+                        </div>
+                      </li>
+                    </ul>
+                  </ry-scroll-view>
+                </div>
+              </template>
+            </div>
+            <!-- 滚动区域内容 end -->
           </div>
+          <!-- 会员卡订单 申卡贷款订单 end -->
+          <!-- 服务订单 start -->
+          <div 
+            v-show="active == 1"
+            class="fuwu-order"
+          >
+            <span>敬请期待</span>
+          </div>
+          <!-- 服务订单 end -->
         </van-tab>
       </van-tabs>
     </div>
@@ -102,19 +148,21 @@
     <van-dialog 
       v-model="showSocket" 
       :show-cancel-button="showCancel"
+      :showConfirmButton="showConfirm"
       :confirmButtonText="btnText"
       :confirmButtonColor="btnColor"
       :closeOnClickOverlay="true"
+      @confirm="confirm"
     >
-      <div class="weixin-box" v-if="!true">
+      <div class="weixin-box" v-if="showCancel" >
         <h2><img :src="weixinImg2" alt=""></h2>
         <h4>复制成功</h4>
         <div class="weixin-box-pri">
-          <p>微信号：123456789</p>
+          <p>微信号：{{weixinNum}}</p>
           <p>已复制，可直接粘贴</p>
         </div>
       </div>
-      <div class="tel-box">
+      <div class="tel-box" v-else>
         <h2><img :src="telImg2" alt=""></h2>
         <h3>{{tel}}</h3>
         <a :href="'tel:'+iphone">呼叫</a>
@@ -125,6 +173,7 @@
         >
           复制
         </h4>
+        <!-- <a :href="'wtai://wp/ap;'+iphone+'#mp.weixin.qq.com'" class="telAp">添加到手机通讯录</a> -->
       </div>
     </van-dialog>
     <!-- 微信，手机号组件 end -->
@@ -133,9 +182,12 @@
 
 <script>
 import { Search, Dialog } from 'vant'
+import mixins from '@/libs/mixins'
 
 export default {
     name: 'ry-myOrder',
+
+    mixins: [mixins],
 
     components: {
       [Search.name]: Search,
@@ -154,11 +206,13 @@ export default {
         telImg,
         telImg2,
         txImg,
-        showSocket: true,
-        showCancel: false,
+        showSocket: false,
+        showCancel: true,
+        showConfirm: true,
         searchValue: '',
+        weixinNum: 'pq17773191626',
         iphone: '17773191626',
-        btnText: '添加到手机通讯录',
+        btnText: '去黏贴',
         btnColor: '#FF6F00',
         tabsHeight1: 0,
         tabsHeight2: 0,
@@ -167,10 +221,10 @@ export default {
         active2: 2,
         page: 1,
         size: 5,
-        total: 20,
+        total: 2,
         tabList1: ['会员卡订单','服务订单','申卡贷款订单'],
         tabList2: ['待查询','待再查','待激活','已完成','未通过','失效'],
-        data: []
+        data: [1,2]
       }
     },
 
@@ -218,20 +272,42 @@ export default {
       },
 
       loadMore() {
-          
       },
 
-      acitveChange() {
-        // console.log(index)
+      activeChange(index,name) {
+        document.title = name
+      },
+
+      showTelDialog() {
+        this.showCancel = false
+        this.showConfirm = false
+        this.showSocket = true
       },
 
       onCopy() {
-        this.$toast.success('复制成功')
+        this.$toast({
+          message: '已复制',
+          position: 'bottom'
+        })
+        this.showSocket = false
+      },
+      // 微信复制成功
+      onCopyWeixin() {
+        this.showCancel = true
+        this.showConfirm = true
+        this.showSocket = true
       },
 
       onError() {
-        this.$toast.fail('复制失败')
+        this.$toast({
+          message: '复制失败',
+          position: 'bottom'
+        })
       },
+
+      confirm() {
+        window.WeixinJSBridge.call('closeWindow') //关闭微信公众号
+      }
     }
 }
 </script>
@@ -242,6 +318,11 @@ export default {
     height 100%
     background #f5f5f5
     box-sizing border-box
+
+    .myorder-view {
+      height 100%
+    }
+
     .myorder-head {
       padding-top 30px
     }
@@ -266,6 +347,14 @@ export default {
       }
       .tabs-scroll {
         height 100%
+      }
+    }
+
+    .fuwu-order {
+      padding-top 120px
+      text-align center
+      span {
+        font-size 34px
       }
     }
 
@@ -311,7 +400,7 @@ export default {
             flex 1
             display flex
             justify-content flex-end
-            img {
+            span {
               display block
               width 49px
               height 40px
@@ -319,6 +408,10 @@ export default {
                 margin-left 50px
                 width 40px
               }
+            }
+            img {
+              display block
+              width 100%
             }
           }
         }
@@ -425,16 +518,40 @@ export default {
       a {
         display block
         font-weight bold
+        &.telAp {
+          padding-bottom 50px
+          color #FF6F00
+        }
       }
+      
       h4,a {
         margin 0 60px
         padding 20px 0
         border-bottom 2px solid #ececec
       }
+
+      h4 {
+        padding-bottom 50px
+      }
     }
 
     [class*='van-hairline']::after {
       position static
+    }
+
+    /*网络连接反馈组件 融溢图标加载 无数据组件*/ 
+    .ry-network {
+      position static
+    }
+
+    .myorder-loading {
+      img {
+        width 160px
+      }
+    }
+
+    .myOrder-empty {
+      padding-top 204px
     }
 }
 </style>

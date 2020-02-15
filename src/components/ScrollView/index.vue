@@ -92,8 +92,8 @@ export default {
 
     watch: {
         data() {
+            console.log(1234)
             this.$_onFinishLoadMore()
-            
             if(this.data.length >= this.total) {
                 this.isFinished = true
                 return
@@ -141,9 +141,10 @@ export default {
         },
         // 记录滚动条记录
         $_scrollTo(top) {
-            setTimeout(() => {
-                this.$refs.scrollView.scrollTo(0, top, true)
-            }, 80)
+            this.$refs.scrollView.scrollTo(0, top, false)
+            // setTimeout(() => {
+            //     this.$refs.scrollView.scrollTo(0, top, false)
+            // },55)
         }
     }
 }

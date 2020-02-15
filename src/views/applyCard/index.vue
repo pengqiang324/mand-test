@@ -323,7 +323,7 @@ export default {
             }
         },
 
-        noLogin() {
+        NoLogin() {
             const applyCode = '782rfi'
             const ParamsData = JSON.parse(window.sessionStorage.getItem('paramsData'))
 
@@ -384,7 +384,7 @@ export default {
                             tel: this.form.tel
                         })
                         if ( res3.data && res3.data.success ) {
-                            this.noLogin()
+                            this.NoLogin()
                         }
                     }  
                 } 
@@ -392,7 +392,7 @@ export default {
             } else {
                 // 本人申请
                 this.changeLoading()
-                
+                this.NoLogin()
             }
         }
     }

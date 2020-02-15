@@ -9,7 +9,7 @@ export default {
             showErrorIn: false, // 显示不知出错在哪组件
             isActive: false, // 点击显示按钮遮罩层
             loading: false, // 按钮加载图标控制
-            showloading: false // 融溢图标加载状态
+            showloading: false // 融溢图标加载 toast努力加载中状态 
         }
     },
 
@@ -17,16 +17,13 @@ export default {
         ...mapState({
             showNetwork: 'showNetwork',
             showError: 'showError',
+            scrollInfo: 'scrollInfo',
             status: (state) => state.shopOwner.status
         }),
         userStatus() {
             const status = window.localStorage.getItem('userStatus') ? JSON.parse(window.localStorage.getItem('userStatus')) : this.status
             return status
         }
-    },
-
-    mounted() {
-        this.bindScroll()
     },
 
     activated() {
@@ -94,6 +91,7 @@ export default {
         },
 
         showErrorTip(res) {
+            if (res.data.code && res.data.code == 10004) return // 用户不存在
             if (res.code == -404 && res.message.indexOf('401') == -1) { 
                 this.showNetWork = true // 浏览器返回的错误
                 return 

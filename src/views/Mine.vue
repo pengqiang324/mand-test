@@ -1,144 +1,154 @@
 <template>
   <div class="mine-box">
-      <ry-scroll-view
-        :bounce="false"
-      >
-        <div class="mine-info">
-            <div :class="['mine-top',{'mine-customer-active': isCustomer}]">
-                <div
-                  v-lazy:background-image="star ? bgImg : ''"
-                  class="mine-top-box lazyBg"
-                >
-                  <div class="mine-info-head">
-                    <div class="mine-head-top">
-                      <h2><img v-lazy="consumerData.headImage" alt=""></h2>
-                      <div class="mine-head-right">
-                        <h4><b>{{consumerData.name}}<font v-if="isCustomer">信用卡专员</font></b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
-                        <!-- 不是顾问状态显示 -->
-                        <div v-if="!isCustomer">
-                          <p class="mine-head-phone">{{consumerData.tel}}
-                            <span v-if="star">店主</span>
-                            <span v-if="!star">客户</span>
-                            <img 
-                              v-lazy="starImg"
-                              v-for="(item,index) in star"
-                              :key="index"
+      <template v-if="showNetWork">
+        <ry-result-network class="ry-network"/>
+      </template>
+      <template v-if="!showNetWork">
+        <ry-error-info v-if="showErrorIn"/>
+          <div class="mine-view" v-if="!showErrorIn">
+            <ry-loading v-if="showloading" class="courseList-loading"/>
+            <ry-scroll-view
+              v-show="!showloading"
+              :bounce="false"
+            >
+              <div class="mine-info">
+                  <div :class="['mine-top',{'mine-customer-active': isCustomer}]">
+                      <div
+                        v-lazy:background-image="star ? bgImg : ''"
+                        class="mine-top-box lazyBg"
+                      >
+                        <div class="mine-info-head">
+                          <div class="mine-head-top">
+                            <h2><img v-lazy="consumerData.headImage" alt=""></h2>
+                            <div class="mine-head-right">
+                              <h4><b>{{consumerData.name}}<font v-if="isCustomer">信用卡专员</font></b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
+                              <!-- 不是顾问状态显示 -->
+                              <div v-if="!isCustomer">
+                                <p class="mine-head-phone">{{consumerData.tel}}
+                                  <span v-if="star">店主</span>
+                                  <span v-if="!star">客户</span>
+                                  <img 
+                                    v-lazy="starImg"
+                                    v-for="(item,index) in star"
+                                    :key="index"
+                                  />
+                                </p>
+                                <p 
+                                  v-if="star"
+                                  class="mine-head-indenty"
+                                >
+                                  邀请码：{{consumerData.inviteCode}}
+                                  <span
+                                    v-clipboard:copy="consumerData.inviteCode"
+                                    v-clipboard:success="onCopy"
+                                    v-clipboard:error="onError"
+                                  >复制</span>
+                                </p>
+                                <!-- <p 
+                                  v-if="!star"
+                                  class="mine-get-indenty"
+                                  @click="toLearn"
+                                >
+                                  <span>获取我的邀请码</span>
+                                </p> -->
+                              </div>
+                              <!-- 不是顾问状态显示 -->
+                              <!-- 顾问状态显示 start -->
+                              <div v-if="isCustomer" class="mine-head-customer">专业：<span>3-50万信用卡私人定制</span></div>
+                              <!-- 顾问状态显示 end-->
+                            </div>
+                          </div>
+                          <div class="mine-head-bottom">
+                            <h3>可提现收入</h3>
+                            <h4>
+                                <md-icon
+                                  name="rmb"
+                                  size="xs"
+                                  class="mine-rmb"
+                                />
+                                <span>{{consumerData.usedAmount}}</span>
+                            </h4>
+                            <div class="mine-bottom-pri">
+                              <i>（总收入 {{consumerData.totalAmount}}元）</i>
+                              <div class="mine-bottom-btn">
+                                <div class="mine-pri-tx"><span>提现</span></div>
+                                <div class="mine-pri-mx"><span>明细</span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <!-- 店主显示内容且不是顾问状态 start -->
+                        <div 
+                          v-if="star && !isCustomer"
+                          class="mine-info-pri"
+                        >
+                          <div class="mine-info-pri-left">
+                            <h4>店主</h4>
+                            <p v-if="star === 1">您还需要销售20张会员卡可晋升为店主<img v-for="(item,index) in 2" :key="index" v-lazy="starImg"/></p>
+                            <p v-if="star === 2">您还需要培养5名店主<img v-lazy="starImg"/><img v-lazy="starImg"/>，会员卡总业绩还需销售750张晋升为店主<img v-for="(item,index) in 3" :key="index" v-lazy="starImg"/></p>
+                            <p v-if="star === 3">您可以申请加盟实体门店免加盟费免第一年服务费</p>
+                          </div>
+                          <div :class="['mine-info-pri-right', {'mine-info-on': star === 2}, {'mine-info-one': star === 1}]">
+                            <van-icon 
+                              name="arrow" 
+                              class="min-arrow"
                             />
-                          </p>
-                          <p 
-                            v-if="star"
-                            class="mine-head-indenty"
-                          >
-                            邀请码：{{consumerData.inviteCode}}
-                            <span
-                              v-clipboard:copy="consumerData.inviteCode"
-                              v-clipboard:success="onCopy"
-                              v-clipboard:error="onError"
-                            >复制</span>
-                          </p>
-                          <!-- <p 
-                            v-if="!star"
-                            class="mine-get-indenty"
-                            @click="toLearn"
-                          >
-                            <span>获取我的邀请码</span>
-                          </p> -->
+                          </div>
                         </div>
-                        <!-- 不是顾问状态显示 -->
-                        <!-- 顾问状态显示 start -->
-                        <div v-if="isCustomer" class="mine-head-customer">专业：<span>3-50万信用卡私人定制</span></div>
-                        <!-- 顾问状态显示 end-->
+                        <!-- 店主显示内容且不是顾问状态 end -->
                       </div>
-                    </div>
-                    <div class="mine-head-bottom">
-                      <h3>可提现收入</h3>
-                      <h4>
-                          <md-icon
-                            name="rmb"
-                            size="xs"
-                            class="mine-rmb"
-                          />
-                          <span>{{consumerData.usedAmount}}</span>
-                      </h4>
-                      <div class="mine-bottom-pri">
-                        <i>（总收入 {{consumerData.totalAmount}}元）</i>
-                        <div class="mine-bottom-btn">
-                          <div class="mine-pri-tx"><span>提现</span></div>
-                          <div class="mine-pri-mx"><span>明细</span></div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
-                  
-                  <!-- 店主显示内容且不是顾问状态 start -->
-                  <div 
-                    v-if="star && !isCustomer"
-                    class="mine-info-pri"
-                  >
-                    <div class="mine-info-pri-left">
-                      <h4>店主</h4>
-                      <p v-if="star === 1">您还需要销售20张会员卡可晋升为店主<img v-for="(item,index) in 2" :key="index" v-lazy="starImg"/></p>
-                      <p v-if="star === 2">您还需要培养5名店主<img v-lazy="starImg"/><img v-lazy="starImg"/>，会员卡总业绩还需销售750张晋升为店主<img v-for="(item,index) in 3" :key="index" v-lazy="starImg"/></p>
-                      <p v-if="star === 3">您可以申请加盟实体门店免加盟费免第一年服务费</p>
-                    </div>
-                    <div :class="['mine-info-pri-right', {'mine-info-on': star === 2}, {'mine-info-one': star === 1}]">
-                      <van-icon 
-                        name="arrow" 
-                        class="min-arrow"
-                      />
-                    </div>
+
+                  <!-- 顾问状态显示 start -->
+                  <div v-if="isCustomer" class="mine-customer-info">
+                      <p>回复率：<span>100%</span></p>
+                      <p>咨询人数：<span>76</span></p>
+                      <p>好评率：<span>100%</span></p>
                   </div>
-                  <!-- 店主显示内容且不是顾问状态 end -->
-                </div>
-            </div>
+                  <!-- 顾问状态显示 end -->
 
-            <!-- 顾问状态显示 start -->
-            <div v-if="isCustomer" class="mine-customer-info">
-                <p>回复率：<span>100%</span></p>
-                <p>咨询人数：<span>76</span></p>
-                <p>好评率：<span>100%</span></p>
-            </div>
-            <!-- 顾问状态显示 end -->
-
-            <div class="mine-list-box">
-              <div 
-                v-for="(item,index) in list"
-                :key="index"
-                class="mine-cell-list"
-              >
-                <van-cell 
-                  v-for="(value,key) in item.data"
-                  :key="key"
-                  :to="value.url ? value.url : ''"
-                  is-link
-                  class="mine-cell"
-                >
-                  <template slot="title">
-                    <p>
-                      <img v-lazy="value.icon" alt="">
-                      <span v-if="value.isshow">2</span>
-                    </p>
-                    <span class="custom-title">{{value.title}}</span>
-                    <i 
-                      v-if="index === 1 && key === 1"
-                      class="mine-cell-icon"
+                  <div class="mine-list-box">
+                    <div 
+                      v-for="(item,index) in list"
+                      :key="index"
+                      class="mine-cell-list"
                     >
-                      必看
-                    </i>
+                      <van-cell 
+                        v-for="(value,key) in item.data"
+                        :key="key"
+                        :to="value.url ? value.url : ''"
+                        is-link
+                        class="mine-cell"
+                      >
+                        <template slot="title">
+                          <p>
+                            <img v-lazy="value.icon" alt="">
+                            <span v-if="value.isshow">2</span>
+                          </p>
+                          <span class="custom-title">{{value.title}}</span>
+                          <i 
+                            v-if="index === 1 && key === 1"
+                            class="mine-cell-icon"
+                          >
+                            必看
+                          </i>
+                        </template>
+                      </van-cell>
+                    </div>
+                  </div>
+              </div>
+              <div class="mine-cell-list">
+                <van-cell>
+                  <!-- 使用 title 插槽来自定义标题 -->
+                  <template slot="title">
+                    <div role="button" class="ry-logout" @click="loginOut">清除缓存</div>
                   </template>
                 </van-cell>
               </div>
-            </div>
-        </div>
-        <div class="mine-cell-list">
-          <van-cell>
-            <!-- 使用 title 插槽来自定义标题 -->
-            <template slot="title">
-              <div role="button" class="ry-logout" @click="loginOut">清除缓存</div>
-            </template>
-          </van-cell>
-        </div>
-      </ry-scroll-view>
+            </ry-scroll-view>
+          </div>
+      </template>
   </div>
 </template>
 
@@ -147,6 +157,7 @@ import { mapState } from 'vuex'
 import { logout } from '@/api/user/user'
 import { Icon } from 'vant'
 import { refreshUserInfo } from '@/api/user/user'
+import mixins from '@/libs/mixins'
 
 export default {
     name: 'ry-mine',
@@ -154,6 +165,8 @@ export default {
     components: {
       [Icon.name]: Icon
     },
+
+    mixins: [mixins],
 
     data() {
       const txImg = require('../assets/images/ry_logo@2x.png')
@@ -312,13 +325,20 @@ export default {
     async activated() {
       // 是否刷新用户数据
       if (this.refreshUserInfo) {
+        this.$toast.loading({
+          message: '更新中...',
+          forbidClick: true,
+          duration: 0
+        })
         await this.initData()
         this.$store.commit('shopOwner/REFRESH_USER_INFO', false)
+        this.$toast.clear()
       }
     },
 
     methods: {
       async initData() {
+        if (!this.refreshUserInfo) this.showloading = true
         return refreshUserInfo()
         .then((res) => {
           const { success, data } = res.data
@@ -329,7 +349,12 @@ export default {
                 window.localStorage.setItem('userStatus', 1)
                 this.$store.dispatch('shopOwner/updateStatus', 1) 
               }
+              this.hideErrorTip()
+              if (!this.refreshUserInfo) this.showloading = false
               return Promise.resolve()
+          } else {
+              if (!this.refreshUserInfo) this.showloading = false
+              this.showErrorTip(res)
           }
         })
       },
@@ -370,6 +395,15 @@ export default {
   .mine-box {
     setPadding()
     background #f5f5f5
+    .courseList-loading {
+      img {
+        width 160px
+      }
+    }
+  }
+
+  .mine-view {
+    height 100%
   }
 
   .mine-font {

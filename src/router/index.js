@@ -261,6 +261,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "expect" */ '../views/MyOrder'),
     meta: {
       index: 3,
+      keepAlive: true,
       title: '会员卡订单'
     }
   },
