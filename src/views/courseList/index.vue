@@ -79,6 +79,7 @@
 import { getAllByTypeId } from '@/api/business/business'
 import mixins from '@/libs/mixins'
 import { Dialog } from 'vant'
+import { mapState } from 'vuex'
 
 export default {
     name: 'ry-courseList',
@@ -104,16 +105,30 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState('business', ['isRefreshBusinessInfo'])
+    },
+
     created() {
-        this.initData()
+        if (!this.isRefreshBusinessInfo) {
+            this.initData()
+        }
+    },
+
+    activated() {
+        if (this.isRefreshBusinessInfo) {
+            this.videoData = []
+            this.initData()
+        }
     },
 
     methods: {
         async initData() {
             const { id } = this.$route.query
             this.id = id
+            this.page = 1
             const params = {
-                vtId: id,
+                vtId: this.id,
                 page: this.page,
                 size: this.size
             }
@@ -123,11 +138,13 @@ export default {
             if (success) {
                 this.videoData = this.videoData.concat(queryResult.list)
                 this.total = queryResult.total
-                this.showloading = false
                 this.hideErrorTip()
             } else {
                 this.showErrorTip(res)
             }
+
+            this.$store.dispatch('business/REFRESH_BUSINESS_STATUS', false)
+            this.showloading = false
         },
 
         async pullUpLoad() {

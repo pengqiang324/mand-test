@@ -5,12 +5,17 @@
         v-model="searchValue"
         shape="round"
         background="#f5f5f5"
-        placeholder="请输入手机号码"
+        placeholder="请输入姓名/手机号码"
         left-icon=""
-        right-icon="search"
         class="myorder-search"
         @search="onSearch"
-      />
+      >
+        <van-icon 
+          name="search" 
+          slot="right-icon" 
+          @click="onSearch"
+        />
+      </van-search>
     </div>
     <div class="myorder-tabs">
       <van-tabs 
@@ -48,6 +53,7 @@
                   title-inactive-color="#000"
                   line-width="16.6%"
                   :border="false"
+                  @click="cardChange"
                 >
                   <van-tab 
                     v-for="(value,key) in tabList2"
@@ -94,21 +100,23 @@
                       >
                         <div class="order-user">
                           <h2>
-                            <span v-lazy:background-image="txImg" ></span>
-                            <i>周勇</i>
+                            <span v-lazy:background-image="item.headImage" ></span>
+                            <i>{{item.name}}</i>
                           </h2>
                           <p>
                             <span 
-                              v-clipboard:copy="weixinNum"
+                              v-if="item.memberLevel !== 'A'"
+                              v-clipboard:copy="item.wxNo"
                               v-clipboard:success="onCopyWeixin"
                               v-clipboard:error="onError"
+                              @click="setWxNo(item.wxNo)"
                             >
                               <img 
-                                :src="weixinImg"
+                                :src="item.wxNo ? weixinImg : weixinImgOffline"
                               >
                             </span>
                             <span
-                              @click="showTelDialog"
+                              @click="showTelDialog(item.tel)"
                             >
                               <img :src="telImg" alt="">
                             </span>
@@ -116,13 +124,11 @@
                         </div>
                         <div class="order-pri">
                           <div class="order-member">
-                            <h3>购买会员卡</h3>
-                            <span>开通店主</span>
+                            <h3>{{active ? item.cardName : '购买会员卡'}}</h3>
+                            <span>{{statusMessage}}</span>
                           </div>
-                          <div class="order-time">加入时间：2019-09-23  17:45:28</div>
-                        </div>
-                        <div class="order-proccess">
-                          <p class="proccess-btn">进度查询</p>
+                          <div class="order-time" v-show="item.recommendTime">加入时间：{{item.recommendTime}}</div>
+                          <div class="order-time" v-show="!item.recommendTime">加入时间：{{ item.applyTime*1000 | msgDateFormat}}</div>
                         </div>
                       </li>
                     </ul>
@@ -181,8 +187,9 @@
 </template>
 
 <script>
-import { Search, Dialog } from 'vant'
+import { Search, Dialog, Icon } from 'vant'
 import mixins from '@/libs/mixins'
+import { getOrders, creditOrder } from '@/api/myOrder/myOrder'
 
 export default {
     name: 'ry-myOrder',
@@ -190,12 +197,38 @@ export default {
     mixins: [mixins],
 
     components: {
+      [Icon.name]: Icon,
       [Search.name]: Search,
       [Dialog.Component.name]: Dialog.Component
     },
 
+    filters: {
+        msgDateFormat: function(msg,pattern=''){
+            // 将字符串转换为Date类型
+            var mt = new Date(msg)
+            // 获取年份
+            var y = mt.getFullYear()
+            // 获取月份 从0开始 
+            var m = (mt.getMonth()+1).toString().padStart(2,"0")
+            // 获取天数
+            var d = mt.getDate();
+            if(pattern === 'yyyy-mm-dd'){
+                return y+"-"+m+"-"+d
+            }
+            // 获取小时
+            var h = mt.getHours().toString().padStart(2,"0")
+            // 获取分钟
+            var mi = mt.getMinutes().toString().padStart(2,"0")
+            // 获取秒
+            var s = mt.getSeconds().toString().padStart(2,"0")
+            // 拼接为我们需要的各式
+            return y+"-"+m+"-"+d+" "+h+":"+mi+":"+s
+        }
+    },
+
     data() {
       const weixinImg = require('@/assets/images/myOrder/weixin.png')
+      const weixinImgOffline = require('@/assets/images/myOrder/weixin-offline.png')
       const weixinImg2 = require('@/assets/images/myOrder/weixin02.png')
       const telImg = require('@/assets/images/myOrder/tel.png')
       const telImg2 = require('@/assets/images/myOrder/tel02.png')
@@ -203,17 +236,22 @@ export default {
       return {
         weixinImg,
         weixinImg2,
+        weixinImgOffline,
         telImg,
         telImg2,
         txImg,
         showSocket: false,
         showCancel: true,
         showConfirm: true,
+        searchField: '',
         searchValue: '',
         weixinNum: 'pq17773191626',
         iphone: '17773191626',
         btnText: '去黏贴',
         btnColor: '#FF6F00',
+        statusMessage: '开通店主',
+        orderNum: 0, // 会员卡订单
+        applyStatus: 8, // 申卡贷款查询 8 待激活
         tabsHeight1: 0,
         tabsHeight2: 0,
         setHeight: 0,
@@ -221,10 +259,10 @@ export default {
         active2: 2,
         page: 1,
         size: 5,
-        total: 2,
+        total: 0,
         tabList1: ['会员卡订单','服务订单','申卡贷款订单'],
         tabList2: ['待查询','待再查','待激活','已完成','未通过','失效'],
-        data: [1,2]
+        data: []
       }
     },
 
@@ -247,11 +285,59 @@ export default {
       }
     },
 
+    created() {
+      // 初始化 会员卡订单
+      this.getData()
+    },
+
     mounted() {
       this.initHeight()
     },
 
     methods: {
+      getData() {
+        this.page = 1 
+        let paramsData = {}
+        switch(this.active) {
+          case 0:
+            paramsData = {
+              page: this.page,
+              size: this.size,
+              searchField: this.searchField
+            }
+            this.showloading = true
+            getOrders(paramsData)
+            .then((res) => {
+              const { success, queryResult } = res.data
+              if (success) {
+                this.total = queryResult.total
+                this.data = queryResult.list
+              }
+              this.showloading = false
+            })
+            break
+          case 1:
+            break
+          default:
+            paramsData = {
+              page: this.page,
+              size: this.size,
+              applyStatus: this.applyStatus,
+              searchField: this.searchField
+            }
+            this.showloading = true
+            creditOrder(paramsData)
+            .then((res) => {
+              const { success, queryResult } = res.data
+              if (success) {
+                this.total = queryResult.total
+                this.data = queryResult.list
+              }
+              this.showloading = false
+            })
+        }
+      },
+
       initHeight() {
         this.$nextTick(() => {
           const bodyHeight = document.body.offsetHeight
@@ -267,21 +353,118 @@ export default {
         document.querySelector(`.tabs-scroll${index}`).style.height = this.setHeight - this.tabsHeight1 - this.tabsHeight2  + 'px'
       },
 
-      onSearch(value) {
-        console.log(value)
+      setWxNo(wxNo) {
+        if (!wxNo) return
+        this.weixinNum = wxNo
       },
 
+      /* 搜索 */
+      onSearch() {
+        this.searchField = this.searchValue
+        switch(this.active) {
+          case 0:
+            this.getData()
+            break
+          case 1:
+            break
+          default:
+            this.getData()
+        }
+      },
+
+      /* 加载更多 */ 
       loadMore() {
+        this.page ++
+        var paramsData = {}
+        switch(this.active) {
+          case 0:
+            paramsData = {
+              page: this.page,
+              size: this.size,
+              searchField: this.searchField
+            }
+            getOrders(paramsData)
+            .then((res) => {
+              const { success, queryResult } = res.data
+              if (success) {
+                this.data = this.data.concat(queryResult.list)
+              }
+            })
+            break;
+          case 1:
+            break;
+          default:
+            paramsData = {
+              page: this.page,
+              size: this.size,
+              applyStatus: this.applyStatus,
+              searchField: this.searchField
+            }
+            creditOrder(paramsData)
+            .then((res) => {
+              const { success, queryResult } = res.data
+              if (success) {
+                this.data = this.data.concat(queryResult.list)
+              }
+            })
+        }
       },
 
+      // 会员卡订单 服务订单 申卡贷款订单 tabs切换
       activeChange(index,name) {
         document.title = name
+        /* 清空搜索参数 searchField */ 
+        this.searchField = ''
+        this.searchValue = ''
+        this.page = 1
+        switch(index) {
+          case 0:
+            this.statusMessage = '开通店主'
+            break;
+          case 1:
+            this.statusMessage = '已完成'
+            this.data = []
+            break;
+          default:
+            this.statusMessage = '待激活'
+        }
+        this.getData()
       },
 
-      showTelDialog() {
+      // 申卡贷款订单 tabs切换
+      cardChange(index,name) {
+        this.statusMessage = name
+        /* 清空搜索参数 searchField */ 
+        this.searchField = ''
+        this.searchValue = ''
+        this.page = 1
+        switch(name) {
+          case '待查询':
+            this.applyStatus = 0
+            break
+          case '待再查':
+            this.applyStatus = 1
+            break
+          case '待激活':
+            this.applyStatus = 8
+            break
+          case '已完成':
+            this.applyStatus = 2
+            break
+          case '未通过':
+            this.applyStatus = 3
+            break
+          default:
+            this.applyStatus = 4
+        }
+        this.getData()
+      },
+
+      showTelDialog(tel) {
         this.showCancel = false
         this.showConfirm = false
         this.showSocket = true
+        this.iphone = tel
       },
 
       onCopy() {
@@ -366,6 +549,9 @@ export default {
         background #fff
         border-radius 10px
         box-shadow:0px 2px 14px rgba(0,0,0,0.05)
+        &:last-child {
+          margin-bottom 0
+        }
         .order-user {
           display flex
           justify-content space-between
@@ -545,8 +731,9 @@ export default {
     }
 
     .myorder-loading {
+      align-items flex-start
       img {
-        width 160px
+        width 140px
       }
     }
 

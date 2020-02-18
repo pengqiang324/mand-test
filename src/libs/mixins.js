@@ -4,7 +4,6 @@ import { mapState } from 'vuex'
 export default {
     data() {
         return {
-            scrollTop: 0,
             showNetWork: false, // 显示网络连接出错组件
             showErrorIn: false, // 显示不知出错在哪组件
             isActive: false, // 点击显示按钮遮罩层
@@ -26,17 +25,7 @@ export default {
         }
     },
 
-    activated() {
-        this.bindScroll()
-        this.$refs.scroll && this.$refs.scroll.$_scrollTo(this.scrollTop)  // 滚动元素需绑定ref=scroll
-    },
-
-    deactivated() {
-        this.$off('scrolled')
-    },
-
     beforeDestroy() {
-        this.$off('scrolled')
         
         if (document.addEventListener) {
             document.removeEventListener('WeixinJSBridgeReady', this.onBridgeReady, false)
@@ -74,16 +63,6 @@ export default {
                 this.$store.dispatch('showDiaLog', true)
             }
         },
-
-        scroll({ scrollTop }) {
-            this.$emit('scrolled', scrollTop)
-        },
-    
-        bindScroll() {
-            this.$on('scrolled', (top) => {
-                this.scrollTop = top
-            })
-        },
         
         hideErrorTip() {
             if (this.showNetWork) this.showNetWork = false
@@ -117,5 +96,9 @@ export default {
             if (this.loading) return  // 防止用户多次请求
             this.loading = true
         },
+
+        refreshflower() {
+            this.$refs.scroll.reflowScroller() // 刷新滚轮内容高度
+        }
     }
 }

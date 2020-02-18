@@ -1,6 +1,7 @@
 <template>
   <div class="shopOwner-box">
         <ry-scroll-view
+            ref="scroll"
             :bounce="false"
         >
             <div class="shopOwner-info">
@@ -169,6 +170,7 @@ export default {
 
         changeUp() {
             this.isUp = !this.isUp
+            this.refreshflower()
         },
 
         paymentNext() {

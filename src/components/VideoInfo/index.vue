@@ -68,7 +68,8 @@ export default {
         return {
             playerId: "aliplayer_" + Math.random().toString(36).substr(2),
             playStyle: '',
-            firstFullscreen: false
+            firstFullscreen: false,
+            player: null
         }
     },
 
@@ -76,9 +77,20 @@ export default {
         this.aliPlayer()
     },
 
+    beforeRouteEnter() {
+        this.player = null //销毁Aliplayer实例对象
+    },
+
     methods: {
         aliPlayer() {
-            const player = new window.Aliplayer({
+            const that = this
+            const getTime = function (memoryVid) {
+                /* return返回的是自定义起播时间  */
+                const TIME = localStorage.getItem(`memory_time_${memoryVid}`)
+                return TIME
+            }
+
+            this.player = new window.Aliplayer({
                     id: this.playerId,
                     cover: this.cover,
                     vid: this.vid,
@@ -90,12 +102,100 @@ export default {
                     playsinline: true,
                     preload: true,
                     useH5Prism: true,
-                    controlBarVisibility: 'click'
+                    format: 'mp4',
+                    mediaType:'video',
+                    qualitySort:'desc',
+                    controlBarVisibility: 'click',
+                    definition:'FD,LD,SD,HD,OD', // 清晰度 FD（流畅）LD（标清）SD（高清）HD（超清）OD（原画）
+                    defaultDefinition: 'FD',
+                    showBarTime: 50000,
+                    skinLayout: [
+                        {
+                            "name": "bigPlayButton",
+                            "align": "cc"
+                        },
+                        {
+                            "name": "H5Loading",
+                            "align": "cc"
+                        },
+                        {
+                            "name": "errorDisplay",
+                            "align": "tlabs",
+                            "x": 0,
+                            "y": 0
+                        },
+                        {
+                            "name": "infoDisplay"
+                        },
+                        {
+                            "name": "tooltip",
+                            "align": "blabs",
+                            "x": 0,
+                            "y": 56
+                        },
+                        {
+                            "name": "thumbnail"
+                        },
+                        {
+                            "name": "controlBar",
+                            "align": "blabs",
+                            "x": 0,
+                            "y": 0,
+                            "children": [
+                                {
+                                    "name": "progress",
+                                    "align": "blabs",
+                                    "x": 0,
+                                    "y": 44
+                                },
+                                {
+                                    "name": "playButton",
+                                    "align": "tl",
+                                    "x": 15,
+                                    "y": 12
+                                },
+                                {
+                                    "name": "timeDisplay",
+                                    "align": "tl",
+                                    "x": 10,
+                                    "y": 5
+                                },
+                                {
+                                    "name": "fullScreenButton",
+                                    "align": "tr",
+                                    "x": 10,
+                                    "y": 12
+                                },
+                                {
+                                    name:"setting", 
+                                    align:"tr",
+                                    x:15, 
+                                    y:12
+                                },
+                            ]
+                        }
+                    ],
+                    components: [
+                        {
+                            /* 倍速播放 */ 
+                            name: 'RateComponent',
+                            type: window.AliPlayerComponent.RateComponent
+                        },
+                        {
+                            /* 记忆播放 */ 
+                            name: 'MemoryPlayComponent',
+                            type: window.AliPlayerComponent.MemoryPlayComponent,
+                            args: [false,getTime]
+                        }
+                    ]
                 }, function (player) {
-                    console.log("The player is created", player)
+
+                    player.on('timeupdate', function () {
+                        // 存储 记忆播放时间
+                        localStorage.setItem(`memory_time_${that.vid}`, player.getCurrentTime())
+                    })
                 }
             )
-            console.log(player)
         }
     }
 }
@@ -105,6 +205,60 @@ export default {
 .video-scroll {
     .scroll-view-container {
         height auto !important
+    }
+}
+.prism-player .prism-big-play-btn {
+    width 54Px
+    height 54Px
+    .outter {
+        width 54Px
+        height 54Px
+    }
+}
+.prism-player .prism-progress {
+    height 3Px
+}
+.prism-player .prism-progress .prism-progress-played {
+    background #FF6F00
+}
+
+.prism-player .quality-components {
+    top 2Px
+    margin-right 10Px
+}
+.prism-player .rate-components  {
+    top 1Px
+    margin-right 10Px
+}
+.prism-player .prism-liveshift-progress .cursor-hover, 
+.prism-player .prism-progress .cursor-hover {
+    top -7Px !important
+}
+.prism-player.prism-fullscreen .prism-liveshift-progress .cursor-hover, 
+.prism-player.prism-fullscreen .prism-progress .cursor-hover {
+    top -7Px !important
+}
+
+.prism-player .current-quality {
+    width auto
+}
+
+.prism-player .quality-list {
+    left -9Px 
+}
+
+.prism-player.prism-fullscreen .quality-list {
+    left -22Px !important
+}
+
+.prism-player .rate-list li.current
+.prism-player .prism-setting-selector li.current {
+    color #FF6F00 !important
+}
+
+.prism-player .prism-setting-selector li.current {
+    &:before {
+        border-left-color #FF6F00 !important
     }
 }
 </style>

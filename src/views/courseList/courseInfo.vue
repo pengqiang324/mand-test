@@ -1,7 +1,8 @@
 <template>
-  <div class="businessInfo-box">
+  <div class="businessInfo-box" v-cloak>
         <ry-scroll-view
             :bounce="false"
+            :data="videoData"
             class="businessInfo-scroll"
         >
             <ry-toast-loading :show="showloading"/>
@@ -82,9 +83,7 @@ export default {
         height 100%
     }
 }
-</style>
 
-<style lang="stylus" scoped>
 .businessInfo-box {
     position absolute
     top 0
@@ -98,6 +97,9 @@ export default {
    padding 0 40px
    font-size 30px
    box-sizing border-box
+   img {
+       max-width 100%
+   }
 }
 
 .businessInfo-js {
@@ -158,5 +160,9 @@ export default {
             color #707070
         }
     }
+}
+
+[v-cloak] {
+  display none
 }
 </style>

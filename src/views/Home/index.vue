@@ -10,7 +10,7 @@
             <ry-scroll-view 
               ref="scroll" 
               :bounce="false"
-              @scroll="scroll"
+              :data="bankList"
             >
               <ry-banner-head :data="imgData"/>
               <div class="card-box">
@@ -35,7 +35,7 @@
                   </div>
                 </div>
               </div>
-              <div
+              <!-- <div
                 v-if="!isShopkeeper"
                 v-lazy:background-image="bgImg1"
                 class="ry-banner"
@@ -48,7 +48,7 @@
                 class="ry-banner"
                 @click="toBusiness"
               >
-              </div>
+              </div> -->
               <div class="bank-list">
                 <h1 class="tj-bank">推荐银行</h1>
                 <div class="bank-loading">
@@ -104,7 +104,6 @@
       <van-action-sheet 
         v-model="show" 
         description="申请信用卡"
-        :round="false"
         :actions="actions"
         @select="onSelect"
         @closed="onClose" 
@@ -381,8 +380,9 @@ export default {
 }
 
 .card-box {
-  padding 0 40px 8px
+  padding 0 0 8px
   .swiper-icon {
+    margin 0 40px
     padding-bottom 38px
     .swiper-list {
       h2 {
@@ -417,11 +417,12 @@ export default {
 
 .ry-tt {
   display flex
-  padding  0 22px 0 30px
+  margin-bottom 50px
+  padding  0 40px
   height 56px
   line-height 28px
-  border-radius 28px
   background #fff
+  box-shadow:0px 6px 12px rgba(0,0,0,0.08)
   box-sizing border-box
   span {
     display flex
@@ -601,13 +602,13 @@ export default {
           display flex
           justify-content center
           align-items baseline
-          line-height 24px
-          font-size 24px
+          font-size 30px
           .rj-sq-icon {
-            font-size 24px
+            font-size 28px
+            font-weight bold
           }
           b {
-            font-size 32px
+            font-size 30px
           }
         }
       }
@@ -623,6 +624,12 @@ export default {
         letter-spacing 2px
       }
     }
+  }
+}
+
+.van-popup--bottom {
+  &.van-popup--round {
+    border-radius 30px 30px 0 0
   }
 }
 

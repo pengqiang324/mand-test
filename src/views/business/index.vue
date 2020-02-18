@@ -8,8 +8,7 @@
             <ry-scroll-view
                 v-show="!showErrorIn"
                 :bounce="false"
-                ref="scroll"
-                @scroll="scroll"
+                :data="subjectData"
                 class="business-scroll"
             >
                 <ry-toast-loading :show="showloading"/>
@@ -237,6 +236,7 @@ export default {
             const res = await this.updateView(id)
             const { success } = res.data
             if (success) {
+                await this.$store.dispatch('business/REFRESH_BUSINESS_STATUS', true)
                 this.$router.push({
                     path: '/courseList',
                     query: {

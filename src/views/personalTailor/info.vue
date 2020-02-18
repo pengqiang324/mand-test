@@ -12,8 +12,8 @@
                 <ry-toast-loading :show="showloading"/>
                 <ry-scroll-view 
                     ref="scroll"
+                    :data="data"
                     :bounce="false"
-                    @scroll="scroll"
                 >
                     <div class="personalInfo-top">
                         <div class="personalInfo-head">
@@ -325,6 +325,7 @@ export default {
                 this.btnInfoTitle = '收起'
             } 
             this.isInfoUp = !this.isInfoUp
+            this.refreshflower() // 重新初始化滚轮高度
         },
 
         init() {

@@ -32,7 +32,7 @@
         slot="more"
         :is-finished="isFinished"
         loading-text="玩命加载中..."
-        finished-text="已加载全部内容"
+        finished-text="已显示全部内容"
       >
       </md-scroll-view-more>
     </md-scroll-view>
@@ -66,9 +66,9 @@ export default {
         },
 
         data: {
-            type: Array,
+            type: [Array,Object],
             default: () => {
-                return []
+                return [] 
             }
         },
 
@@ -86,29 +86,24 @@ export default {
     data() {
         return {
             isFinished: false,
-            autoReflow: true
+            autoReflow: false
         }
     },
 
     watch: {
         data() {
-            console.log(1234)
-            this.$_onFinishLoadMore()
-            if(this.data.length >= this.total) {
-                this.isFinished = true
-                return
+            if (this.showRefresh || this.showMore) {
+                if(this.data.length >= this.total) {
+                    this.isFinished = true
+                    this.$refs.scrollView.reflowScroller() // 数据改变时刷新内容高度
+                } else {
+                    this.isFinished = false
+                    this.$_onFinishLoadMore()
+                }
             } else {
-                this.isFinished = false
+                this.$refs.scrollView.reflowScroller() // 初始化滚轮高度
             }
         }
-    },
-
-    deactived() {
-        this.autoReflow = false
-    },
-
-    beforeDestroy() {
-        this.autoReflow = false
     },
 
     methods: {
@@ -139,12 +134,9 @@ export default {
         $_onScroll(payload) {
             this.$emit('scroll', payload)
         },
-        // 记录滚动条记录
-        $_scrollTo(top) {
-            this.$refs.scrollView.scrollTo(0, top, false)
-            // setTimeout(() => {
-            //     this.$refs.scrollView.scrollTo(0, top, false)
-            // },55)
+
+        reflowScroller() {
+            this.$refs.scrollView.reflowScroller() // 刷新内容高度
         }
     }
 }

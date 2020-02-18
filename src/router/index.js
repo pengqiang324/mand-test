@@ -127,6 +127,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "courseList" */ '../views/courseList'),
     meta: {
       index: 3,
+      keepAlive: true,
       hasFooter: false,
       title: '课程'
     }
@@ -249,7 +250,7 @@ const routes = [
   {
     path: '/applyCard',
     name: 'ry-applyCard',
-    component: () => import(/* webpackChunkName: "expect" */ '../views/applyCard'),
+    component: () => import(/* webpackChunkName: "applyCard" */ '../views/applyCard'),
     meta: {
       index: 2,
       title: '申请信用卡'
@@ -258,11 +259,21 @@ const routes = [
   {
     path: '/myOrder',
     name: 'ry-myOrder',
-    component: () => import(/* webpackChunkName: "expect" */ '../views/MyOrder'),
+    component: () => import(/* webpackChunkName: "MyOrder" */ '../views/MyOrder'),
     meta: {
       index: 3,
       keepAlive: true,
       title: '会员卡订单'
+    }
+  },
+  {
+    path: '/cashWithdrawal',
+    name: 'ry-cashWithdrawal',
+    component: () => import(/* webpackChunkName: "cashWithdrawal" */ '../views/cashWithdrawal'),
+    meta: {
+      index: 3,
+      keepAlive: true,
+      title: '银行卡'
     }
   },
   {

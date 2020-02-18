@@ -1,6 +1,7 @@
 <template>
   <div class="learnCourse-box">
         <ry-scroll-view
+            ref="scroll"
             :bounce="false"
             class="learnCourse-scroll"
         >
@@ -168,6 +169,7 @@ export default {
 
         changeDown(index) {
             this.data[index].isUp = !this.data[index].isUp
+            this.refreshflower()
         },
 
         touchafter() {

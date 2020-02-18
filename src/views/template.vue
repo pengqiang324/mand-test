@@ -7,16 +7,13 @@
           <ry-error-info v-if="showErrorIn"/>
           <div class="home-box" v-if="!showErrorIn">
               <ry-loading v-if="showloading" class="courseList-loading"/>
-              <ry-scroll
+              <ry-scroll-view
                   v-show="!showloading"
-                  :total="total"
-                  :bounce="bounce"
+                  :bounce="false"
                   :data="data"
-                  :scrollbar="true"
-                  :pullUpLoad="true"
-                  @pullingUp="pullUpLoad"
               >
-              </ry-scroll>
+                <div class=""></div>
+              </ry-scroll-view>
           </div>
       </template>
   </div>
