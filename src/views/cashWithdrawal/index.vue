@@ -6,30 +6,36 @@
       <template v-if="!showNetWork">
           <ry-error-info v-if="showErrorIn"/>
           <div class="cashWithdrawal-content" v-if="!showErrorIn">
-              <ry-loading v-if="showloading"/>
               <ry-scroll-view
-                  v-show="!showloading"
                   :bounce="false"
                   :data="data"
               >
                 <div class="cashWithdrawal-list">
-                    <ul>
+                    <van-loading 
+                        v-if="showloading"
+                        color="#FF6F00"
+                        class="cashWithdrawal-loading"
+                    />
+                    <ul v-if="!showloading">
                         <li
-                            v-for="(item,index) in 3"
+                            v-for="(item,index) in data"
                             :key="index"
                             :style="{'background': (index%2 == 1) ? '#E88F36': '#CE5050'}"
                         >
-                            <h2>招商银行</h2>
-                            <h3>储蓄银行</h3>
+                            <h2>{{item.bankName}}</h2>
+                            <h3>{{item.bankTypeName}}</h3>
                             <p>
                                 <span>****</span>
                                 <span>****</span>
                                 <span>****</span>
-                                <span>{{ '6222600260001072568' | bankNum }}</span>
+                                <span>{{ item.bankNumber | bankNum }}</span>
                             </p>
                         </li>
                     </ul>
-                    <div class="cashWithdrawal-addBank">
+                    <div 
+                        class="cashWithdrawal-addBank"
+                        @click="toAddBank"
+                    >
                         <van-icon 
                             name="plus"
                             class="addBank-plus" 
@@ -46,6 +52,8 @@
 <script>
 import { Icon } from 'vant'
 import mixins from '@/libs/mixins'
+import { getByMemberId } from '@/api/bankCash/bankCash'
+import { mapState } from 'vuex'
 
 export default {
     name: 'ry-cashWithdrawal',
@@ -62,16 +70,64 @@ export default {
         }
     },
 
+    computed: {
+        ...mapState('cashBank', ['isRefreshBankInfo'])
+    },
+
+    created() {
+        this.getBankList()
+    },
+
+    activated() {
+        if (this.isRefreshBankInfo) {
+            console.log(124)
+            this.getBankList()
+        }
+    },
+
     filters: {
         bankNum: (num) => {
-            const BANK_NUM = num.substr(-4,4)
+            console.log(num)
+            const BANK_NUM = num.slice(-4)
             return BANK_NUM
+        }
+    },
+
+    methods: {
+        getBankList() {
+            this.showloading = true
+            getByMemberId()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    this.data = data
+                    if (this.isRefreshBankInfo) this.$store.dispatch('cashBank/refresh_bank_info', false)
+                    this.hideErrorTip()
+                } else {
+                    this.showErrorTip()
+                }
+                this.showloading = false
+            })
+        },
+
+        /* 进入添加银行卡 */ 
+        toAddBank() {
+            this.$router.push({
+                path: '/addBank'
+            })
         }
     }
 }
 </script>
 
 <style lang="stylus">
+.cashWithdrawal-loading {
+    display flex
+    justify-content center
+    align-items center
+    padding 60px 0
+}
+
 .cashWithdrawal-box {
     height 100%
     background #f5f5f5

@@ -108,7 +108,7 @@ export default {
                     controlBarVisibility: 'click',
                     definition:'FD,LD,SD,HD,OD', // 清晰度 FD（流畅）LD（标清）SD（高清）HD（超清）OD（原画）
                     defaultDefinition: 'FD',
-                    showBarTime: 50000,
+                    showBarTime: 5000,
                     skinLayout: [
                         {
                             "name": "bigPlayButton",

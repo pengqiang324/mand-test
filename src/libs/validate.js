@@ -64,3 +64,25 @@ export const weiXin = function(value) {
     return result
   }
 }
+
+
+/* 校验银行卡号 */
+export const bankCard = function(value) {
+  if (!value) return
+  const cardNum = value.trim()
+  const reg = /^([1-9]{1})(\d{15}|\d{18})$/
+  let result = {}
+  if (cardNum && !reg.test(cardNum)) {
+    result = {
+        success: false,
+        message: '请输入正确的银行卡号'
+    }
+    return result
+  } else {
+    result = {
+        success: true,
+        message: '通过'
+    }
+    return result
+  }
+} 

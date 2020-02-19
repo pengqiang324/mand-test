@@ -204,7 +204,7 @@ export default {
         },
 
         async onLogin() {
-           const { isClick, message } = this.isClick
+           const { isClick, message } = this.isClick()
 
            if (!isClick) {
                this.$toast({

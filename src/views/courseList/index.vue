@@ -38,11 +38,16 @@
                                             <h4 
                                                 v-lazy:background-image="item.imageUrl"
                                             >
-                                                <p><span>{{item.videoTime}}</span></p>
+                                                <p>
+                                                    <img :src="playImg" alt="">
+                                                </p>
                                             </h4>
                                             <div class="courseList-list-right">
                                                 <h3>{{item.title}}</h3>
-                                                <p>观看次数：{{item.view}}</p>
+                                                <p>
+                                                    <span>时长：{{item.videoTime}}</span>
+                                                    <span>观看次数：{{item.view}}</span>
+                                                </p>
                                             </div>
                                         </li>
                                     </ul>
@@ -88,8 +93,10 @@ export default {
     
     data() {
         const headImg = require('../../assets/images/banner/ry-banner.png')
+        const playImg = require('../../assets/images/business/videoPlay.png')
         return {
             headImg,
+            playImg,
             bounce: {
                 top: false,
                 bottom: false,
@@ -295,12 +302,15 @@ export default {
                         height 100%
                     }
                     p {
+                        display flex
+                        align-items center
+                        justify-content center
                         position absolute
                         top 0
                         left 0
                         width 100%
                         height 100%
-                        background rgba(0,0,0,.5)
+                        background rgba(0,0,0,.2)
                         span {
                             position absolute
                             bottom 10px
@@ -311,23 +321,37 @@ export default {
                             font-size 20px
                             color #fff
                         }
+                        img {
+                            display block
+                            width 30px
+                            height 42px
+                        }
                     }
                 }
                 .courseList-list-right {
                     flex 1
                     h3 {
-                        padding-top 6px
-                        height 24px
-                        line-height 24px
-                        font-size 24px
+                        padding-top 8px
+                        height 26px
+                        line-height 26px
+                        font-size 26px
                         color #000
                     }
                     p {
-                        padding-top 68px
-                        height 20px
-                        line-height 20px
-                        font-size 20px
-                        color #D41C1C
+                        display flex
+                        justify-content space-between
+                        align-items flex-end
+                        padding-top 60px
+                        height 22px
+                        span {
+                            color #7d7e80
+                            font-size 22px
+                            &:last-child {
+                                margin-right 25px
+                                color #FF6F00
+                                font-size 20px
+                            }
+                        }
                     }
                 }
             }

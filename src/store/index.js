@@ -4,6 +4,7 @@ import user from './modules/user'
 import shopOwner from './modules/shopOwner'
 import applyCard from './modules/applyCard'
 import business from './modules/business'
+import cashBank from './modules/cashBank'
 
 Vue.use(Vuex)
 
@@ -81,6 +82,7 @@ export default new Vuex.Store({
     user,
     shopOwner,
     applyCard,
-    business
+    business,
+    cashBank
   }
 })

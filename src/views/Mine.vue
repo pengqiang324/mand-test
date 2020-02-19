@@ -23,7 +23,10 @@
                         <div class="mine-head-top">
                           <h2><img v-lazy="consumerData.headImage" alt=""></h2>
                           <div class="mine-head-right">
-                            <h4><b>{{consumerData.name}}<font v-if="isCustomer">信用卡专员</font></b><span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span></h4>
+                            <h4>
+                              <b>{{consumerData.name}}<font v-if="isCustomer">信用卡专员</font></b>
+                              <!-- <span><img src="../assets/images/mine/icon.png" alt=""><i>2</i></span> -->
+                            </h4>
                             <!-- 不是顾问状态显示 -->
                             <div v-if="!isCustomer">
                               <p class="mine-head-phone">{{consumerData.tel}}
@@ -74,7 +77,7 @@
                             <i>（总收入 {{consumerData.totalAmount}}元）</i>
                             <div class="mine-bottom-btn">
                               <div 
-                                @click="toCashWithdrawal"
+                                @click="toBankCash"
                                 class="mine-pri-tx"
                               >
                                 <span>提现</span>
@@ -214,6 +217,11 @@ export default {
                 icon: require('../assets/images/mine/icon05.png'),
                 title: '商学院',
                 url: '/business'
+              },
+              {
+                icon: require('../assets/images/mine/icon12.png'),
+                title: '银行卡',
+                url: '/cashWithdrawal'
               }
             ]
           },
@@ -263,6 +271,11 @@ export default {
                 icon: require('../assets/images/mine/icon05.png'),
                 title: '商学院',
                 url: '/business'
+              },
+              {
+                icon: require('../assets/images/mine/icon12.png'),
+                title: '银行卡',
+                url: '/cashWithdrawal'
               },
               {
                 icon: require('../assets/images/mine/icon10.png'),
@@ -356,6 +369,7 @@ export default {
           if (success) {
               this.consumerData = data
               this.grade = data.memberLevel
+              localStorage.setItem('userdetailInfo', JSON.stringify(data)) // 保存用户信息
               if (data.memberLevel !== 'A') {
                 window.localStorage.setItem('userStatus', 1)
                 this.$store.dispatch('shopOwner/updateStatus', 1) 
@@ -394,9 +408,9 @@ export default {
           });
       },
 
-      toCashWithdrawal() {
+      toBankCash() {
         this.$router.push({
-          path: '/cashWithdrawal'
+          path: '/cashOut'
         })
       },
 

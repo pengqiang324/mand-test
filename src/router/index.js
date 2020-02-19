@@ -277,6 +277,35 @@ const routes = [
     }
   },
   {
+    path: '/waitResult',
+    name: 'ry-waitResult',
+    component: () => import(/* webpackChunkName: "waitResult" */ '../views/cashWithdrawal/waitResult'),
+    meta: {
+      index: 6,
+      title: '提现进度'
+    }
+  },
+  {
+    path: '/addBank',
+    name: 'ry-addBank',
+    component: () => import(/* webpackChunkName: "addBank" */ '../views/cashWithdrawal/addBank'),
+    meta: {
+      index: 5,
+      keepAlive: true,
+      title: '添加银行卡'
+    }
+  },
+  {
+    path: '/cashOut',
+    name: 'ry-cashOut',
+    component: () => import(/* webpackChunkName: "addBank" */ '../views/cashWithdrawal/cashOut'),
+    meta: {
+      index: 4,
+      keepAlive: true,
+      title: '提现'
+    }
+  },
+  {
     path: '/expect',
     name: 'ry-expect',
     component: () => import(/* webpackChunkName: "expect" */ '../views/expect'),

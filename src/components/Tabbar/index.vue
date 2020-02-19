@@ -63,7 +63,7 @@ export default {
               },
               {
                 title: '我的',
-                info: 2,
+                // info: 2,
                 url: '/mine',
                 active: require('@/assets/images/tabbar/ry-icon04-active.png'),
                 inactive: require('@/assets/images/tabbar/ry-icon04.png')
