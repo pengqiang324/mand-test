@@ -69,13 +69,13 @@ export default {
       }
     
       // 进入完成开通交互
-      if (to.path === '/openSuccess') {
+      if (to.path === '/openSuccess' || (to.path === '/waitResult' && from.path === '/cashOut')) {
         this.transitionName = 'slideup'
         return
       }
 
       // 离开完成开通交互
-      if (from.path === '/openSuccess') {
+      if (from.path === '/openSuccess' || from.path === '/waitResult' && to.path === '/mine') {
         this.transitionName = 'slidedown'
         return
       }

@@ -86,3 +86,14 @@ export const bankCard = function(value) {
     return result
   }
 } 
+
+/* 校验数字是否为小数点 */
+export const isDotNum = function(value) {
+  if (!value) return
+  const reg = /^(([^0][0-9]+|0)\.([0-9]{0,2}))$/
+  if (value && !reg.test(value)) {
+    return false
+  } else {
+    return true
+  }
+} 

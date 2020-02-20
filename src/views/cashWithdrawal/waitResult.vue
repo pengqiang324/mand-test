@@ -7,19 +7,32 @@
                 <!-- 提现进度步骤条 start -->
                 <div class="waitResult-proccess">
                     <ul>
-                        <li class="activeBorder">
+                        <li class="activeSuccess">
                             <h2>发起提现申请</h2>
                             <h4>提交请求已经提交</h4>
-                            <p>2019-12-26  18:20</p>
+                            <p>{{data.createTime}}</p>
                         </li>
-                        <li class='active'>
+                        <li 
+                            :class="[
+                                { 'activeExamine': data.status == '10' ? true : false },
+                                { 'activeFail': data.status == '30' ? true : false },
+                                { 'activeSize': data.status == '10' ? true : false },
+                                {'activeSuccess': data.status == '20' ? true : false}
+                            ]"
+                        >
                             <h2>审核中</h2>
                             <h4>将在1-3个工作日内返回处理结果</h4>
-                            <p>2019-12-26  18:20</p>
+                            <p>{{data.createTime}}</p>
                         </li>
-                        <li>
-                            <h2>到账成功</h2>
-                            <p>2019-12-26  18:20</p>
+                        <li 
+                            :class="[
+                                {'activeFail': data.status == '30' ? true : false},
+                                {'activeSuccess': data.status == '20' ? true : false}
+                            ]"
+                        >
+                            <h2 v-if="data.status == '20' || data.status == '10'">提现成功</h2>
+                            <h2 v-if="data.status == '30'">提现失败</h2>
+                            <p v-if="data.approveTime">2019-12-26  18:20</p>
                         </li>
                     </ul>
                 </div>
@@ -29,18 +42,23 @@
                         <h4>提现金额</h4>
                         <p>
                             <md-icon name="rmb" class="waitResult-info-icon"/>
-                            <span>800.00</span>
+                            <span>{{data.expensesAmount}}</span>
                         </p>
                     </div>
                     <div class="waitResult-info-descri">
                         <h4>到账银行卡</h4>
                         <p>
-                            <span>民生银行<i>尾号{{bankNum | bankSlice}}</i></span>
+                            <span>{{data.expensesBankName}}<i>尾号{{data.expensesBankNo | bankSlice}}</i></span>
                         </p>
                     </div>
                 </div>
                 <div class="waitResult-btn">
-                    <div class="waitResult-btn-complete">完成</div>
+                    <div 
+                        @click="toMine"
+                        class="waitResult-btn-complete"
+                    >
+                        完成
+                    </div>
                 </div>
             </div>
         </ry-scroll-view>
@@ -48,11 +66,13 @@
 </template>
 
 <script>
+
 export default {
     name: 'ry-waitResult',
 
     filters: {
         bankSlice(value) {
+            if (!value) return
             const BANK_NUM = value.slice(-4)
             return BANK_NUM
         }
@@ -60,7 +80,23 @@ export default {
 
     data() {
         return {
-            bankNum: '622222548525986898'
+            bankNum: '',
+            data: {}
+        }
+    },
+
+    created() {
+        this.initData()
+    },
+
+    methods: {
+        initData() {
+            const data = JSON.parse(sessionStorage.getItem('cashBankInfo'))
+            this.data = data
+        },
+
+        toMine() {
+            this.$router.replace('/mine')
         }
     }
 }
@@ -87,22 +123,41 @@ export default {
                 border none
             }
         }
-        &.active {
+        &.activeExamine {
             &:after {
                 width 72px
                 height 72px
                 top -14px
                 left -94px
-                background url('../../assets/images/cashWithdrawal/waitExamine.png') center no-repeat
+                background url('../../assets/images/cashWithdrawal/waitExamine.png') center no-repeat !important
                 background-size 100% 100%
             }
+            &.activeFail {
+                &:before {
+                    border-color #f00
+                }
+            }
         }
-        &.activeBorder {
+        &.activeSuccess {
             &:before {
                 border-color #00CC3D
             }
             &:after {
                 background #00B737
+            }
+        }
+        &.activeFail {
+            &:after {
+                background #f00
+            }
+        }
+        &.activeSize {
+            h2 {
+                font-size 40px
+                color #000
+            }
+            h4, p {
+                color #000
             }
         }
         &:before {

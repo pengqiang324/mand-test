@@ -12,22 +12,32 @@
                         >
                             <h4>
                                 <p v-html="bankMessage"></p>
-                                <van-icon 
-                                    name="arrow" 
-                                    class="cashOut-arrow"
-                                />
+                                <div class="cashOut-head-next">
+                                    <van-loading 
+                                        v-if="bankLoading"
+                                        color="#FF6F00"
+                                        size="20px"
+                                        class="cashOut-head-loading"
+                                    />
+                                    <van-icon 
+                                        name="arrow" 
+                                        class="cashOut-arrow"
+                                    />
+                                </div>
                             </h4>
-                            <p>预计1-3天内到账</p>
+                            <p>预计1-3个工作日内到账</p>
                         </div>
                     </div>  
                     <div class="cashOut-content">
-                        <h4>提现金额</h4>
+                        <h4>
+                            提现金额
+                            <span>备注：满100元才可提现</span>
+                        </h4>
                         <div class="cashOut-content-input">
                             <van-field 
                                 ref="NumBorder"
                                 readonly
                                 :value="form.value"
-                                :formatter="formatter"
                                 @click="showNumBorder"
                             >
                                 <img 
@@ -37,8 +47,9 @@
                                 />
                             </van-field>
                         </div>
-                        <p>
-                            当前资金余额{{fullBalance}}元
+                        <p v-show="isPass" style="color: #f00;">输入金额超过资金余额</p>
+                        <p v-show="!isPass">
+                            当前资金余额<i>{{fullBalance}}</i>元
                             <span 
                                 @click="fullCash"
                             >
@@ -49,7 +60,6 @@
                     <div class="cashOut-btn">
                         <ry-button
                             btn-title="提现"
-                            :loading="loading"
                             :class="{'isDisabled': activeBtn}"
                             @touchafter="submit"
                         />
@@ -61,16 +71,26 @@
             <van-action-sheet v-model="showBankSheet">
                 <div class="cashOut-sheet-content">
                     <h2 class="sheet-content-title">选择到账银行卡</h2>
-                    <h4 class="sheet-content-time">请留意个银行到账时间</h4>
+                    <h4 class="sheet-content-time">请留意各银行到账时间</h4>
                     <ul class="cashOut-sheet-select">
+                        <li 
+                            v-show="bankLoading"
+                            class="cashOut-sheet-loading"
+                        >
+                            <van-loading 
+                                color="#FF6F00"
+                                size="30px"
+                            />
+                        </li>
                         <li
+                            v-show="!bankLoading"
                             v-for="(item,index) in bankList"
                             :key="index"
                             @click="selectBank(item,index)"
                         >
                             <div class="sheet-select-head">
-                                <h2>{{item.bankName}}<span>（{{item.bankNum | sliceBankData}}）</span></h2>
-                                <h4>2小时内到账</h4>
+                                <h2>{{item.bankName}}<span>（{{item.bankNumber | sliceBankData}}）</span></h2>
+                                <h4>预计1-3个工作日内到账</h4>
                             </div>
                             <p>
                                 <img v-show="!selectList[index]" :src="selectImg" alt="">
@@ -99,12 +119,37 @@
             @delete="onNumberDelete"
         />
         <!-- 数字键盘 end -->
+        <!-- 提现信息提示框 start -->
+        <van-dialog 
+            v-model="showCashDialog" 
+            show-cancel-button
+            confirmButtonText="确认提现"
+            :before-close="cashBefore"
+            class="cash-dialog"
+        >
+            <div class="cash-dialog-box">
+                <h2>您正在发起一笔提现</h2>
+                <p>
+                    提现金额
+                    <span>{{form.value | filterMoney}}元</span>
+                </p>
+                <p>
+                    提现到
+                    <span>{{bankMessage}}</span>
+                </p>
+            </div>
+        </van-dialog>
+        <!-- 提现信息提示框 end -->
     </div>
 </template>
 
 <script>
-import { Icon, Field, ActionSheet, NumberKeyboard } from 'vant'
+import { Icon, Field, ActionSheet, NumberKeyboard, Dialog } from 'vant'
 import mixins from '@/libs/mixins'
+import { getByMemberId, saveExpenses } from '@/api/bankCash/bankCash'
+import { isDotNum } from '@/libs/validate'
+import { mapState } from 'vuex'
+let that
 
 export default {
     name: 'ry-cashOut',
@@ -114,6 +159,7 @@ export default {
     components: {
         [Icon.name]: Icon,
         [Field.name]: Field,
+        [Dialog.Component.name]: Dialog.Component,
         [ActionSheet.name]: ActionSheet,
         [NumberKeyboard.name]: NumberKeyboard
     },
@@ -122,6 +168,26 @@ export default {
         sliceBankData(value) {
             const BANK_NUM = value.slice(-4)
             return BANK_NUM
+        },
+        /* 过滤数字是否带小数点 */ 
+        filterMoney(value) {
+            if (!value) return
+            const ISDOTNUM = isDotNum(value)
+            let newVal = ''
+            if (!ISDOTNUM) {
+                newVal = value + '.00'
+            } else {
+                const dotVal = value.split('.')
+                if (dotVal[1].length == 1 ) {
+                    newVal = value + '0'
+                } else if (!dotVal[1].length) {
+                    newVal = value + '00'
+                } else {
+                    newVal = value
+                }
+            }
+            that.form.bankMoney = newVal
+            return newVal
         }
     },
 
@@ -132,14 +198,19 @@ export default {
             selectImg,
             selectImgActive,
             bankMessage: '',
-            fullBalance: '1000.20',
+            fullBalance: '',
             showBankSheet: false,
             showKeyboard: false,
+            bankLoading: false,
+            showCashDialog: false,
             activeBtn: true,
+            isPass: false,
             bankList: [],
             selectList: [],
             form: {
                 value: '',
+                bankMoney: '',
+                bankName: '',
                 bankNum: ''  // 银行卡号
             }  
         }
@@ -151,41 +222,73 @@ export default {
                 this.activeBtn = true
             } else {
                 this.activeBtn = false
+                const reg = /\./
+                if (reg.test(value)) {
+                    const DOTNUM = value.split('.')
+                    if (DOTNUM[1].length > 2) {
+                        const NEWVALUE = DOTNUM[1].substr(0, 2)
+                        this.form.value = `${DOTNUM[0]}.${NEWVALUE}`
+                    }
+                }
             }
         },
         bankList(data) {
             if (!data.length) {
+                this.form.bankName = ''
+                this.form.bankNumber = ''
                 this.bankMessage = '使用新卡提现'
             }
         }
     },
+    
+    computed: {
+        ...mapState('cashBank', ['isTakeVuexState','bankInfo'])
+    },
+
+    beforeCreate() {
+        that = this
+    },
 
     created() {
         this.initData()
+        this.getUserData()
     },
 
     methods: {
+        getUserData() {
+            const USERINFO = JSON.parse(localStorage.getItem('userdetailInfo'))
+            this.fullBalance = USERINFO.usedAmount
+        },
+
         initData() {
-            setTimeout(() => {
-                this.bankList = [
-                    // {
-                    //     bankName: '招商银行储蓄卡',
-                    //     bankNum: '210812470004250007'
-                    // },
-                    // {
-                    //     bankName: '广发银行储蓄卡',
-                    //     bankNum: '2108124700042500072589'
-                    // }
-                ]
-                this.bankList.forEach((item,index) => {
-                    if (index == 0) {
-                        this.selectList[index] = true
-                        this.serBankMessage(item)
-                    } else {
-                        this.selectList[index] = false
-                    }
-                })
-            }, 1000)
+            this.bankLoading = true
+            getByMemberId()
+            .then((res) => {
+                const { success, data } = res.data
+                if (success) {
+                    const BANK_NUMBER = this.bankInfo
+                    this.bankList = data
+                    this.bankList.forEach((item,index) => {
+                        if (this.isTakeVuexState) {
+                            /* 新增银行卡 */ 
+                            if (item.bankNumber == BANK_NUMBER.bankNumber) {
+                                this.selectList[index] = true
+                                this.serBankMessage(item)
+                            } else {
+                                this.selectList[index] = false
+                            }
+                        } else {
+                            if (index == 0) {
+                                this.selectList[index] = true
+                                this.serBankMessage(item)
+                            } else {
+                                this.selectList[index] = false
+                            }
+                        }
+                    })
+                }
+                this.bankLoading = false
+            })
         },
         
         selectBank(item,index) {
@@ -198,8 +301,9 @@ export default {
         },
 
         serBankMessage(item) {
-            this.form.bankNum = item.bankNum
-            this.bankMessage = `${item.bankName}（${item.bankNum.slice(-4)}）`
+            this.form.bankNum = item.bankNumber
+            this.form.bankName = item.bankName
+            this.bankMessage = `${item.bankName}（${item.bankNumber.slice(-4)}）`
         },
 
         showSelectSheet() {
@@ -210,8 +314,10 @@ export default {
             this.showKeyboard = true
         },
 
-        onNumberEnter(val) {
-            this.form.value += val
+        onNumberEnter(value) {
+            this.form.value += value
+            // 当前输入余额大于资金余额
+            this.checkMoney()
         },
 
         onNumberDelete() {
@@ -219,6 +325,15 @@ export default {
                 return
             }
             this.form.value = this.form.value.substr(0, this.form.value.length - 1)
+            this.checkMoney()
+        },
+
+        checkMoney() {
+            if (parseFloat(this.form.value) > parseFloat(this.fullBalance)) {
+                this.isPass = true
+            } else {
+                this.isPass = false
+            }
         },
 
         /*全部提现*/
@@ -226,47 +341,68 @@ export default {
             this.form.value = this.fullBalance
         }, 
 
-        formatter(value) {
-            // 过滤输入的数字
-            return value.replace(/[\u4e00-\u9fa5]/g, '');
-        },
-
         addBankCard() {
             this.$router.push({
                 path: '/addBank'
             })
         },
 
+        cashBefore(action, done) {
+            if (action === 'confirm') {
+                const data = {
+                    expensesAmount: this.form.bankMoney,
+                    expensesBankName: this.form.bankName,
+                    expensesBankNo: this.form.bankNum
+                }
+
+                saveExpenses(data)
+                .then((res) => {
+                    const { success, data } = res.data
+                    if (success) {
+                        console.log(data)
+                        this.$store.commit('shopOwner/REFRESH_USER_INFO', true)
+                        sessionStorage.setItem('cashBankInfo', JSON.stringify(data))
+                        this.$router.replace('/waitResult')
+                    }
+                    done()
+                })
+            } else {
+                done()
+            }
+        },
+
         submit() {
+            if (!parseFloat(this.form.value)) return
+            /* 输入金额超过资金金额 */ 
+            if (this.isPass) {
+                this.$toast({
+                    message: '超出本次提现金额',
+                    position: 'bottom'
+                })
+                return
+            }
+            if (this.form.value < 100) {
+                this.$toast({
+                    message: '提现金额少于100元',
+                    position: 'bottom'
+                })
+                return
+            }
             /* 银行卡号为空 使用新卡提现*/ 
-            if (!parseInt(this.form.value)) return
             if (!this.form.bankNum) {
                 this.$router.push({
                     path: '/addBank'
                 })
                 return
             }
-            this.changeLoading()
-            setTimeout(() => {
-                this.loading = false
-                this.$router.replace({
-                    path: '/waitResult'
-                })
-            }, 1000)
+
+            this.showCashDialog = true
         }
     }
 }
 </script>
 
 <style lang="stylus">
-@keyframes blink {
-    0%, 100% {
-        background-color: #ff6f00;
-    }
-    50% {
-        background-color: transparent;
-    } 
-}
 .cashOut .md-scroll-view .scroll-view-container {
     height 100%
 }
@@ -310,6 +446,13 @@ export default {
                 font-size 24px
                 color #4469BF
             }
+            .cashOut-head-next {
+                display flex
+                align-items center
+                .cashOut-head-loading {
+                    margin-right 15px
+                }
+            }
             .cashOut-arrow {
                 color #757575
                 font-size 26px
@@ -329,10 +472,19 @@ export default {
 .cashOut-content {
     padding 0 50px 0
     h4 {
+        display flex
+        align-items flex-end
         padding-bottom 28px
         height 24px
         line-height 24px
         font-size 24px
+        span {
+            display block
+            font-size 22px
+            color #f00
+            margin-left 20px
+            font-weight 100
+        }
     }
     .cashOut-content-input {
         padding-bottom 16px
@@ -342,18 +494,6 @@ export default {
             padding 0 0
             display: flex
             align-items: center
-            /*.van-field__body {
-                &:after {
-                    position: absolute;
-                    content: '';
-                    display: inline-block;
-                    width: 2px;
-                    height: 30px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    animation: blink 1.2s infinite steps(1, start);
-                }
-            }*/
             input {
                 font-size 49px
                 font-weight bold
@@ -376,6 +516,10 @@ export default {
         line-height 24px
         font-size 24px
         color #c2c2c2
+        i {
+            margin-left 5px
+            font-style normal
+        }
         span {
             margin-left 10px
             color #4469BF
@@ -412,6 +556,8 @@ export default {
             border-bottom 2px solid #eee
         }
         .cashOut-sheet-select {
+            max-height 500px
+            overflow-y scroll
             li {
                 display flex
                 align-items center
@@ -424,6 +570,11 @@ export default {
                 }
                 &:active {
                     background #ebebeb
+                }
+                &.cashOut-sheet-loading {
+                    display flex
+                    justify-content center
+                    padding 40px 0
                 }
                 .sheet-select-head {
                     h2 {
@@ -454,6 +605,34 @@ export default {
                     }
                 }
             }
+        }
+    }
+}
+
+.cash-dialog {
+    .cash-dialog-box {
+    }
+    h2 {
+        padding 50px 0 50px
+        text-align center
+        font-size 38px
+    }
+    p {
+        padding 0 110px 40px
+        display flex
+        align-items flex-end
+        height 30px
+        font-size 26px
+        color #A5A5A5
+        letter-spacing 1px
+        span {
+            display flex
+            align-items flex-end
+            margin-left 30px
+            font-size 30px
+            font-family Noto Sans S Chinese
+            font-weight bold
+            color #000
         }
     }
 }

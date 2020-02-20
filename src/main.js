@@ -53,8 +53,8 @@ router.beforeEach(async (to, from, next) => {
       // 开发环境、测试环境
       const response = {
         data: {
-          token: 'bcb825e9-c3e3-4680-934f-69b148fc3853',
-          userId: '18923bc3f6db4bd2bb1b5bff21e97a87',
+          token: 'b03c0a81-25dd-46e9-9a43-ce6c260f3574',
+          userId: '4370ca6e9f8a4083958f598ec56b5437',
           top: 0,
           tel: 15874926356,
           isCert: 1,

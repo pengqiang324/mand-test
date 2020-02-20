@@ -44,7 +44,8 @@ module.exports = {
           'picker-action-text-color': '#ff6f00',
           'action-sheet-description-color': '#ff6f00',
           'action-sheet-description-font-size': '17px',
-          'search-padding': '10px 0'
+          'search-padding': '10px 0',
+          'dialog-confirm-button-text-color': '#ff6f00'
         }
       }
     }

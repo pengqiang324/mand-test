@@ -282,6 +282,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "waitResult" */ '../views/cashWithdrawal/waitResult'),
     meta: {
       index: 6,
+    
       title: '提现进度'
     }
   },
@@ -291,7 +292,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "addBank" */ '../views/cashWithdrawal/addBank'),
     meta: {
       index: 5,
-      keepAlive: true,
       title: '添加银行卡'
     }
   },
@@ -301,7 +301,6 @@ const routes = [
     component: () => import(/* webpackChunkName: "addBank" */ '../views/cashWithdrawal/cashOut'),
     meta: {
       index: 4,
-      keepAlive: true,
       title: '提现'
     }
   },

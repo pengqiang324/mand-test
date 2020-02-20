@@ -218,11 +218,11 @@ export default {
                 title: '商学院',
                 url: '/business'
               },
-              {
-                icon: require('../assets/images/mine/icon12.png'),
-                title: '银行卡',
-                url: '/cashWithdrawal'
-              }
+              // {
+              //   icon: require('../assets/images/mine/icon12.png'),
+              //   title: '银行卡',
+              //   url: '/cashWithdrawal'
+              // }
             ]
           },
           {
@@ -272,11 +272,11 @@ export default {
                 title: '商学院',
                 url: '/business'
               },
-              {
-                icon: require('../assets/images/mine/icon12.png'),
-                title: '银行卡',
-                url: '/cashWithdrawal'
-              },
+              // {
+              //   icon: require('../assets/images/mine/icon12.png'),
+              //   title: '银行卡',
+              //   url: '/cashWithdrawal'
+              // },
               {
                 icon: require('../assets/images/mine/icon10.png'),
                 title: '设置',
@@ -626,6 +626,7 @@ export default {
             display block
             height 44px
             font-size 44px
+            font-family Noto Sans S Chinese
           }
         }
         .mine-bottom-pri {
@@ -637,6 +638,7 @@ export default {
             line-height 24px
             font-size 24px
             font-style normal
+            font-family Noto Sans S Chinese
             color #888
           }
           .mine-bottom-btn {

@@ -56,6 +56,7 @@ import { Field } from 'vant'
 import mixins from '@/libs/mixins'
 import { bankCard } from '@/libs/validate'
 import { saveBank } from '@/api/bankCash/bankCash'
+import { mapActions } from 'vuex'
 
 export default {
     name: 'ry-addBank',
@@ -70,6 +71,7 @@ export default {
         return {
             error: false,
             errorMessage: '',
+            levelUrl: '',
             form: {
                 cardholder: '',
                 cardNum: '',
@@ -78,11 +80,19 @@ export default {
         }
     },
 
+    beforeRouteEnter(to, from, next) {
+        next((vm) => {
+            vm.levelUrl = from.path
+        })
+    },
+
     created() {
         this.getUserData()
     },
 
     methods: {
+        ...mapActions('cashBank', ['refresh_bank_info', 'update_bank_info']),
+
         getUserData() {
             const userData = JSON.parse(localStorage.getItem('userdetailInfo'))
             this.form.cardholder = userData.name
@@ -144,13 +154,22 @@ export default {
                 cardNo: this.form.cardId,
                 name: this.form.cardholder
             }
-         
+    
             saveBank(data)
-            .then((res) => {
-                const { success } = res.data
+            .then(async (res) => {
+                const { success, data } = res.data
                 if (success) {
-                    this.$router.push({
-                        path: '/cashWithdrawal'
+                    await this.refresh_bank_info(true)
+                    this.$nextTick(async () => {
+                        if (this.levelUrl == '/cashOut') {
+                            const INFO = {
+                                isUpdate: true,
+                                bankInfo: data
+                            }
+                            /* 默认银行选择值 */ 
+                            await this.update_bank_info(INFO)
+                        }
+                        this.$router.back()
                     })
                 }
                 this.loading = false

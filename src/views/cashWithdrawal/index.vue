@@ -80,14 +80,12 @@ export default {
 
     activated() {
         if (this.isRefreshBankInfo) {
-            console.log(124)
             this.getBankList()
         }
     },
 
     filters: {
         bankNum: (num) => {
-            console.log(num)
             const BANK_NUM = num.slice(-4)
             return BANK_NUM
         }
@@ -104,7 +102,7 @@ export default {
                     if (this.isRefreshBankInfo) this.$store.dispatch('cashBank/refresh_bank_info', false)
                     this.hideErrorTip()
                 } else {
-                    this.showErrorTip()
+                    this.showErrorTip(res)
                 }
                 this.showloading = false
             })

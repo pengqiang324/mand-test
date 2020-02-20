@@ -261,6 +261,10 @@ export default {
         border-left-color #FF6F00 !important
     }
 }
+
+.memory-play-wrap .memory-play .play-jump {
+    color #FF6F00 !important
+}
 </style>
 
 <style lang="stylus" scoped>
